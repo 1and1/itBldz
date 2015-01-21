@@ -8,10 +8,10 @@ The goal is to provide an easy to setup framework which allow every development 
 
 ### Setup
 
-Clone this repository
+Install itBldz
 
 ```shell
-git clone https://github.com/1and1/itBldz.git
+npm install itbldz
 ```
 
 execute
