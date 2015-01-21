@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <title>Itbldz by 1and1</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Itbldz</h1>
+        <h2>MyWebsite Build-Tools - The only build-tools you&#39;ll ever need</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/1and1/itBldz/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/1and1/itBldz/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/1and1/itBldz" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>
+<a id="itbldz-build-tools" class="anchor" href="#itbldz-build-tools" aria-hidden="true"><span class="octicon octicon-link"></span></a>itBldz Build-Tools</h1>
+
+<p><strong>The only build-tool you'll ever need</strong></p>
+
+<p>The goal is to provide an easy to setup framework which allow every development team a "closed for modification, open for extension"-plattform for their own needs.</p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<h3>
+<a id="setup" class="anchor" href="#setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setup</h3>
+
+<p>Install itBldz</p>
+
+<div class="highlight highlight-shell"><pre>npm install itbldz</pre></div>
+
+<p>execute</p>
+
+<div class="highlight highlight-shell"><pre>build</pre></div>
+
+<p>in the shell / commandline</p>
+
+<h3>
+<a id="options" class="anchor" href="#options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Options</h3>
+
+<p>All your arguments will be passed to grunt.</p>
+
+<p>Examples:</p>
+
+<p>Verbose output:</p>
+
+<blockquote>
+<p>build --verbose</p>
+</blockquote>
+
+<p>Run only tests</p>
+
+<blockquote>
+<p>build test</p>
+</blockquote>
+
+<p>Run only tests but verbose</p>
+
+<blockquote>
+<p>build test --verbose</p>
+</blockquote>
+
+<p>Get all tasks with description</p>
+
+<blockquote>
+<p>build --help</p>
+</blockquote>
+
+<h3>
+<a id="configure-for-your-use-case" class="anchor" href="#configure-for-your-use-case" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configure for your use case</h3>
+
+<p>To include this project, all you have to do is to configure the build.json and the config.json.</p>
+
+<h4>
+<a id="buildjson" class="anchor" href="#buildjson" aria-hidden="true"><span class="octicon octicon-link"></span></a>build.json</h4>
+
+<p>The build.json is the task-template. It orchestrates the build, and has four main tasks with the following subtasks:</p>
+
+<pre><code>* prepare           - prepares the build-environment
+    * clean         - cleans a folder (default: grunt-contrib-clean)
+    * mkdir         - creates a new directory (default: grunt-mkdir)
+* validate          - validates the source for syntax, sematics and style conformance
+    * syntax        - syntax check of the language
+        * js        - (default: grunt-jsvalidate)
+    * semantic      - semantic check of the language
+        * js        - (default: grunt-contrib-jshint)
+* test              - runs unit and quality (i.e. coverage) tests
+    * unit
+        * js        -  runs unittests against js
+    * coverage
+        * js        - runs unittests and checks the unit test code coverage for js
+* create-deployable - creates a deployable for the code (i.e. minification, uglification...)
+    * copy          - copies files
+</code></pre>
+
+<p>The build.json has to be the same on every environment you run the build.</p>
+
+<div class="highlight highlight-json"><pre>    {
+      <span class="pl-s1"><span class="pl-pds">"</span>prepare<span class="pl-pds">"</span></span>: { },
+      <span class="pl-s1"><span class="pl-pds">"</span>validate<span class="pl-pds">"</span></span>: {
+        <span class="pl-s1"><span class="pl-pds">"</span>syntax<span class="pl-pds">"</span></span>: {
+          <span class="pl-s1"><span class="pl-pds">"</span>js<span class="pl-pds">"</span></span> : {}
+          <span class="pl-ii">/*</span> <span class="pl-ii">...</span> <span class="pl-ii">*/</span>
+        },
+        <span class="pl-s1"><span class="pl-pds">"</span>sematic<span class="pl-pds">"</span></span>: {
+          <span class="pl-s1"><span class="pl-pds">"</span>js<span class="pl-pds">"</span></span> : {}
+          <span class="pl-ii">/*</span> <span class="pl-ii">...</span> <span class="pl-ii">*/</span>
+        }
+      },
+      <span class="pl-s1"><span class="pl-pds">"</span>test<span class="pl-pds">"</span></span>: {
+        <span class="pl-s1"><span class="pl-pds">"</span>coverage<span class="pl-pds">"</span></span> : {
+          <span class="pl-s1"><span class="pl-pds">"</span>js<span class="pl-pds">"</span></span> : {}
+          <span class="pl-ii">/*</span> <span class="pl-ii">...</span> <span class="pl-ii">*/</span>
+        },
+        <span class="pl-s1"><span class="pl-pds">"</span>quality<span class="pl-pds">"</span></span> : {}
+      },
+      <span class="pl-s1"><span class="pl-pds">"</span>create-deployable<span class="pl-pds">"</span></span>: { }
+    }
+</pre></div>
+
+<h4>
+<a id="tasks" class="anchor" href="#tasks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tasks</h4>
+
+<p>For  each step add the task name and package as follows:</p>
+
+<div class="highlight highlight-json"><pre>{
+  <span class="pl-s1"><span class="pl-pds">"</span>prepare<span class="pl-pds">"</span></span>: { },
+  <span class="pl-s1"><span class="pl-pds">"</span>validate<span class="pl-pds">"</span></span>: {
+    <span class="pl-s1"><span class="pl-pds">"</span>syntax<span class="pl-pds">"</span></span>: {
+      <span class="pl-s1"><span class="pl-pds">"</span>js<span class="pl-pds">"</span></span> : {
+        <span class="pl-s1"><span class="pl-pds">"</span>task<span class="pl-pds">"</span></span>    : <span class="pl-s1"><span class="pl-pds">"</span>jshint<span class="pl-pds">"</span></span>,
+        <span class="pl-s1"><span class="pl-pds">"</span>package<span class="pl-pds">"</span></span> : <span class="pl-s1"><span class="pl-pds">"</span>grunt-contrib-jshint<span class="pl-pds">"</span></span>
+      }
+    }
+  }
+}
+</pre></div>
+
+<p>Options can be added to the js - step accordingly.</p>
+
+<h4>
+<a id="configjson" class="anchor" href="#configjson" aria-hidden="true"><span class="octicon octicon-link"></span></a>config.json</h4>
+
+<p>The config.json is describing the environment the build is running in. It is used to control the directories, file-patterns, or environmental specifics.
+You can use all variables in the config.json in your build.json by typing</p>
+
+<blockquote>
+<p>&lt;%= config.YOURKEY %&gt;</p>
+</blockquote>
+
+<div class="highlight highlight-json"><pre>    {
+      <span class="pl-s1"><span class="pl-pds">"</span>directories<span class="pl-pds">"</span></span> : {
+        <span class="pl-s1"><span class="pl-pds">"</span>sources<span class="pl-pds">"</span></span> : <span class="pl-s1"><span class="pl-pds">"</span>sources<span class="pl-pds">"</span></span>,
+        <span class="pl-s1"><span class="pl-pds">"</span>output<span class="pl-pds">"</span></span> : <span class="pl-s1"><span class="pl-pds">"</span>target<span class="pl-pds">"</span></span>
+      },
+      <span class="pl-s1"><span class="pl-pds">"</span>filesets<span class="pl-pds">"</span></span> : {
+        <span class="pl-s1"><span class="pl-pds">"</span>php<span class="pl-pds">"</span></span> : [<span class="pl-s1"><span class="pl-pds">"</span>**/*.php<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">"</span>!**/framework/**<span class="pl-pds">"</span></span>]
+      }
+      <span class="pl-ii">/*</span> <span class="pl-ii">...</span> <span class="pl-ii">*/</span>
+    }
+</pre></div>
+
+<h4>
+<a id="create-your-configured-build" class="anchor" href="#create-your-configured-build" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create your configured build</h4>
+
+<p>Once your done configuring the build, call</p>
+
+<blockquote>
+<p>bpm setup</p>
+</blockquote>
+
+<p>on the folder and the build will be created automatically.</p>
+
+<p>If you want to add an additional module not in the configuration (which you don't) you can call</p>
+
+<blockquote>
+<p>bpm add --m buildstep/module --t Taskname --p some-grunt-package</p>
+</blockquote>
+
+<p>And the module will be added automatically to the buildstep.</p>
+
+<h2>
+<a id="deving" class="anchor" href="#deving" aria-hidden="true"><span class="octicon octicon-link"></span></a>Deving</h2>
+
+<h3>
+<a id="guidelines" class="anchor" href="#guidelines" aria-hidden="true"><span class="octicon octicon-link"></span></a>Guidelines</h3>
+
+<p>You are free to extend the project as you wish. Every new code has to include
+unit tests and result in a green build when building the build-tools using the
+default build.json &amp; config.json</p>
+
+<h3>
+<a id="working-with-the-task-engine" class="anchor" href="#working-with-the-task-engine" aria-hidden="true"><span class="octicon octicon-link"></span></a>Working with the task engine</h3>
+
+<p>The build-tools are using a simple task engine which allow for task aliasing and
+automatic dependency resolving in npm.
+Using the task engine you can easily (and with almost no code) extend the core
+of the build-tools.</p>
+
+<p>All you have to do is follow some conventions.</p>
+
+<p>A build config step should look like the following to get you started:</p>
+
+<div class="highlight highlight-json"><pre>{
+  <span class="pl-s1"><span class="pl-pds">"</span>build-step<span class="pl-pds">"</span></span> : {
+    <span class="pl-s1"><span class="pl-pds">"</span>task<span class="pl-pds">"</span></span> : {
+      <span class="pl-s1"><span class="pl-pds">"</span>language-or-options<span class="pl-pds">"</span></span> : { },
+      <span class="pl-s1"><span class="pl-pds">"</span>other-language-or-more-options<span class="pl-pds">"</span></span> : { }
+    }
+  }  
+}</pre></div>
+
+<p>Now to setup your build-step, add a folder "build-step" to your .build folder,
+add a build-step.js to the folder, and add a task-folder to the "build-step"
+folder, again with a task.js file.
+Your directory might now look something like this:</p>
+
+<pre><code>  build-tools
+  |_ .build
+    |_ build-step
+      |_ task
+        task.js
+      build-step.js
+    gruntfile.js
+  build.json
+  config.json
+</code></pre>
+
+<p>open the build-step.js file and open the following ceremony code:</p>
+
+<div class="highlight highlight-js"><pre><span class="pl-s">var</span> conf <span class="pl-k">=</span> requireRoot(<span class="pl-s1"><span class="pl-pds">'</span>conf<span class="pl-pds">'</span></span>), path <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">"</span>path<span class="pl-pds">"</span></span>);
+<span class="pl-s">var</span> taskengine <span class="pl-k">=</span> requireRoot(<span class="pl-s1"><span class="pl-pds">'</span>taskengine<span class="pl-pds">'</span></span>);
+
+<span class="pl-s3">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-st">function</span> (<span class="pl-vpf">grunt</span>) {
+  <span class="pl-s">var</span> taskContext <span class="pl-k">=</span> taskengine.startup({
+    <span class="pl-s1"><span class="pl-pds">"</span>grunt<span class="pl-pds">"</span></span> <span class="pl-k">:</span> grunt,
+    <span class="pl-s1"><span class="pl-pds">"</span>buildStep<span class="pl-pds">"</span></span> <span class="pl-k">:</span> path.basename(<span class="pl-sv">__filename</span>, <span class="pl-s1"><span class="pl-pds">"</span>.js<span class="pl-pds">"</span></span>),
+    <span class="pl-s1"><span class="pl-pds">"</span>path<span class="pl-pds">"</span></span> <span class="pl-k">:</span> <span class="pl-sv">__dirname</span>
+  });
+
+  taskengine.run(taskContext, <span class="pl-s1"><span class="pl-pds">'</span>Run my custom buildstep.<span class="pl-pds">'</span></span>);
+};</pre></div>
+
+<p>Next open the task.js. In order for it to do anything, we will use it to clean
+a directory.
+Add the following ceremony maccaroni:</p>
+
+<div class="highlight highlight-js"><pre><span class="pl-s">var</span> conf <span class="pl-k">=</span> requireRoot(<span class="pl-s1"><span class="pl-pds">'</span>conf<span class="pl-pds">'</span></span>);
+
+<span class="pl-s">var</span> taskengine <span class="pl-k">=</span> requireRoot(<span class="pl-s1"><span class="pl-pds">'</span>lib/taskengine/te<span class="pl-pds">'</span></span>);
+
+<span class="pl-s3">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-st">function</span> (<span class="pl-vpf">grunt</span>) {
+  taskengine <span class="pl-k">=</span> taskengine({
+    <span class="pl-s1"><span class="pl-pds">"</span>parent<span class="pl-pds">"</span></span> <span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">"</span>build-step<span class="pl-pds">"</span></span>,
+    <span class="pl-s1"><span class="pl-pds">"</span>options<span class="pl-pds">"</span></span> <span class="pl-k">:</span> {
+      <span class="pl-s1"><span class="pl-pds">"</span>task<span class="pl-pds">"</span></span> <span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">"</span>clean<span class="pl-pds">"</span></span>,
+      <span class="pl-s1"><span class="pl-pds">"</span>package<span class="pl-pds">"</span></span> <span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">"</span>grunt-contrib-clean<span class="pl-pds">"</span></span>
+    }
+  });
+
+  taskengine.runSubtask(<span class="pl-s1"><span class="pl-pds">"</span>clean<span class="pl-pds">"</span></span>,
+    <span class="pl-s1"><span class="pl-pds">"</span>Cleaning everything from a directory<span class="pl-pds">"</span></span>,
+    grunt,
+    grunt.config(<span class="pl-s1"><span class="pl-pds">"</span>build<span class="pl-pds">"</span></span>)[<span class="pl-s1"><span class="pl-pds">"</span>build-step<span class="pl-pds">"</span></span>].task);
+};</pre></div>
+
+<p>The parent is our build-step defined above, our default task is clean using the
+grunt-contrib-clean package.</p>
+
+<p>Now to register the build-step, open the build.json and paste the following:</p>
+
+<div class="highlight highlight-json"><pre>{
+  <span class="pl-s1"><span class="pl-pds">"</span>build-step<span class="pl-pds">"</span></span> : {
+    <span class="pl-s1"><span class="pl-pds">"</span>task<span class="pl-pds">"</span></span> : {
+      <span class="pl-s1"><span class="pl-pds">"</span>options<span class="pl-pds">"</span></span>: { <span class="pl-s1"><span class="pl-pds">"</span>force<span class="pl-pds">"</span></span>: <span class="pl-c1">true</span> },
+      <span class="pl-s1"><span class="pl-pds">"</span>target<span class="pl-pds">"</span></span>: [ <span class="pl-s1"><span class="pl-pds">"</span>.<span class="pl-pds">"</span></span> ]
+    }
+  }  
+}</pre></div>
+
+<p>Open the console and type</p>
+
+<blockquote>
+<p>build</p>
+</blockquote>
+
+<p>Congratulations! You have just created a self deleting build.
+All your just written files where deleted automatically! Brave new world :)</p>
+
+<h4>
+<a id="running-tasks-for-multiple-languages" class="anchor" href="#running-tasks-for-multiple-languages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Running tasks for multiple languages</h4>
+
+<p>Consider you want your task.js to trigger different tasks for different
+languages.
+Start of by modifying your config to look like the following:</p>
+
+<div class="highlight highlight-json"><pre>{
+  <span class="pl-s1"><span class="pl-pds">"</span>build-step<span class="pl-pds">"</span></span> : {
+    <span class="pl-s1"><span class="pl-pds">"</span>task<span class="pl-pds">"</span></span> : {
+      <span class="pl-s1"><span class="pl-pds">"</span>js<span class="pl-pds">"</span></span> : {
+        <span class="pl-s1"><span class="pl-pds">"</span>options<span class="pl-pds">"</span></span>: { <span class="pl-s1"><span class="pl-pds">"</span>force<span class="pl-pds">"</span></span>: <span class="pl-c1">true</span> },
+        <span class="pl-s1"><span class="pl-pds">"</span>target<span class="pl-pds">"</span></span>: [ <span class="pl-s1"><span class="pl-pds">"</span>js<span class="pl-pds">"</span></span> ]
+      },
+      <span class="pl-s1"><span class="pl-pds">"</span>css<span class="pl-pds">"</span></span> : {
+        <span class="pl-s1"><span class="pl-pds">"</span>options<span class="pl-pds">"</span></span>: { <span class="pl-s1"><span class="pl-pds">"</span>force<span class="pl-pds">"</span></span>: <span class="pl-c1">true</span> },
+        <span class="pl-s1"><span class="pl-pds">"</span>target<span class="pl-pds">"</span></span>: [ <span class="pl-s1"><span class="pl-pds">"</span>css<span class="pl-pds">"</span></span> ]
+      }
+    }
+  }  
+}</pre></div>
+
+<p>and in your task.js file change the options to an array with the two values
+"task-&gt;js" and "task-&gt;css" and add an additional line where you call the
+"loadTaskDirectories" function of the taskengine.</p>
+
+<div class="highlight highlight-js"><pre><span class="pl-s">var</span> conf <span class="pl-k">=</span> requireRoot(<span class="pl-s1"><span class="pl-pds">'</span>conf<span class="pl-pds">'</span></span>);
+
+<span class="pl-s">var</span> taskengine <span class="pl-k">=</span> requireRoot(<span class="pl-s1"><span class="pl-pds">'</span>lib/taskengine/te<span class="pl-pds">'</span></span>);
+
+<span class="pl-s3">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-st">function</span> (<span class="pl-vpf">grunt</span>) {
+  taskengine <span class="pl-k">=</span> taskengine({
+    <span class="pl-s1"><span class="pl-pds">"</span>parent<span class="pl-pds">"</span></span> <span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">"</span>build-step<span class="pl-pds">"</span></span>,
+    <span class="pl-s1"><span class="pl-pds">"</span>options<span class="pl-pds">"</span></span> <span class="pl-k">:</span> {
+      <span class="pl-s1"><span class="pl-pds">"</span>task<span class="pl-pds">"</span></span> <span class="pl-k">:</span> [<span class="pl-s1"><span class="pl-pds">"</span>task-&gt;js<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">"</span>task-&gt;css<span class="pl-pds">"</span></span>],
+      <span class="pl-s1"><span class="pl-pds">"</span>package<span class="pl-pds">"</span></span> <span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">"</span>grunt-contrib-clean<span class="pl-pds">"</span></span>
+    }
+  });
+
+  taskengine.loadTaskDirectories(grunt, <span class="pl-sv">__dirname</span>, <span class="pl-s1"><span class="pl-pds">"</span>build-step/task<span class="pl-pds">"</span></span>);
+  taskengine.runSubtask(<span class="pl-s1"><span class="pl-pds">"</span>clean<span class="pl-pds">"</span></span>,
+    <span class="pl-s1"><span class="pl-pds">"</span>Cleaning everything from a directory<span class="pl-pds">"</span></span>,
+    grunt,
+    grunt.config(<span class="pl-s1"><span class="pl-pds">"</span>build<span class="pl-pds">"</span></span>)[<span class="pl-s1"><span class="pl-pds">"</span>build-step<span class="pl-pds">"</span></span>].task);
+};</pre></div>
+
+<p>Add two folders "js" and "css" to the directory, and place two files inside. The
+files now act as leafed subtask and look like task.js did before. For instance,
+the file in the js folder would look like this:</p>
+
+<div class="highlight highlight-js"><pre><span class="pl-s">var</span> te <span class="pl-k">=</span> requireRoot(<span class="pl-s1"><span class="pl-pds">'</span>lib/taskengine/te<span class="pl-pds">'</span></span>);
+
+<span class="pl-s3">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-st">function</span> (<span class="pl-vpf">grunt</span>) {
+  te <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">te</span>({
+    <span class="pl-s1"><span class="pl-pds">"</span>parent<span class="pl-pds">"</span></span> <span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">"</span>task<span class="pl-pds">"</span></span>,
+    <span class="pl-s1"><span class="pl-pds">"</span>options<span class="pl-pds">"</span></span> <span class="pl-k">:</span> {
+      <span class="pl-s1"><span class="pl-pds">"</span>task<span class="pl-pds">"</span></span> <span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">"</span>clean<span class="pl-pds">"</span></span>
+    }
+  });
+
+  te.runSubtask(<span class="pl-s1"><span class="pl-pds">"</span>js<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">"</span>Cleaning up the js files<span class="pl-pds">"</span></span>,
+    grunt,
+    grunt.config(<span class="pl-s1"><span class="pl-pds">"</span>build<span class="pl-pds">"</span></span>)[<span class="pl-s1"><span class="pl-pds">"</span>build-step<span class="pl-pds">"</span></span>].task.js);
+};
+</pre></div>
+
+<p>You can add as much layers as you like.</p>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
