@@ -1,0 +1,19 @@
+#!/bin/sh
+pushd ".build"
+
+basedir=`dirname "$0"`
+
+case `uname` in
+    *CYGWIN*) basedir=`cygpath -w "$basedir"`;;
+esac
+
+if [ -x "$basedir/node" ]; then
+  "$basedir/node"  "$basedir/.bpm/bpm.js" "$@"
+  ret=$?
+else
+  node  "$basedir/.bpm/bpm.js" "$@"
+  ret=$?
+fi
+exit $ret
+
+popd

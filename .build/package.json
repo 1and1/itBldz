@@ -1,0 +1,34 @@
+{
+  "name": "itBldz",
+  "description": "itBldz Build tools",
+  "dependencies": {
+    "argparse": "^0.1.16",
+    "chalk": "^0.5.1",
+    "gettext-parser": "^0.2.0",
+    "glob": "^4.3.2",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-copy": "^0.7.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-less": "^1.0.0",
+    "grunt-contrib-uglify": "^0.7.0",
+    "grunt-jsvalidate": "^0.2.2",
+    "grunt-mkdir": "^0.1.2",
+    "grunt-mocha-istanbul": "^2.2.0",
+    "grunt-mocha-test": "^0.12.4",
+    "grunt-phplint": "0.0.5",
+    "iniparser": "^1.0.5",
+    "istanbul": "^0.3.5",
+    "mocha": "^2.1.0",
+    "npm": "^2.1.16",
+    "rewire": "^2.1.3",
+    "should": "^4.4.1",
+    "sinon": "^1.12.2",
+    "string": "^3.0.0",
+    "time-grunt": "^1.0.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "engine": "node >= 0.10"
+}

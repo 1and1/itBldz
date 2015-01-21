@@ -1,0 +1,8 @@
+.idea
+target/**
+.build/validate/*
+.build/test/*
+.build/prepare/*
+.build/create-deployable/*
+.build/node_modules*
+npm-debug.log
