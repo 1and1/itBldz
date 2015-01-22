@@ -3,10 +3,6 @@
     "version": "1.0.17",
     "description": "Gruntpowered CI loving awesomeness",
     "main": "build",
-    "bin": {
-        "build": "./build",
-        "bpm": "./bpm"
-    },
     "scripts": {
         "postinstall": "node ./bin/postinstall.js",
         "test": "build test"

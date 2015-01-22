@@ -14,10 +14,23 @@ Install itBldz
 npm install itbldz
 ```
 
+create your config
+
+```shell
+"{ "say-hi" : { "task" : "helloworld", "package" : "helloworld" } }" > build.json
+"{ }" > config.json
+```
+
+setup the build with your config
+
+```shell
+./node_modules/itbldz/bpm setup
+```
+
 execute
 
 ```shell
-build
+./node_modules/itbldz/build
 ```
 
 in the shell / commandline

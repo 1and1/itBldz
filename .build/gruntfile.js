@@ -7,10 +7,13 @@ module.exports = function (grunt) {
 
     var log = conf.log(grunt);
     require('time-grunt')(grunt);
+
+    var pathing = __dirname.indexOf('node_module') >= 0 ? "./../../../" : "./../";
+    var build = grunt.file.readJSON(grunt.option('build') || pathing + "build.json");
+    var config = grunt.file.readJSON(grunt.option('config') || pathing + "config.json");
     
-    var build = grunt.file.readJSON(grunt.option('build') || "./../build.json");
-    var config = grunt.file.readJSON(grunt.option('config') || "./../config.json");
-    
+    config.directories.root = config.directories.root || pathing;
+
     grunt.initConfig();
     var tasks = conf.getTasks(build);
     
