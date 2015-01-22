@@ -1,0 +1,28 @@
+{
+    "name": "itbldz",
+    "version": "1.0.17",
+    "description": "Gruntpowered CI loving awesomeness",
+    "main": "build",
+    "bin": {
+        "build": "./build",
+        "bpm": "./bpm"
+    },
+    "scripts": {
+        "postinstall": "node ./bin/postinstall.js",
+        "test": "build test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "http://1and1.github.io/itBldz/"
+    },
+    "keywords": [
+        "build",
+        "pipeline"
+    ],
+    "author": "1and1",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/1and1/itBldz/issues"
+    },
+    "homepage": "https://github.com/1and1/itBldz"
+}

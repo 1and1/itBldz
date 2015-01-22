@@ -36,13 +36,19 @@
                 {
                     "expand": true,
                     "cwd": "../",
-                    "src": [ ".build/*.js", ".build/prebuild/**/*", ".build/lib/**/*", ".build/.bpm/**", "!.build/node_modules/**" ],
+                    "src": [ "bin/*.js", ".build/*.js", ".build/prebuild/**/*", ".build/lib/**/*", ".build/.bpm/**", "!.build/node_modules/**" ],
                     "dest": "<%= config.directories.output %>/"
                 }
             ]
         },
         "json": {
             "files": [
+                {
+                    "expand": true,
+                    "cwd": "../",
+                    "src": [ "./package.json" ],
+                    "dest": "<%= config.directories.output %>/"
+                },
                 {
                     "expand": true,
                     "flatten": true,

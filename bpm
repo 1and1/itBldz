@@ -1,11 +1,15 @@
-#!/bin/sh
+#!/bin/bash
 pushd ".build"
 
 basedir=`dirname "$0"`
 
 case `uname` in
-    *CYGWIN*) basedir=`cygpath -w "$basedir"`;;
+  *CYGWIN*) basedir=`cygpath -w "$basedir"`;;
 esac
+
+if [ "$1" == "setup" ]; then
+  npm install
+fi
 
 if [ -x "$basedir/node" ]; then
   "$basedir/node"  "$basedir/.bpm/bpm.js" "$@"
@@ -14,6 +18,11 @@ else
   node  "$basedir/.bpm/bpm.js" "$@"
   ret=$?
 fi
+
+if [ "$1" == "setup" ]; then
+  node "$basedir/.build/node_modules/grunt-cli/bin/grunt" --config="%~dp0/config.json" prebuild
+fi
+
 exit $ret
 
 popd
