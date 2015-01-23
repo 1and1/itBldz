@@ -7,19 +7,19 @@ esac
 basedir="$basedir/.build"
 
 if [ "$1" == "setup" ]; then
-  "$basedir/npm" install
+  (cd $basedir && pwd && npm install)
 fi
 
 if [ -x "$basedir/node" ]; then
-  "$basedir/node"  "$basedir/.bpm/bpm.js" "$@"
+  (cd $basedir && "node"  ".bpm/bpm.js" "$@")
   ret=$?
 else
-  node  "$basedir/.bpm/bpm.js" "$@"
+  (cd $basedir && node  ".bpm/bpm.js" "$@")
   ret=$?
 fi
 
 if [ "$1" == "setup" ]; then
-  node "$basedir/node_modules/grunt-cli/bin/grunt" prebuild
+  (cd $basedir && node "node_modules/grunt-cli/bin/grunt" prebuild)
 fi
 
 exit $ret

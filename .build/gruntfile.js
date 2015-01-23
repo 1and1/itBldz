@@ -12,6 +12,8 @@ module.exports = function (grunt) {
     var build = grunt.file.readJSON(grunt.option('build') || pathing + "build.json");
     var config = grunt.file.readJSON(grunt.option('config') || pathing + "config.json");
     
+    config.directories = config.directories || { root: "" };
+
     config.directories.root = config.directories.root || pathing;
 
     grunt.initConfig();

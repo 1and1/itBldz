@@ -17,8 +17,8 @@ npm install itbldz
 create your config
 
 ```shell
-echo "{ \"say-hi\" : { \"helloworld\" : { \"task\" : \"helloworld\", \"package\" : \"helloworld\" } } }" > build.json
-echo "{ }" > config.json
+echo '{ "say-hi" : { "helloworld" : { "task" : "helloworld", "package" : "helloworld", "dummytarget": {} } } }" > build.json
+echo '{ }' > config.json
 ```
 
 setup the build with your config
