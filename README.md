@@ -17,8 +17,8 @@ npm install itbldz
 create your config
 
 ```shell
-"{ "say-hi" : { "helloworld" : { "task" : "helloworld", "package" : "helloworld" } } }" > build.json
-"{ }" > config.json
+echo "{ \"say-hi\" : { \"helloworld\" : { \"task\" : \"helloworld\", \"package\" : \"helloworld\" } } }" > build.json
+echo "{ }" > config.json
 ```
 
 setup the build with your config
@@ -55,84 +55,65 @@ Get all tasks with description
 
 ### Configure for your use case
 
-To include this project, all you have to do is to configure the build.json and the config.json.
+To include this project, all you have to do is to configure the build.json and
+the config.json.
 
 #### build.json
 
-The build.json is the task-template. It orchestrates the build, and has four main tasks with the following subtasks:
+**What to do**
 
-```
-* prepare           - prepares the build-environment
-    * clean         - cleans a folder (default: grunt-contrib-clean)
-    * mkdir         - creates a new directory (default: grunt-mkdir)
-* validate          - validates the source for syntax, sematics and style conformance
-    * syntax        - syntax check of the language
-        * js        - (default: grunt-jsvalidate)
-    * semantic      - semantic check of the language
-        * js        - (default: grunt-contrib-jshint)
-* test              - runs unit and quality (i.e. coverage) tests
-    * unit
-        * js        -  runs unittests against js
-    * coverage
-        * js        - runs unittests and checks the unit test code coverage for js
-* create-deployable - creates a deployable for the code (i.e. minification, uglification...)
-    * copy          - copies files
-```
+The build.json is the task-template. It orchestrates the build, and is separated
+into build-steps, task-groups and tasks.
 
-The build.json has to be the same on every environment you run the build.
+##### build-steps
+The build-step is the first layer. It defines the main tasks of the build. You
+should use a natural language that fits your build-pipeline best.
+Typical steps would be:
+* _prepare_ - prepares the build-environment
+* _validate_ - validates the source for syntax, sematics and style conformance
+* _compile_ - compiles the source code
+* _test_ - runs unit and quality (i.e. coverage) tests
+* _create-deployable_ - creates a deployable package for your code
+* _publish_ - publishes your deployable package to your environment
 
-```json
-    {
-      "prepare": { },
-      "validate": {
-        "syntax": {
-          "js" : {}
-          /* ... */
-        },
-        "sematic": {
-          "js" : {}
-          /* ... */
-        }
-      },
-      "test": {
-        "coverage" : {
-          "js" : {}
-          /* ... */
-        },
-        "quality" : {}
-      },
-      "create-deployable": { }
-    }
+##### task-groups
+Task-groups are containers for other task-groups and tasks. They do not run
+by itself, but rather orchestrate the task-groups and tasks they contain.
+They are used to organize build-steps, and should use a natural language that
+describe their use best.
+An example would be:
+* validate
+ * _syntax_ - syntax check of the language
+ * _semantic_ - semantic check of the language
 
-```
+##### tasks
+Tasks are the hard and soul, and are basically runners for grunt-tasks. They can
+have arbitrary names and should describe best what they do, not what grunt task
+they are using.
+Which grunt-task they run is specified by the properties _task_ and _package_.
+The _task_ field specifies the name of the grunt-task that should be run, while
+the _package_ field specifies which npm package is required to run the task.
+**Note**: itBldz will install all required packages automatically. There is no
+action required on your side.
+An example for tasks would be:  
+* validate
+ * syntax
+   * _js_[task=jshint;package=grunt-contrib-jshint]  
+   * _php_[task=phplint;package=grunt-phplint]  
 
-#### Tasks
-
-For  each step add the task name and package as follows:
-
-```json
-{
-  "prepare": { },
-  "validate": {
-    "syntax": {
-      "js" : {
-        "task"    : "jshint",
-        "package" : "grunt-contrib-jshint"
-      }
-    }
-  }
-}
-
-```
-
-Options can be added to the js - step accordingly.
+The build.json is to be the same on every environment you run the build.
 
 #### config.json
 
-The config.json is describing the environment the build is running in. It is used to control the directories, file-patterns, or environmental specifics.
+**Where to do it**
+
+The config.json is describing the environment the build is running in. It is
+used to control the directories, file-patterns, or environmental specifics.
 You can use all variables in the config.json in your build.json by typing
 
 > &lt;%= config.YOURKEY %&gt;
+
+An example would be:
 
 ```json
     {
@@ -143,40 +124,50 @@ You can use all variables in the config.json in your build.json by typing
       "filesets" : {
         "php" : ["**/*.php", "!**/framework/**"]
       }
-      /* ... */
     }
 
 ```
+Make sure the configuration natively reflects the language on how you are
+talking about your environment.
+
+For different environments you might have different configurations. Split them
+and reference the correct config when starting the build.
 
 #### Create your configured build
 Once your done configuring the build, call
 
-> bpm setup
+```shell
+./node_modules/itbldz/bpm setup
+```
 
 on the folder and the build will be created automatically.
 
-If you want to add an additional module not in the configuration (which you don't) you can call
+If you want to add an additional module not in the configuration (which you
+don't want to do, but it's always nice to know you could) you can call
 
-> bpm add --m buildstep/module --t Taskname --p some-grunt-package
-
-And the module will be added automatically to the buildstep.
+```shell
+./node_modules/itbldz/bpm add --m buildstep/module --t Taskname --p some-grunt-package
+```
+And the module will be added automatically to the buildstep. Note that this will
+not actually run the module as long as it is not configured in the build.json
 
 ## Deving
 
 ### Guidelines
 
 You are free to extend the project as you wish. Every new code has to include
-unit tests and result in a green build when building the build-tools using the
-default build.json & config.json
+unit tests and result in a green build when building the build-tools executing
+
+```shell
+./node_modules/itbldz/build
+```
 
 ### Working with the task engine
 
 The build-tools are using a simple task engine which allow for task aliasing and
 automatic dependency resolving in npm.
-Using the task engine you can easily (and with almost no code) extend the core
-of the build-tools.
-
-All you have to do is follow some conventions.
+Using the task engine you can easily extend the core of the build-tools. The bpm
+tools are following the conventions by the task engine to prepare the build.
 
 A build config step should look like the following to get you started:
 
@@ -184,17 +175,17 @@ A build config step should look like the following to get you started:
 {
   "build-step" : {
     "task" : {
-      "language-or-options" : { },
-      "other-language-or-more-options" : { }
+      "task" : "clean",
+      "package" : "grunt-contrib-clean",
+      "options": { "force": true },
+      "target": [ "." ]
     }
   }  
 }
 ```
 
-Now to setup your build-step, add a folder "build-step" to your .build folder,
-add a build-step.js to the folder, and add a task-folder to the "build-step"
-folder, again with a task.js file.
-Your directory might now look something like this:
+When confronted with such a build-step, the folder structure expected by the
+task engine is:
 
 ```
   build-tools
@@ -208,7 +199,7 @@ Your directory might now look something like this:
   config.json
 ```
 
-open the build-step.js file and open the following ceremony code:
+When opening the build-step.js file you see the following code:
 
 ```js
 var conf = requireRoot('conf'), path = require("path");
@@ -221,13 +212,14 @@ module.exports = function (grunt) {
     "path" : __dirname
   });
 
-  taskengine.run(taskContext, 'Run my custom buildstep.');
+  taskengine.run(taskContext);
 };
 ```
 
-Next open the task.js. In order for it to do anything, we will use it to clean
-a directory.
-Add the following ceremony maccaroni:
+The build-step simply starts up the taskengine and registers itself. Then
+running the taskengine.
+
+Next open the task.js.
 
 ```js
 var conf = requireRoot('conf');
@@ -250,98 +242,5 @@ module.exports = function (grunt) {
 };
 ```
 
-The parent is our build-step defined above, our default task is clean using the
-grunt-contrib-clean package.
-
-Now to register the build-step, open the build.json and paste the following:
-
-```json
-{
-  "build-step" : {
-    "task" : {
-      "options": { "force": true },
-      "target": [ "." ]
-    }
-  }  
-}
-```
-
-Open the console and type
-
-> build
-
-Congratulations! You have just created a self deleting build.
-All your just written files where deleted automatically! Brave new world :)
-
-#### Running tasks for multiple languages
-
-Consider you want your task.js to trigger different tasks for different
-languages.
-Start of by modifying your config to look like the following:
-
-```json
-{
-  "build-step" : {
-    "task" : {
-      "js" : {
-        "options": { "force": true },
-        "target": [ "js" ]
-      },
-      "css" : {
-        "options": { "force": true },
-        "target": [ "css" ]
-      }
-    }
-  }  
-}
-```
-
-and in your task.js file change the options to an array with the two values
-"task->js" and "task->css" and add an additional line where you call the
-"loadTaskDirectories" function of the taskengine.
-
-```js
-var conf = requireRoot('conf');
-
-var taskengine = requireRoot('lib/taskengine/te');
-
-module.exports = function (grunt) {
-  taskengine = taskengine({
-    "parent" : "build-step",
-    "options" : {
-      "task" : ["task->js", "task->css"],
-      "package" : "grunt-contrib-clean"
-    }
-  });
-
-  taskengine.loadTaskDirectories(grunt, __dirname, "build-step/task");
-  taskengine.runSubtask("clean",
-    "Cleaning everything from a directory",
-    grunt,
-    grunt.config("build")["build-step"].task);
-};
-```
-
-Add two folders "js" and "css" to the directory, and place two files inside. The
-files now act as leafed subtask and look like task.js did before. For instance,
-the file in the js folder would look like this:
-
-```js
-var te = requireRoot('lib/taskengine/te');
-
-module.exports = function (grunt) {
-  te = new te({
-    "parent" : "task",
-    "options" : {
-      "task" : "clean"
-    }
-  });
-
-  te.runSubtask("js", "Cleaning up the js files",
-    grunt,
-    grunt.config("build")["build-step"].task.js);
-};
-
-```
-
-You can add as much layers as you like.
+The task itself is registering itself, referencing the parent build-step, and
+then running the subtask.
