@@ -1,4 +1,4 @@
-﻿var fs, decorate, args, log, addModule;
+﻿﻿ var fs, decorate, args, log, addModule;
 
 module.exports = function (origArgs) {
     'use strict';
@@ -14,7 +14,7 @@ module.exports = function (origArgs) {
     var isTask = "__isTask";
     
     var buildDir = __dirname + "/../";
-    var baseDir = __dirname + "/../../";
+    var baseDir = require('path').join(__dirname, __dirname.indexOf('node_module') >= 0 ? "./../../../../" : "./../../");
     
     // create argument string
     var argumentTemplate = "add --m {{module}} --t {{task}} --p {{package}}";
@@ -23,12 +23,18 @@ module.exports = function (origArgs) {
     
     me.decorationStrategy = function (data) {
         var config = JSON.parse(data);
-        config = decorate(config).withPropertyForSpecifiedLevels({
+        var standard = {
             prepare : 1,
             validate : 2,
             test : 2,
             "create-deployable" : 1
-        }, isTask).create();
+        };
+        Object.keys(config).forEach(function (key) {
+            if (!standard[key]) {
+                standard[key] = config[key].depth || 1
+            }
+        });
+        config = decorate(config).withPropertyForSpecifiedLevels(standard, isTask).create();
         
         return config;
     };
@@ -59,11 +65,13 @@ module.exports = function (origArgs) {
     
     me.loadTasks = function (dir, config) {
         Object.keys(config).forEach(function (key) {
+            log("build-step", "Load task " + key);
             me.loadTask(dir, config, key);
         });
     };
     
     me.addBuildStepTemplate = function (currentDir, key) {
+        log("build-step", "Writing template for " + key);
         fs.readFile(__dirname + "/buildstep_template.js", function (err, data) {
             if (err) throw err;
             var lines = string(data).lines();
@@ -81,7 +89,7 @@ module.exports = function (origArgs) {
         Object.keys(config).forEach(function (key) {
             log("build-step", "Created BuildStep " + key);
             
-            // for each build-step 
+            // for each build-step
             var currentDir = buildDir + key;
             fs.mkdir(currentDir, function () {
                 me.addBuildStepTemplate(currentDir, key);
