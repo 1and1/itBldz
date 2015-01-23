@@ -17,7 +17,7 @@ npm install itbldz
 create your config
 
 ```shell
-echo '{ "say-hi" : { "helloworld" : { "task" : "helloworld", "package" : "grunt-helloworld", "dummytarget": {} } } }" > build.json
+echo '{ "say-hi" : { "helloworld" : { "task" : "helloworld", "package" : "grunt-helloworld", "dummytarget": {} } } }' > build.json
 echo '{ }' > config.json
 ```
 
