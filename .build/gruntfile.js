@@ -4,11 +4,12 @@ global.requireRoot = function (name) {
 
 module.exports = function (grunt) {
     var conf = require('./conf');
+    var path = require('path');
 
     var log = conf.log(grunt);
     require('time-grunt')(grunt);
 
-    var pathing = __dirname.indexOf('node_module') >= 0 ? "./../../../" : "./../";
+    var pathing = __dirname.indexOf('node_module') >= 0 ? path.join(__dirname, "./../../../") : path.join(__dirname, "./../");
     var build = grunt.file.readJSON(grunt.option('build') || pathing + "build.json");
     var config = grunt.file.readJSON(grunt.option('config') || pathing + "config.json");
     
