@@ -14,13 +14,13 @@
         var getTargetFile = grunt.option('target-path') ? function (file) { return path.join(grunt.option('target-path'), file); } : getFile;
         var targetSettings = grunt.option('target-overwrite') || grunt.option('o') || false;
 
-        var targetFile = getTargetFile(data.file + "." + grunt.option('target') + ".json")
+        var targetFile = getTargetFile(data.file + "." + grunt.option('target') + ".json");
         if (fs.existsSync(targetFile)) {
             data.config = targetSettings ? merge(data.config, grunt.file.readJSON(targetFile)) : merge.recursive(false, data.config, grunt.file.readJSON(targetFile));
         }
 
         return data.config;
-    }
+    };
 
     var result = {};
 
@@ -45,17 +45,14 @@
             },
             "target-path": {
               short: 'p',
-              info: "Specifies the location of the target files"
+              info: "Specifies the location of the target files",
               type: String
             },
             "target-overwrite-tree": {
               short: 'o',
-              info: "When set, overwrites the complete configuration tree that is set in the target. Otherwise, only the values set are overwritten"
+              info: "When set, overwrites the complete configuration tree that is set in the target. Otherwise, only the values set are overwritten",
               type: Boolean
             }
-
-            // shorthand
-            bar: [Number, null]
         });
 
         var build = grunt.file.readJSON(grunt.option('build') || getFile("build.json"));

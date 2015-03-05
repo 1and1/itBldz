@@ -14,36 +14,36 @@ module.exports = function (context) {
         //  may be undefined for existing tasks not configured to run
         if (!taskNames) return;
         if (!config) return;
-        
+
         if (taskNames.constructor !== Array) {
             taskNames = [taskNames];
         }
 
         var log = conf.log(grunt), self = this;
         var currentSettings = this.createTaskConfig(grunt, config);
-        
+
         taskNames.forEach(function (taskName) {
             var alias = self.getTaskAlias(taskName);
             grunt.registerTask(alias, description, function () {
-                
+
                 var taskSetting = currentSettings;
                 var keysToOmnit = {};
                 Object.keys(taskSetting).forEach(function (key) {
-                    if (taskSetting[key][".."]) {
+                    if (taskSetting[key] && taskSetting[key][".."]) {
                         taskSetting[key][".."].forEach(function (item) {
                             Object.keys(item).forEach(function (key) {
                                 keysToOmnit[key] = true;
                                 taskSetting[key] = item[key];
                             });
                         });
-                        
+
                         delete taskSetting[key][".."];
                     }
                 });
                 grunt.initConfig(taskSetting);
-                
+
                 log.config();
-                
+
                 Object.keys(currentSettings).forEach(function (task) {
                     try {
                         if (keysToOmnit[task]) return;
@@ -66,7 +66,7 @@ module.exports = function (context) {
             taskengine.pck.loadPackage(grunt, _package || context.options.package);
         });
     };
-    
+
     this.getTaskAlias = function (task) {
         taskengine.alias = taskengine.alias || requireRoot('lib/taskengine/aliasing.js');
         return taskengine.alias.getAlias(context.parent, task);
