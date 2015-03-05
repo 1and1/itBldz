@@ -1,24 +1,28 @@
 {
-    "name": "itbldz",
-    "version": "1.0.34",
-    "description": "Gruntpowered CI loving awesomeness",
-    "main": "build",
-    "scripts": {
-        "postinstall": "node ./bin/postinstall.js",
-        "test": "build test"
-    },
-    "repository": {
-        "type": "git",
-        "url": "http://1and1.github.io/itBldz/"
-    },
-    "keywords": [
-        "build",
-        "pipeline"
-    ],
-    "author": "1and1",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/1and1/itBldz/issues"
-    },
-    "homepage": "https://github.com/1and1/itBldz"
+  "name": "itbldz",
+  "version": "1.1.12",
+  "description": "Gruntpowered CI loving awesomeness",
+  "main": "build",
+  "scripts": {
+    "postinstall": "node ./bin/postinstall.js",
+    "test": "build test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://1and1.github.io/itBldz/"
+  },
+  "keywords": [
+    "build",
+    "pipeline"
+  ],
+  "author": "1and1",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/1and1/itBldz/issues"
+  },
+  "homepage": "https://github.com/1and1/itBldz",
+  "dependencies": {
+    "merge": "^1.2.0",
+    "nopt-grunt": "^0.1.1"
+  }
 }

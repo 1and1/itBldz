@@ -20,7 +20,17 @@
             "js": { }
         }
     },
-    "deployable": {
+    "deployable": {        
+        "md": {
+            "files": [
+                {
+                    "expand": true,
+                    "cwd": "../",
+                    "src": [ "*.md" ],
+                    "dest": "<%= config.directories.output %>/"
+                }
+            ]
+        },
         "shell": {
             "files": [
                 {

@@ -4,30 +4,26 @@ global.requireRoot = function (name) {
 
 module.exports = function (grunt) {
     var conf = require('./conf');
-    var path = require('path');
+    var itbldzConfig = require('./lib/json/configuration.js')(grunt, __dirname);
 
     var log = conf.log(grunt);
     require('time-grunt')(grunt);
-
-    var pathing = __dirname.indexOf('node_module') >= 0 ? path.join(__dirname, "./../../../") : path.join(__dirname, "./../");
-    var build = grunt.file.readJSON(grunt.option('build') || pathing + "build.json");
-    var config = grunt.file.readJSON(grunt.option('config') || pathing + "config.json");
     
-    config.directories = config.directories || { root: "" };
-
-    config.directories.root = config.directories.root || pathing;
+    var itbldz = itbldzConfig.createConfigs();
 
     grunt.initConfig();
-    var tasks = conf.getTasks(build);
+    var tasks = conf.getTasks(itbldz.build);
     
-    build = conf.prepareBuild(build);
+    itbldz.build = conf.prepareBuild(itbldz.build);
     
-    grunt.config.set("build", build);
-    grunt.config.set("config", config);
+    grunt.config.set("build", itbldz.build);
+    grunt.config.set("config", itbldz.config);
+    grunt.config.set("env", itbldz.env);
     
     log.config();
-    conf.loadConfig(config, grunt);
-    conf.loadBuild(build, grunt);
+    
+    conf.loadConfig(itbldz.config, grunt);
+    conf.loadBuild(itbldz.build, grunt);
     conf.loadTasks(tasks, grunt);
     
     grunt.registerTask('default', tasks);

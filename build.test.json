@@ -1,0 +1,10 @@
+{
+    "prepare": {
+        "clean": {
+            "task": "<%= env.USERNAME %>",
+            "package": "grunt-contrib-clean",
+            "options": { "force": true },
+            "target": [ "<%= config.directories.output %>" ]
+        }
+    }
+}

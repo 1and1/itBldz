@@ -53,6 +53,8 @@ Run only tests but verbose
 Get all tasks with description
 > build --help
 
+Get configs for a specific target (see )
+
 ### Configure for your use case
 
 To include this project, all you have to do is to configure the build.json and
@@ -133,6 +135,16 @@ talking about your environment.
 For different environments you might have different configurations. Split them
 and reference the correct config when starting the build.
 
+#### Environment
+
+In your configuration and build you can access the environment variables of your host system as well.
+
+Add the Statement
+
+> &lt;%= env.ENV_VARIABLE %&gt;
+
+and it will automatically be replaced.
+
 #### Create your configured build
 Once your done configuring the build, call
 
@@ -143,13 +155,78 @@ Once your done configuring the build, call
 on the folder and the build will be created automatically.
 
 If you want to add an additional module not in the configuration (which you
-don't want to do, but it's always nice to know you could) you can call
+don't want to do, you really want it all the configuration and not call manually,
+but it's always nice to know you could) you can call
 
 ```shell
 ./node_modules/itbldz/bpm add --m buildstep/module --t Taskname --p some-grunt-package
 ```
 And the module will be added automatically to the buildstep. Note that this will
 not actually run the module as long as it is not configured in the build.json
+
+#### Adjust build for different environments
+Occasionally your environments are not the same from dev to live, and you want
+to adjust stuff. Most probably sensitive information you don't want to share
+on github.com.
+
+To achieve this, you can overwrite parts of the configuration (or the complete
+configuration) with target-files in the format "config.[target].json" by
+passing the following arguments to itbldz:
+
+* _target_ : string - The target to address
+* _target-path_ : string - The path to the target files. Defaults to current path
+* _target-overwrite_ (short: o) : boolean - If true, the leaf will be replaced by the target
+    (default false)
+
+Example:
+
+```json
+{
+    "other" : {},
+    "database": {
+        "server": "localhost",
+        "port": "123"
+    },
+    "stuff" : {}
+}
+```
+_config.json_
+
+```json
+{
+    "database": {
+        "server": "dbserver.corp.contoso.com",
+        "port": "1433",
+        "user" : "web",
+        "password" : "<%= env.PASSWORD %>"
+    }
+}
+```
+_config.live.json_
+
+when calling
+
+```shell
+./node_modules/itbldz/build --target=live
+```
+
+The resulting config will look like:
+```json
+{
+    "other" : {},
+    "database": {
+        "server": "dbserver.corp.contoso.com",
+        "port": "1433",
+        "user" : "web",
+        "password" : "<%= env.PASSWORD %>"
+    },
+    "stuff" : {}
+}
+```
+
+**NOTE:** You can only override defined steps in the master, you cannot add additional steps. Why? Because your deployment should be the same over all environments.
+
+__But my deployment to dev & live is very VERY differnet!__ Then you will have to add both to the master, and then override and thus deleting it for every environment.
 
 ## Deving
 

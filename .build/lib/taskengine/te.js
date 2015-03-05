@@ -23,13 +23,30 @@ module.exports = function (context) {
         var currentSettings = this.createTaskConfig(grunt, config);
         
         taskNames.forEach(function (taskName) {
-            grunt.registerTask(self.getTaskAlias(taskName), description, function () {
-                grunt.initConfig(currentSettings);
+            var alias = self.getTaskAlias(taskName);
+            grunt.registerTask(alias, description, function () {
+                
+                var taskSetting = currentSettings;
+                var keysToOmnit = {};
+                Object.keys(taskSetting).forEach(function (key) {
+                    if (taskSetting[key][".."]) {
+                        taskSetting[key][".."].forEach(function (item) {
+                            Object.keys(item).forEach(function (key) {
+                                keysToOmnit[key] = true;
+                                taskSetting[key] = item[key];
+                            });
+                        });
+                        
+                        delete taskSetting[key][".."];
+                    }
+                });
+                grunt.initConfig(taskSetting);
                 
                 log.config();
                 
                 Object.keys(currentSettings).forEach(function (task) {
                     try {
+                        if (keysToOmnit[task]) return;
                         return conf.run(context.parent, task, grunt);
                     } catch (_error) {
                         return log.error(context.parent, _error);

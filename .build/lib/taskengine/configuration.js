@@ -13,7 +13,6 @@
         if (taskrunner.constructor !== Array) {
             taskrunner = [taskrunner];
         }
-
         
         if (typeof loadTaskPackage === "function") {
             loadTaskPackage(config.package);
@@ -24,7 +23,7 @@
             delete result[task].task;
             delete result[task].package;
         });
-        
+                
         return result;
     };
     
