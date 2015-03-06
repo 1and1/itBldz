@@ -54,6 +54,38 @@ describe('Given I want to npm a package', function () {
     });
 });
 
+describe('Given I want to load a package with clean dependencies', function () {
+    var commandMock;
+    beforeEach(function () {
+        var npm = rewireRoot('lib/packaging/npm-task');
+        commandMock = builder["npm-commands"]().withInstall().withLs().build();
+        var npmMock = builder["npm"]().withLoad().withCommands(commandMock).build();
+        npm.__set__('npm', npmMock);
+        npm = npm(grunt);
+        npm.installIfFileNotExist(npmMock, [createPackageReference("npm")], null);
+    });
+    
+    it('should install the package', function () {
+        commandMock.install.callCount.should.be.exactly(1);
+    });
+});
+
+describe('Given I want to install no packages', function () {
+    var commandMock;
+    beforeEach(function () {
+        var npm = rewireRoot('lib/packaging/npm-task');
+        commandMock = builder["npm-commands"]().withInstall().withLs().build();
+        var npmMock = builder["npm"]().withLoad().withCommands(commandMock).build();
+        npm.__set__('npm', npmMock);
+        npm = npm(grunt);
+        npm.installIfFileNotExist(npmMock, [], { dependencies : {} });
+    });
+    
+    it('should not install anything', function () {
+        commandMock.install.callCount.should.be.exactly(0);
+    });
+});
+
 describe('Given I want to load a package that is not installed', function () {
     var commandMock;
     beforeEach(function () {
@@ -67,6 +99,23 @@ describe('Given I want to load a package that is not installed', function () {
 
     it('should install the package', function () {
         commandMock.install.callCount.should.be.exactly(1);
+    });
+});
+
+describe('Given I want to run npm while it is already running', function () {
+    var commandMock;
+    beforeEach(function () {
+        var npm = rewireRoot('lib/packaging/npm-task');
+        commandMock = builder["npm-commands"]().withInstall().withLs().build();
+        var npmMock = builder["npm"]().withLoad().withCommands(commandMock).build();
+        npm.__set__('npm', npmMock);
+        npm = npm(grunt);
+        npm.isRunning = true;
+        npm.installIfFileNotExist(npmMock, [createPackageReference("npm")], { dependencies : {} });
+    });
+    
+    it('should not install the package', function () {
+        commandMock.install.callCount.should.be.exactly(0);
     });
 });
 

@@ -33,4 +33,19 @@
             should.not.exist(json["1"]["prop"]);
         });
     });
+
+    describe("Given I'm stupid and pass in completely invalid input", function () {
+        var json;
+        
+        beforeEach(function () {
+            json = decorate.withPropertyForSpecifiedLevels({ "a" : 2, "b" : 0 }, "prop", true).create();
+        });
+        
+        it("should not have added a value", function () {
+            should.not.exist(json["0"]["prop"]);
+            should.not.exist(json["0"]["0:0"]["prop"]);
+            should.not.exist(json["0"]["0:0"]["0:0:0"]["prop"]);
+            should.not.exist(json["1"]["prop"]);
+        });
+    });
 });

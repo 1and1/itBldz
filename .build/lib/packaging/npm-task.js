@@ -1,13 +1,15 @@
 ﻿var npm = require('npm');
 
 module.exports = function (grunt) {
-    var self = this, done, running;
+    var self = this, done;
     
-    this.onDone = function (err) { if (done) done(err); };
+    this.isRunning = false;
+
+    this.onDone = function (err) { if (done) { done(err); this.isRunning = false; } };
 
     this.installIfFileNotExist = function (npm, files, data) {
-        if (running) return;
-        running = true;
+        if (this.isRunning) return;
+        this.isRunning = true;
         
         grunt.verbose.write("starting installing " + files.length + " packages... " + JSON.stringify(files));
         var modules = [];
@@ -36,15 +38,18 @@ module.exports = function (grunt) {
         
         grunt.verbose.writeln("Installing " + modules.length + " packages");
         
-        npm.commands.install(modules, function (err) {
-            self.onDone(err);
-        });
+        npm.commands.install(modules, this.onDone);
     };
 
     this.installNpmPackages = function (packages) {
-        
         var self = this;
-        packages = packages || [];
+        if (!packages) {
+            grunt.verbose.writeln("no npm packages to install");
+            self.onDone(err);
+            return;
+        }
+
+        packages = packages;
         var length = packages.length;
         grunt.verbose.writeln("resolving " + length + " packages... (" + JSON.stringify(packages) +  ")");
         

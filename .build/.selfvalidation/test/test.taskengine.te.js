@@ -7,6 +7,8 @@ var options;
 
 describe("Given I want to create a task context", function () {
     
+    var resultingConfig;
+
     beforeEach(function () {
         options = {
             "parent" : "parent",
@@ -18,7 +20,7 @@ describe("Given I want to create a task context", function () {
 
         te = new require('./../fake/fake.taskengine.te.js').te(options);
         
-        gruntMock = builder["grunt"]().withRegisterTask().build();        
+        gruntMock = builder["grunt"]().withRegisterTask().withInitConfig().build();        
     });
 
     describe("Given I pass invalid arguments", function () {
@@ -112,15 +114,21 @@ describe("Given I want to run a subtask", function () {
                 "parent" : "parent",
                 "options" : {
                     "task" : "jsvalidate",
-                    "package" : "grunt-jsvalidate"
+                    "package" : "grunt-jsvalidate",
+                    ".." : {
+                        "this goes" : "one up"
+                    }
                 }
             });
             
-            conf = { "buildstep" : null };
+            conf = {
+                "buildstep" : null, 
+                "this goes" : "one up"
+            };
 
             monkeyPatch.on(te, "createTaskConfig", require('sinon').stub().returns(conf));
             
-            gruntMock = builder["grunt"]().withRegisterTask().withInitConfig().build();
+            gruntMock = builder["grunt"]().withRegisterTask().withInitConfig(function (config) { resultingConfig = config; }).build();
             
             te.runSubtask("task", "description", gruntMock, conf);
         });
@@ -131,6 +139,12 @@ describe("Given I want to run a subtask", function () {
         
         it("should have created a config", function () {
             te.createTaskConfig.calledOnce.should.be.true;
+        });
+        
+        it("should have restructured the configuration where required", function () {
+            console.log(JSON.stringify(resultingConfig, undefined, 2));
+            should.exist(resultingConfig["this goes"]);
+            resultingConfig["this goes"].should.be.equal("one up");
         });
         
         it("should have registered the task as an alias", function () {
