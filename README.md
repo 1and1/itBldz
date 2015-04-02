@@ -164,6 +164,22 @@ but it's always nice to know you could) you can call
 And the module will be added automatically to the buildstep. Note that this will
 not actually run the module as long as it is not configured in the build.json
 
+#### Seperate your Concerns
+
+Not everything has to be in one file. For instance, when your developers commit their code to a remote git repo, while the CI System deploys using ssh, you might want to separate the deployment from the build.
+
+Create a new file __deploy.json__, and configure it using
+
+```shell
+./node_modules/itbldz/bpm setup --config=deploy.json
+```
+
+Then run the deployment with
+
+```shell
+./node_modules/itbldz/build --build=deploy.json
+```
+
 #### Adjust build for different environments
 Occasionally your environments are not the same from dev to live, and you want
 to adjust stuff. Most probably sensitive information you don't want to share
