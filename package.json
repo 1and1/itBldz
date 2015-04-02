@@ -1,6 +1,6 @@
 {
   "name": "itbldz",
-  "version": "1.1.12",
+  "version": "1.1.14",
   "description": "Gruntpowered CI loving awesomeness",
   "main": "build",
   "scripts": {

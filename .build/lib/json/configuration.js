@@ -55,8 +55,8 @@
             }
         });
 
-        var build = grunt.file.readJSON(grunt.option('build') || getFile("build.json"));
-        var config = grunt.file.readJSON(grunt.option('config') || getFile("config.json"));
+        var build = grunt.file.readJSON(getFile(grunt.option('build')) || getFile("build.json"));
+        var config = grunt.file.readJSON(getFile(grunt.option('config')) || getFile("config.json"));
 
         if (grunt.option('target')) {
 

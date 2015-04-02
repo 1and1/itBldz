@@ -62,7 +62,7 @@ module.exports = function (grunt) {
 
             npm.commands.ls([], true, function (err, data, lite) {
                 self.installIfFileNotExist(npm, packages, data);
-            });            
+            });
         });
     };
     
