@@ -1,6 +1,6 @@
 {
   "name": "itbldz",
-  "version": "1.1.14",
+  "version": "2.0.0-pre1",
   "description": "Gruntpowered CI loving awesomeness",
   "main": "build",
   "scripts": {
@@ -22,7 +22,5 @@
   },
   "homepage": "https://github.com/1and1/itBldz",
   "dependencies": {
-    "merge": "^1.2.0",
-    "nopt-grunt": "^0.1.1"
   }
 }
