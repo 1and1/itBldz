@@ -14,3 +14,4 @@ src/lib/**/*.js
 src/lib/**/*.js.map
 itBldz.v12.suo
 itbldz.js*
+.ntvs_analysis.*
