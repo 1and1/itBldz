@@ -6,3 +6,10 @@ target/**
 .build/create-deployable/*
 .build/node_modules*
 npm-debug.log
+.ntvs_analysis.dat
+itBldz.njsproj
+tests/**/*.js
+tests/**/*.js.map
+src/lib/**/*.js
+src/lib/**/*.js.map
+itBldz.v12.suo
