@@ -11,7 +11,7 @@ var configuration: any;
 
 describe("When loading a build configuration", () => {
     describe("When mapping an empty configuration", () => {
-        before(function () {
+        beforeEach(function () {
             configuration = {};
         });
 
@@ -23,7 +23,7 @@ describe("When loading a build configuration", () => {
     });
     
     describe("When mapping a configuration with a step", () => {
-        before(function () {
+        beforeEach(function () {
             configuration = {
                 "step": {}
             };
@@ -38,7 +38,7 @@ describe("When loading a build configuration", () => {
     });
 
     describe("When mapping an empty step", () => {
-        before(function () {
+        beforeEach(function () {
             configuration = {
             };
         });
@@ -51,7 +51,7 @@ describe("When loading a build configuration", () => {
     });
 
     describe("When mapping a step with a build tasks that does not execute a grunt task", () => {
-        before(function () {
+        beforeEach(function () {
             configuration = {
                 "build-task": {}
             };
@@ -68,7 +68,7 @@ describe("When loading a build configuration", () => {
     });
 
     describe("When mapping a step with a build tasks that executes a grunt task", () => {
-        before(function () {
+        beforeEach(function () {
             configuration = {
                 "build-task": {
                     "task": "grunt-task",
@@ -92,7 +92,7 @@ describe("When loading a build configuration", () => {
     describe("When mapping a step with a build tasks that does not execute a grunt task and has one nested and one executable subtask", () => {
         var models: models.Task[];
 
-        before(function () {
+        beforeEach(function () {
             configuration = {
                 "build-task": {
                     "sub-task-1": {},
