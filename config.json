@@ -1,0 +1,26 @@
+﻿{
+    "directories": {
+        "ts": [ "<%= config.directories.root %>/**/*.ts", "!<%= config.directories.root %>/node_modules/**/*.ts" ],
+        "results": "<%= config.directories.root %>/../results",
+        "target": "<%= config.directories.root %>/../target"
+    },
+    "files": {
+        "application": {
+            "files": [ "public/**", "data/**", "routes/**/*.js", "domain/**/*.js", "views/**/*", "app.js", "package.json", "database.json" ]
+        },
+        "acceptance": "<%= config.directories.root %>/tests/features",
+        "unit": "<%= config.directories.root %>/tests/units/*.js"
+    },
+    "deployable": {
+        "application": {
+            "files": [
+                {
+                    "expand": true,
+                    "cwd": "<%= config.directories.root %>/",
+                    "src": "<%= config.files.application.files %>",
+                    "dest": "<%= config.directories.target %>/"
+                }
+            ]
+        }
+    }
+}

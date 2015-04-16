@@ -1,0 +1,58 @@
+﻿{
+    "prepare": {
+        "clean": {
+            "task": "clean",
+            "package": "grunt-contrib-clean",
+            "options": { "force": true },
+            "target": [ "<%= config.directories.target %>" ]
+        }
+    },
+    "build": {
+        "typescript": {
+            "task": "ts",
+            "package": "grunt-ts",
+            "default": {
+                "options": {
+                    "module": "commonjs",
+                    "compile": true
+                },
+                "src": "<%= config.directories.ts %>"
+            }
+        }
+    },
+    "test": {
+        "unit": {
+            "task": "mochaTest",
+            "package": "grunt-mocha-test",
+            "test": {
+                "src": [ "<%= config.files.unit.root %>" ],
+                "quiet": "true"
+            }
+        },
+        "acceptance": {
+            "task": "cucumberjs",
+            "package": "grunt-cucumber",
+            "src": "<%= config.files.acceptance %>",
+            "options": {
+                "steps": "<%= config.files.acceptance %>",
+                "modulePath": "<%= config.directories.root %>/node_modules/cucumber/lib/cucumber.js"
+            }
+        }
+    },
+    "create-deployable": { 
+        "copy": {
+            "task": "copy",
+            "package": "grunt-contrib-copy",
+            "files": "<%= config.deployable.application %>"
+        },
+        "install-dependencies": {
+            "task": "npm_install_for_production",
+            "package": "grunt-npm-install-for-production",
+            "production": {
+                "options": {
+                    "cwd": "<%= config.directories.target %>"
+                }
+            }
+        }
+    }
+}
