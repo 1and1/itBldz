@@ -4,13 +4,12 @@ basedir=`dirname "$0"`
 case `uname` in
   *CYGWIN*) basedir=`cygpath -w "$basedir"`;;
 esac
-basedir="$basedir/.build"
 
 if [ -x "$basedir/node" ]; then
-  (cd $basedir && "$node"  "node_modules/grunt-cli/bin/grunt" "$@")
+  ("$basedir/$node" "$basedir/itbldz.js" "build" "$@")
   ret=$?
 else
-  (cd $basedir && node  "node_modules/grunt-cli/bin/grunt" "$@")
+  (node "$basedir/itbldz.js" "build" "$@")
   ret=$?
 fi
 exit $ret
