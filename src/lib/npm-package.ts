@@ -25,7 +25,7 @@ export class Package {
             callback();
         };
 
-        process.chdir(global.relativeDir + "/src/grunt-utils");
+        process.chdir(global.relativeDir);
         require('npm').load((err, npm) => {
             log.verbose.writeln("npm", "npm loaded and continue checking " + npm_package + "...");
             
