@@ -18,7 +18,7 @@
                     "expand": true,
                     "cwd": "<%= config.directories.root %>/",
                     "src": "<%= config.files.application.files %>",
-                    "dest": "<%= config.directories.target %>/"
+                    "dest": "<%= config.directories.target %>/itbldz"
                 }
             ]
         }
