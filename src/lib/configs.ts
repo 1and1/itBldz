@@ -3,22 +3,30 @@ import logging = require('./logging');
 import environment = require('./environment');
 var log = new logging.Log();
 var path = require('path');
+var merge = require('merge');
 
 export class ConfigurationFileLoaderService {
     public static load(grunt : any) : any {
         var steps: any;
         var stepsFile: string;
-
-        if (require('yargs').argv._.some((_) => _ == "build")) {
-            stepsFile = path.join(global.basedir + '/build.json');
+        
+        var currentAction = environment.Action.get();
+        switch (environment.Action.get()) {
+            case environment.ActionType.Build:
+                steps = require(path.join(global.basedir + '/build.json'));
+                break;
+            case environment.ActionType.Deploy:
+                steps = require(path.join(global.basedir + '/deploy.json'));
+                break;
+            case environment.ActionType.Ship:
+                var build = require(path.join(global.basedir + '/build.json'));
+                var deploy = require(path.join(global.basedir + '/deploy.json'));
+                steps = merge(build, deploy);
+                break;
+            default:
+                throw "No configuration for this build";
         }
-        else {
-            throw "No configuration for this build";
-        }
-
-        log.verbose.writeln("itbldz", "Loading " + stepsFile + "...");
-        steps = require(stepsFile);
-
+        
         var config = require(path.join(global.basedir + '/config.json'));
         config.directories = config.directories || {};
         config.directories.root = global.basedir;
