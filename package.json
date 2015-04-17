@@ -3,10 +3,6 @@
   "version": "2.0.0-pre1",
   "description": "Gruntpowered CI loving awesomeness",
   "main": "build",
-  "scripts": {
-    "postinstall": "node ./bin/postinstall.js",
-    "test": "build test"
-  },
   "repository": {
     "type": "git",
     "url": "http://1and1.github.io/itBldz/"
@@ -22,5 +18,14 @@
   },
   "homepage": "https://github.com/1and1/itBldz",
   "dependencies": {
+    "chalk": "^1.0.0",
+    "findup-sync": "^0.2.1",
+    "nopt": "^3.0.1",
+    "npm": "^2.7.6",
+    "resolve": "^1.1.6",
+    "yargs": "^3.7.2"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5"
   }
 }

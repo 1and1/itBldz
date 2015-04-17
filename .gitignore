@@ -16,3 +16,6 @@ itBldz.v12.suo
 itbldz.js*
 .ntvs_analysis.*
 node_modules/**
+.tscache/**
+bin/**
+obj/**

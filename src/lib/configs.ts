@@ -1,30 +1,76 @@
 ﻿import models = require('./models');
+import logging = require('./logging');
+import environment = require('./environment');
+var log = new logging.Log();
+var path = require('path');
 
-export interface ConfigurationService {
-    load(config, callback: (models: models.Configuration[]) => void);
+export class ConfigurationFileLoaderService {
+    public static load(grunt : any) : any {
+        var steps: any;
+        var stepsFile: string;
+
+        if (require('yargs').argv._.some((_) => _ == "build")) {
+            stepsFile = path.join(global.basedir + '/build.json');
+        }
+        else {
+            throw "No configuration for this build";
+        }
+
+        log.verbose.writeln("itbldz", "Loading " + stepsFile + "...");
+        steps = require(stepsFile);
+
+        var config = require(path.join(global.basedir + '/config.json'));
+        config.directories = config.directories || {};
+        config.directories.root = global.basedir;
+        config.directories.itbldz = global.relativeDir;
+
+        grunt.initConfig();
+        grunt.config.set("steps", steps);
+        grunt.config.set("config", config);
+        grunt.config.set("env", new environment.Variables().get());
+
+        var result = grunt.config.get("steps");
+        grunt.initConfig();
+        return result;
+    }
 }
 
-export class BuildConfigurationService {
+export interface ConfigurationService {
+    load(config, callback: (models: models.Configuration) => void);
+}
+
+export class TaskRunnerConfigurationService {
+    public get(task, parent, currentStep): models.TaskRunner {
+        var result = new models.TaskRunner();
+        result.parent = parent;
+        result.name = task;
+        result.config = {};
+        result.config[currentStep.task] = currentStep;
+        (<models.TaskRunner>result).task = currentStep.task;
+        (<models.TaskRunner>result).package = currentStep.package;
+        return result;
+    }
+}
+
+export class BuildConfigurationService implements ConfigurationService {
 
     public loadTasks(parent: string, step: any): models.Task[]{
 
+        log.verbose.writeln("Config", "Loading for step " + JSON.stringify(step, undefined, 2));
         if (!step) return [];
         var tasks = Object.keys(step);
         var result: models.Task[] = [];
         result = tasks.map((task) => {
             var result: models.Task;
-            if (step[task]["task"]) {
-                result = new models.TaskRunner();
-                result.parent = parent;
-                result.name = task;
-                (<models.TaskRunner>result).task = step[task].task;
-                (<models.TaskRunner>result).package = step[task].package;
+            var currentStep = step[task];
+            if (currentStep["task"]) {
+                result = new TaskRunnerConfigurationService().get(task, parent, currentStep);
             }
             else {
                 result = new models.TaskGroup();
                 result.parent = parent;
                 result.name = task;
-                (<models.TaskGroup>result).tasks = this.loadTasks(result.qualifiedName, step[task]);
+                (<models.TaskGroup>result).tasks = this.loadTasks(result.qualifiedName, currentStep);
             }
 
             return result;
@@ -32,15 +78,19 @@ export class BuildConfigurationService {
         return result;
     }
 
-    public load(build): models.BuildStep[] {
+    public load(build, callback: (models: models.Configuration) => void): void {
         var steps = Object.keys(build);
         var result: models.BuildStep[] = steps.map((step) => {
             return {
                 name: step,
-                tasks: this.loadTasks(step, steps[step])
+                tasks: this.loadTasks(step, build[step])
             };
         });
 
-        return result;
+        var buildConfiguration = {
+            steps : result
+        };
+
+        callback(buildConfiguration);
     }
 }

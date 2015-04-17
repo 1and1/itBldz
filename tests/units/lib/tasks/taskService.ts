@@ -4,7 +4,7 @@ import sinon = require('sinon');
 var expect = chai.expect;
 import tasks = require('../../../../src/lib/tasks');
 import models = require('../../../../src/lib/models');
-import mocks = require('./mocks');
+import mocks = require('../mocks');
 var configuration: any;
 var grunt : mocks.GruntMock;
 
@@ -14,7 +14,7 @@ describe("When registering a configuration", () => {
 
     beforeEach(() => {
         grunt = new mocks.GruntMock();
-        taskRegisterService = mocks.TaskRegisterServiceMock.get();
+        taskRegisterService = mocks.TaskServiceMock.getTaskRegisterService();
         taskConfigurationRegisterService = new tasks.ConfigTaskRegistrationService(grunt, taskRegisterService);
     });
 

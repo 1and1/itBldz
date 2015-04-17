@@ -1,4 +1,3 @@
-﻿module.exports = function (grunt) {
-    var tasks = [];
+﻿module.exports = function (grunt, tasks) {
     grunt.registerTask('default', tasks);
 };

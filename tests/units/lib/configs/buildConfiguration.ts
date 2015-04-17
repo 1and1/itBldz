@@ -1,8 +1,4 @@
-﻿/// <reference path="../../../../Scripts/typings/mocha/mocha.d.ts" />
-/// <reference path="../../../../Scripts/typings/sinon/sinon.d.ts" />
-/// <reference path="../../../../Scripts/typings/chai/chai.d.ts" />
-
-import mocha = require('mocha');
+﻿import mocha = require('mocha');
 import chai = require('chai');
 var expect = chai.expect;
 import configs = require('../../../../src/lib/configs');
@@ -16,9 +12,11 @@ describe("When loading a build configuration", () => {
         });
 
         it("should return an empty result", (done) => {
-            var models = new configs.BuildConfigurationService().load(configuration);
-            expect(models).to.be.empty;
-            done();
+            new configs.BuildConfigurationService().load(configuration, (models) => {
+                expect(models).to.exist;
+                expect(models.steps).to.be.empty;
+                done();
+            });
         });
     });
     
@@ -30,10 +28,12 @@ describe("When loading a build configuration", () => {
         });
 
         it("should return the correct step result", (done) => {
-            var models = new configs.BuildConfigurationService().load(configuration);
-            expect(models).to.have.lengthOf(1);
-            expect(models[0].name).to.be.eq("step");
-            done();
+            new configs.BuildConfigurationService().load(configuration, (models) => {
+                expect(models).to.exist;
+                expect(models.steps).to.have.lengthOf(1);
+                expect(models.steps[0].name).to.be.eq("step");
+                done();
+            });
         });
     });
 
