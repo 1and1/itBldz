@@ -9,6 +9,7 @@ __Breaking Changes to v1__
 * bpm was dropped. itbldz now setup itself
 * Custom config files no longer supported
 * custom tasks can no longer be added. all the tasks exist purely in memory, so every task that runs must be npm
+* directly trigger a single task (will get reimplemented)
 
 ## Usage
 
@@ -55,16 +56,10 @@ All your arguments will be passed to grunt.
 Examples:
 
 Verbose output:
-> build --verbose
-
-Run only tests
-> build test
-
-Run only tests but verbose
-> build test --verbose
+> ./node_modules/itbldz/build --verbose
 
 Get all tasks with description
-> build --help
+> ./node_modules/itbldz/build --help
 
 ### Configure for your use case
 
