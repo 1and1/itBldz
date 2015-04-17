@@ -12,7 +12,9 @@ export class Grunt {
 
     public registerExternalTask(name: string, callback) {
         new npm.Package().installIfFileNotExist(name, () => {
+            process.chdir(global.relativeDir);
             this.grunt.loadNpmTasks(name);
+            process.chdir(global.basedir);
             callback();
         });
     }
