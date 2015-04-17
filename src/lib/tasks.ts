@@ -31,9 +31,8 @@ export class TaskRegisterService {
         this.grunt.registerTask(task.qualifiedName, "Automated Build Step", function () {
             var done = this.async();
             _.grunt.registerExternalTask(task.package, () => {
-                log.verbose.writeln("Tasks", 'Current Config:' + JSON.stringify(task.config, undefined, 2));
                 TaskExecutionPrepareService.initTaskConfig(_.grunt, task.task, task.config);
-                log.verbose.writeln("Tasks", 'Current Config:' + JSON.stringify(_.grunt.grunt.config(), undefined, 2));
+                log.verbose.writeln("Tasks", 'Current Config:' + JSON.stringify(_.grunt.grunt.config()));
                 _.grunt.run(task.task);
                 log.verbose.writeln("Tasks", "Running task " + task.task + "... ");
                 done();

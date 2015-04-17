@@ -35,7 +35,7 @@
             "src": "<%= config.files.acceptance %>",
             "options": {
                 "steps": "<%= config.files.acceptance %>",
-                "modulePath": "<%= config.directories.root %>/node_modules/cucumber/lib/cucumber.js"
+                "modulePath": "<%= config.directories.root %>/node_modules/grunt-cucumber/node_modules/cucumber/lib/cucumber.js"
             }
         }
     },
@@ -44,15 +44,6 @@
             "task": "copy",
             "package": "grunt-contrib-copy",
             "files": "<%= config.deployable.application %>"
-        },
-        "install-dependencies": {
-            "task": "npm_install_for_production",
-            "package": "grunt-npm-install-for-production",
-            "production": {
-                "options": {
-                    "cwd": "<%= config.directories.target %>"
-                }
-            }
         }
     }
 }
