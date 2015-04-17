@@ -10,8 +10,8 @@ export class Grunt {
         this.grunt = grunt;
     }
 
-    public registerExternalTask(name: string, callback) {
-        new npm.Package().installIfFileNotExist(name, () => {
+    public registerExternalTask(name: string, dependencies : string[], callback) {
+        new npm.Package().installIfFileNotExist(name, dependencies, () => {
             process.chdir(global.relativeDir);
             this.grunt.loadNpmTasks(name);
             process.chdir(global.basedir);
@@ -20,7 +20,9 @@ export class Grunt {
     }
 
     public registerTask(name: string, description: string, onTaskStart: () => void) {
-        if (this.registeredTasks.some((_) => _ === name)) { return; }
+        if (this.registeredTasks.some((_) => _ === name)) {
+            return;
+        }
         this.registeredTasks.push(name);
         this.grunt.registerTask(name, description, onTaskStart);
         log.verbose.writeln("Grunt", "Loaded task " + name);

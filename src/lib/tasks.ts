@@ -8,6 +8,7 @@ export class TaskExecutionPrepareService {
         if (!config) throw "A task requires a configuration to run";
         delete config[task].task;
         delete config[task].package;
+        delete config[task].dependencies;
         grunt.initConfig(config);
     }
 }
@@ -21,6 +22,7 @@ export class TaskRegisterService {
 
     registerTaskGroup(task: models.TaskGroup) {
         log.verbose.writeln("Tasks", "Register task group " + task.qualifiedName + " with " + task.tasks.length + " subtasks");
+        this.grunt.registerTask(task.qualifiedName, "Automated Task Group", function () {});
         task.tasks.forEach((_) => this.registerTask(_));
     }
 
@@ -28,9 +30,9 @@ export class TaskRegisterService {
         log.verbose.writeln("Tasks", "Register task runner " + task.qualifiedName + " with task " + task.task + "@" + task.package);
 
         var _ = this;
-        this.grunt.registerTask(task.qualifiedName, "Automated Build Step", function () {
+        this.grunt.registerTask(task.qualifiedName, "Automated Task Runner", function () {
             var done = this.async();
-            _.grunt.registerExternalTask(task.package, () => {
+            _.grunt.registerExternalTask(task.package, task.dependencies, () => {
                 TaskExecutionPrepareService.initTaskConfig(_.grunt, task.task, task.config);
                 log.verbose.writeln("Tasks", 'Current Config:' + JSON.stringify(_.grunt.grunt.config()));
                 _.grunt.run(task.task);
@@ -63,9 +65,7 @@ export class ConfigTaskRegistrationService {
     public register(config: models.Configuration) {
         var result: string[] = [];
         config.steps.forEach((step) => {
-            this.grunt.registerTask(step.name, "Build Step for " + step.name, () => {
-                step.tasks.map((_) => _.qualifiedName).forEach((_) => this.grunt.run(_));
-            });
+            this.grunt.registerTask(step.name, "Build Step for " + step.name, () => { });
 
             step.tasks.forEach((_) => this.taskRegisterService.registerTask(_));
         });

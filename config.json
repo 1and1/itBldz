@@ -9,7 +9,7 @@
             "files": [ "*.js", "*.json", "src/**/*.js", "build*", "deploy*", "ship*", "readme.md" ]
         },
         "acceptance": "<%= config.directories.root %>/tests/features",
-        "unit": "<%= config.directories.root %>/tests/units/*.js"
+        "unit": "<%= config.directories.root %>/tests/units/**/*.js"
     },
     "deployable": {
         "application": {

@@ -24,6 +24,7 @@ export class TaskRunner extends Task {
     _t: string = "TaskRunner";
     task: string;
     package: string;
+    dependencies: string[];
 }
 
 export interface Configuration {

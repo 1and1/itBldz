@@ -24,8 +24,9 @@
         "unit": {
             "task": "mochaTest",
             "package": "grunt-mocha-test",
+            "dependencies": [ "chai", "sinon" ],
             "test": {
-                "src": [ "<%= config.files.unit.root %>" ],
+                "src": [ "<%= config.files.unit %>" ],
                 "quiet": "true"
             }
         },

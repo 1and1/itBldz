@@ -69,8 +69,8 @@ describe("When registering a task group", () => {
             taskRegisterService.registerTask(taskGroup);
         });
 
-        it("should not have registered anything", () => {
-            expect(grunt.mock.registerTask.notCalled).to.be.true;
+        it("should have registered the task group", () => {
+            expect(grunt.mock.registerTask.calledOnce).to.be.true;
         });
     });
     describe("When the configuration has only a task runner", () => {

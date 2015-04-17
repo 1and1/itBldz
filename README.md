@@ -100,6 +100,29 @@ action required on your side.
 
 The build.json is to be the same on every environment you run the build.
 
+An example: 
+````json
+{
+    "test": {
+        "unit": {
+            "task": "mochaTest",
+            "package": "grunt-mocha-test",
+            "dependencies": [ "chai", "sinon" ],
+            "test": {
+                "src": [ "<%= config.files.unit %>" ],
+                "quiet": "true"
+            }
+        }
+    }
+}
+
+````
+
+This runs mocha unit tests
+* _"task"_: the task name that should be executed
+* _"package"_: the npm package that contains the task
+* _"dependencies"_ (optional): The dependencies the Task Runner may need
+
 #### config.json
 
 **Where to do it**

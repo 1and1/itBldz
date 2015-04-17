@@ -56,6 +56,7 @@ export class TaskRunnerConfigurationService {
         result.config[currentStep.task] = currentStep;
         (<models.TaskRunner>result).task = currentStep.task;
         (<models.TaskRunner>result).package = currentStep.package;
+        (<models.TaskRunner>result).dependencies = currentStep.dependencies;
         return result;
     }
 }
