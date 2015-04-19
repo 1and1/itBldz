@@ -25,28 +25,33 @@ log.verbose.writeln("itbldz", "\tBaseDir\t\t" + global.basedir);
 log.verbose.writeln("itbldz", "\tRelativeDir\t" + global.relativeDir);
 log.verbose.writeln("itbldz", "\tGruntVersion\t" + grunt.version);
 
-log.writeln("itbldz", "Loading engine...");
-var engine = engines.Engine.get(grunt);
+export function itbldz(args) {
 
-log.writeln("itbldz", "Loading steps...");
-var currentConfig = config.ConfigurationFileLoaderService.load(grunt);
-log.verbose.writeln("itbldz", "Config loaded: " + JSON.stringify(currentConfig, undefined, 2));
+    log.writeln("itbldz", "Loading engine...");
+    var engine = engines.Engine.get(grunt);
 
-if (engine) {
-    var gruntFile = path.join(global.relativeDir, "src/grunt-utils/gruntfile.js");
-    args["gruntfile"] = gruntFile;
-    try {
-        engine.startUp(currentConfig, (tasks) => {
-            (<any>grunt).tasks(tasks, args, () => {
-                log.writeln("itbldz", "Completed successfully");
-                process.exit(0);
+    log.writeln("itbldz", "Loading steps...");
+    var currentConfig = config.ConfigurationFileLoaderService.load(grunt);
+    log.verbose.writeln("itbldz", "Config loaded: " + JSON.stringify(currentConfig, undefined, 2));
+
+    if (engine) {
+        var gruntFile = path.join(global.relativeDir, "src/grunt-utils/gruntfile.js");
+        args["gruntfile"] = gruntFile;
+        try {
+            engine.startUp(currentConfig, (tasks) => {
+                (<any>grunt).tasks(tasks, args, () => {
+                    log.writeln("itbldz", "Completed successfully");
+                    process.exit(0);
+                });
             });
-        });
-    } catch (error) {
-        log.error("itbldz", error);
+        } catch (error) {
+            log.error("itbldz", error);
+            process.exit(1);
+        }
+    } else {
+        log.error("itbldz", "Missing engine action.");
         process.exit(1);
     }
-} else {
-    log.error("itbldz", "Missing engine action.");
-    process.exit(1);
 }
+
+itbldz(process.argv);

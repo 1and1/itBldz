@@ -25,25 +25,27 @@ echo '{ }' > config.json
 Install itBldz
 
 ```shell
-npm install itbldz --save-dev
+npm install -g itbldz --save-dev
 ```
 
-build
+_Note:_ If you don't install it globally, you can use ./node_modules/itbldz/build|deploy|ship for "shorthand" commands
+
+build it
 
 ```shell
-./node_modules/itbldz/build
+build-it
 ```
 
-deploy
+deploy it
 
 ```shell
-./node_modules/itbldz/deploy
+deploy-it
 ```
 
 or ship it (build & deploy)
 
 ```shell
-./node_modules/itbldz/ship
+ship-it
 ```
 
 in the shell / commandline
@@ -55,10 +57,10 @@ All your arguments will be passed to grunt. To trigger tasks, simply add them.
 Examples:
 
 Get all tasks with description
-> ./node_modules/itbldz/build --help
+> build-it --help
 
 Verbose output:
-> ./node_modules/itbldz/build --verbose
+> build-it --verbose
 
 Given this config: 
 ````
@@ -72,10 +74,10 @@ Given this config:
 ````
 
 Compile your source:
-> ./node_modules/itbldz/build compile
+> build-it compile
 
 Compile and trigger your unit tests:
-> ./node_modules/itbldz/build compile test/unit
+> build-it compile test/unit
 
 
 ### Configure for your use case
@@ -107,8 +109,10 @@ they are using.
 Which grunt-task they run is specified by the properties _task_ and _package_.
 The _task_ field specifies the name of the grunt-task that should be run, while
 the _package_ field specifies which npm package is required to run the task.
-**Note**: itBldz will install all required packages automatically. There is no
-action required on your side.
+**Note**: itBldz will try to install all required packages automatically. However, 
+at the current moment for global installation of itblz that's only true for references
+you do not require('') in your application. These you will have to add to your 
+package.json.
 
 The build.json is to be the same on every environment you run the build.
 
@@ -177,11 +181,28 @@ and it will automatically be replaced.
 
 ## Contributing
 
+### Getting started
+
+Git clone this repository, run a 
+
+````
+npm install -g itbldz
+npm install 
+````
+
+and then 
+
+````
+build-it 
+````
+
+to have it set up
+
 ### Guidelines
 
 You are free to extend the project as you wish. Every new code has to include
 unit tests and result in a green build when building the build-tools executing
 
 ```shell
-./node_modules/itbldz/build
+build-it
 ```

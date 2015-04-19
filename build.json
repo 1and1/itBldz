@@ -36,7 +36,7 @@
             "src": "<%= config.files.acceptance %>",
             "options": {
                 "steps": "<%= config.files.acceptance %>",
-                "modulePath": "<%= config.directories.root %>/node_modules/grunt-cucumber/node_modules/cucumber/lib/cucumber.js"
+                "modulePath": "<%= config.directories.root %>/node_modules/cucumber/lib/cucumber.js"
             }
         }
     },

@@ -6,7 +6,7 @@
     },
     "files": {
         "application": {
-            "files": [ "*.js", "*.json", "src/**/*.js", "build*", "deploy*", "ship*", "readme.md" ]
+            "files": [ "*.js", "*.json", "src/**/*.js", "build*", "deploy*", "ship*", "readme.md", "bin/*.js" ]
         },
         "acceptance": "<%= config.directories.root %>/tests/features",
         "unit": "<%= config.directories.root %>/tests/units/**/*.js"

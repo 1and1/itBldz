@@ -1,8 +1,7 @@
 {
   "name": "itbldz",
-  "version": "2.0.0",
+  "version": "2.0.3",
   "description": "Gruntpowered CI loving awesomeness",
-  "main": "build",
   "repository": {
     "type": "git",
     "url": "http://1and1.github.io/itBldz/"
@@ -18,6 +17,7 @@
   },
   "homepage": "https://github.com/1and1/itBldz",
   "dependencies": {
+    "async": "^0.9.0",
     "chalk": "^1.0.0",
     "findup-sync": "^0.2.1",
     "grunt": "^0.4.5",
@@ -27,5 +27,17 @@
     "resolve": "^1.1.6",
     "time-grunt": "^1.1.1",
     "yargs": "^3.7.2"
+  },
+  "bin": {
+    "build-it": "bin/build-it.js",
+    "deploy-it": "bin/deploy-it.js",
+    "ship-it": "bin/ship-it.js"
+  },
+  "main": "./itbldz.js",
+  "preferGlobal": "true",
+  "devDependencies": {
+    "chai": "^2.2.0",
+    "cucumber": "^0.4.8",
+    "sinon": "^1.14.1"
   }
 }

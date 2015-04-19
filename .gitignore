@@ -17,5 +17,6 @@ itbldz.js*
 .ntvs_analysis.*
 node_modules/**
 .tscache/**
-bin/**
+bin/*.dll
 obj/**
+tscommand*
