@@ -4,6 +4,9 @@ var expect = chai.expect;
 import configs = require('../../../../src/lib/configs');
 import models = require('../../../../src/lib/models');
 var configuration: any;
+var argv = {
+    _: []
+};
 
 describe("When loading a build configuration", () => {
     describe("When mapping an empty configuration", () => {
@@ -12,7 +15,7 @@ describe("When loading a build configuration", () => {
         });
 
         it("should return an empty result", (done) => {
-            new configs.BuildConfigurationService().load(configuration, (models) => {
+            new configs.BuildConfigurationService(argv).load(configuration, (models) => {
                 expect(models).to.exist;
                 expect(models.steps).to.be.empty;
                 done();
@@ -28,7 +31,7 @@ describe("When loading a build configuration", () => {
         });
 
         it("should return the correct step result", (done) => {
-            new configs.BuildConfigurationService().load(configuration, (models) => {
+            new configs.BuildConfigurationService(argv).load(configuration, (models) => {
                 expect(models).to.exist;
                 expect(models.steps).to.have.lengthOf(1);
                 expect(models.steps[0].name).to.be.eq("step");
@@ -44,7 +47,7 @@ describe("When loading a build configuration", () => {
         });
 
         it("should return the correct step result", (done) => {
-            var models = new configs.BuildConfigurationService().loadTasks("step", configuration);
+            var models = new configs.BuildConfigurationService(argv).loadTasks("step", configuration);
             expect(models).to.be.empty;
             done();
         });
@@ -58,7 +61,7 @@ describe("When loading a build configuration", () => {
         });
 
         it("should return the correct step result", (done) => {
-            var models = new configs.BuildConfigurationService().loadTasks("step", configuration);
+            var models = new configs.BuildConfigurationService(argv).loadTasks("step", configuration);
             expect(models).to.have.lengthOf(1);
             expect(models[0].name).to.be.eq("build-task");
             expect(models[0].qualifiedName).to.be.eq("step/build-task");
@@ -78,7 +81,7 @@ describe("When loading a build configuration", () => {
         });
 
         it("should return the correct step result", (done) => {
-            var models = new configs.BuildConfigurationService().loadTasks("step", configuration);
+            var models = new configs.BuildConfigurationService(argv).loadTasks("step", configuration);
             expect(models).to.have.lengthOf(1);
             expect(models[0].name).to.be.eq("build-task");
             expect(models[0].qualifiedName).to.be.eq("step/build-task");
@@ -102,7 +105,7 @@ describe("When loading a build configuration", () => {
                 }
             };
 
-            models = new configs.BuildConfigurationService().loadTasks("step", configuration);
+            models = new configs.BuildConfigurationService(argv).loadTasks("step", configuration);
         });
 
         it("should return the correct step result", (done) => {
@@ -134,6 +137,59 @@ describe("When loading a build configuration", () => {
             expect(execSubtask.task).to.be.eq("task");
             expect(execSubtask.qualifiedName).to.be.eq("step/build-task/sub-task-2");
             done();
+        });
+    });
+    
+    describe("When mapping an configuration with a steps that should be triggered", () => {
+        beforeEach(function () {
+            argv._ = ["build-task"];
+            configuration = {
+                "build-task": {
+                    "sub-task-1": {}
+                },
+                "other-task": { }
+            };
+        });
+
+        it("should return only the selected tasks", (done) => {
+            new configs.BuildConfigurationService(argv).load(configuration, (models) => {
+                expect(models).to.exist;
+                expect(models.steps).not.to.be.empty;
+                expect(models.steps).to.have.lengthOf(1);
+                expect(models.steps[0].tasks).not.to.be.empty;
+                expect(models.steps[0].tasks).to.have.lengthOf(1);
+                done();
+            });
+        });
+    });
+
+    describe("When mapping an configuration with tasks that should be triggered", () => {
+        beforeEach(function () {
+            argv._ = ["build-task/sub-task-2/task"];
+            configuration = {
+                "build-task": {
+                    "sub-task-1": {},
+                    "sub-task-2": {
+                        "task": "task"
+                    }
+                },
+                "other-task": {
+                }
+            };
+        });
+
+        it("should return only the selected tasks", (done) => {
+            new configs.BuildConfigurationService(argv).load(configuration, (models) => {
+                expect(models).to.exist;
+                expect(models.steps).not.to.be.empty;
+                expect(models.steps).to.have.lengthOf(1);
+                expect(models.steps[0].tasks).not.to.be.empty;
+                expect(models.steps[0].tasks).to.have.lengthOf(1);
+                var groupSubtask = <models.TaskRunner>(models.steps[0]).tasks[0];
+                expect(groupSubtask.name).to.be.equal("sub-task-2");
+                expect(groupSubtask.task).to.be.equal("task");
+                done();
+            });
         });
     });
 });

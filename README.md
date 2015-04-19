@@ -9,7 +9,6 @@ __Breaking Changes to v1__
 * bpm was dropped. itbldz now setup itself
 * Custom config files no longer supported
 * custom tasks can no longer be added. all the tasks exist purely in memory, so every task that runs must be npm
-* directly trigger a single task (will get reimplemented)
 
 ## Usage
 
@@ -51,15 +50,33 @@ in the shell / commandline
 
 ### Options
 
-All your arguments will be passed to grunt.
+All your arguments will be passed to grunt. To trigger tasks, simply add them.
 
 Examples:
+
+Get all tasks with description
+> ./node_modules/itbldz/build --help
 
 Verbose output:
 > ./node_modules/itbldz/build --verbose
 
-Get all tasks with description
-> ./node_modules/itbldz/build --help
+Given this config: 
+````
+{
+    "compile": { /* compile your sources */ },
+	"build": {
+		"unit" : { /* unit tests */ },
+		"acceptance" : { /* acceptance tests */ }
+	}
+}
+````
+
+Compile your source:
+> ./node_modules/itbldz/build compile
+
+Compile and trigger your unit tests:
+> ./node_modules/itbldz/build compile test/unit
+
 
 ### Configure for your use case
 

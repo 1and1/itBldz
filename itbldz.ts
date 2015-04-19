@@ -4,8 +4,6 @@ import engines = require('./src/lib/Engine');
 import config = require('./src/lib/configs');
 import logging = require('./src/lib/logging');
 var log = new logging.Log();
-
-var argv = require('yargs').argv;
 var nopt = require('nopt');
 
 // CLI options we care about.

@@ -21,6 +21,10 @@ class Helper {
         return "[" + chalk.blue(type) + Helper.missing(10, type) + "] ";
     }
 
+    public static error(error: string) {
+        return "[" + chalk.red(error) + Helper.missing(10, error) + "] ";
+    }
+
     public static src(src: string) {
         return chalk.green(src) + Helper.missing(15, src) + " > ";
     }
@@ -41,7 +45,7 @@ class ConsoleLogger implements ILogger {
     }
 
     public error(src, value) {
-        console.error(Helper.type(this.type) + chalk.red("Error: ") + Helper.src(src) + value);
+        console.error(Helper.error("Error") + Helper.src(src) + value);
     }
 
     public writeln(src, value: string) {

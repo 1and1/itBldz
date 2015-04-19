@@ -62,6 +62,11 @@ export class TaskRunnerConfigurationService {
 }
 
 export class BuildConfigurationService implements ConfigurationService {
+    argv;
+
+    public constructor(argv = require('yargs').argv) {
+        this.argv = argv;
+    }
 
     public loadTasks(parent: string, step: any): models.Task[]{
 
@@ -89,12 +94,40 @@ export class BuildConfigurationService implements ConfigurationService {
 
     public load(build, callback: (models: models.Configuration) => void): void {
         var steps = Object.keys(build);
+
+        var actions = ["build", "deploy", "ship"];
+        var selectedTasks = <string[]>this.argv._.filter((_) => (actions.every((action) => action != _)));
+        log.verbose.writeln("config", "Tasks selected to run=" + JSON.stringify(selectedTasks));
+
         var result: models.BuildStep[] = steps.map((step) => {
             return {
                 name: step,
                 tasks: this.loadTasks(step, build[step])
             };
         });
+
+        if (selectedTasks.length > 0) {
+            var reduce = (current : models.Task[]) => {
+                var result: models.Task[] = [];
+                if (current.length < 1) return result;
+                current.forEach((_) => {
+                    if (selectedTasks.every((selected) => selected.indexOf(_.qualifiedName) !== 0 && _.qualifiedName.indexOf(selected) !== 0)) return;
+                    result.push(_);
+                    if (_._t === "TaskGroup") {
+                        result = result.concat(reduce((<models.TaskGroup>_).tasks));
+                    }
+                });
+                return result;
+            }
+
+            result = result.filter((step) => {
+                return selectedTasks.some((_) => _ == step.name || (_.indexOf('/') >= 0 && _.split("/")[0] == step.name));
+            });
+
+            result.forEach((step) => {
+                step.tasks = reduce(step.tasks);
+            });
+        }
 
         var buildConfiguration = {
             steps : result
