@@ -25,7 +25,7 @@ echo '{ }' > config.json
 Install itBldz
 
 ```shell
-npm install -g itbldz --save-dev
+npm install -g itbldz
 ```
 
 _Note:_ If you don't install it globally, you can use ./node_modules/itbldz/build|deploy|ship for "shorthand" commands
@@ -57,10 +57,16 @@ All your arguments will be passed to grunt. To trigger tasks, simply add them.
 Examples:
 
 Get all tasks with description
-> build-it --help
+
+```shell
+build-it --help
+```
 
 Verbose output:
-> build-it --verbose
+
+```shell
+build-it --verbose
+```
 
 Given this config: 
 ````
@@ -74,10 +80,16 @@ Given this config:
 ````
 
 Compile your source:
-> build-it compile
+
+```shell
+build-it compile
+```
 
 Compile and trigger your unit tests:
-> build-it compile test/unit
+
+```shell
+ build-it compile test/unit
+```
 
 
 ### Configure for your use case
@@ -109,7 +121,8 @@ they are using.
 Which grunt-task they run is specified by the properties _task_ and _package_.
 The _task_ field specifies the name of the grunt-task that should be run, while
 the _package_ field specifies which npm package is required to run the task.
-**Note**: itBldz will try to install all required packages automatically. However, 
+
+> **Note**: itBldz will try to install all required packages automatically. However, 
 at the current moment for global installation of itblz that's only true for references
 you do not require('') in your application. These you will have to add to your 
 package.json.
