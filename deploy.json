@@ -1,7 +1,45 @@
-﻿{
-    "regression-tests": { },
-    "release": {
-        "npm-publish": {
+{
+    "prepare": {
+        "clean": {
+            "task": "clean",
+            "package": "grunt-contrib-clean",
+            "options": {
+                "force": true
+            },
+            "target": [
+                "<%= config.directories.target %>"
+            ]
+        },
+        "npm": {
+            "bump-version": {
+                "task": "release",
+                "package": "grunt-release",
+                "options": {
+                    "bump": true,
+                    "add": false,
+                    "commit": false,
+                    "tag": false,
+                    "push": false,
+                    "pushTags": false,
+                    "npm": false,
+                    "npmtag": true,
+                    "file": "<%= config.directories.root %>/package.json",
+                    "folder": "<%= config.directories.root %>"
+                }
+            }
+        }
+    },
+    "create-deployable": {
+        "copy": {
+            "task": "copy",
+            "package": "grunt-contrib-copy",
+            "deployables": {
+                "files": "<%= config.deployables.files %>"
+            }
+        }
+    },
+    "publish": {
+        "npm": {
             "task": "release",
             "package": "grunt-release",
             "options": {
@@ -11,8 +49,8 @@
                 "tag": false,
                 "push": false,
                 "pushTags": false,
-                "file": "<%= config.directories.destination %>/package.json",
-                "folder": "<%= config.directories.destination %>"
+                "file": "<%= config.directories.target %>/package.json",
+                "folder": "<%= config.directories.target %>"
             }
         }
     }

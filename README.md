@@ -14,14 +14,6 @@ __Breaking Changes to v1__
 
 ### Setup
 
-create your config
-
-```shell
-echo '{ "say-hi" : { "helloworld" : { "task" : "helloworld", "package" : "grunt-helloworld", "dummytarget": {} } } }' > build.json
-echo '{ "deploy" : { "copy" : { "task" : "copy", "package" : "grunt-contrib-copy", "files": { "src" : "**/*", "dest" : "../target" } } } }' > deploy.json
-echo '{ }' > config.json
-```
-
 Install itBldz
 
 ```shell
@@ -29,6 +21,14 @@ npm install -g itbldz --save-dev
 ```
 
 _Note:_ If you don't install it globally, you can use ./node_modules/itbldz/build|deploy|ship for "shorthand" commands
+
+create your config
+
+```shell
+init-itbldz
+```
+
+if something is missing edit the config files that are created (config.json, build.json, deploy.json).
 
 build it
 
