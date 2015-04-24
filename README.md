@@ -179,6 +179,12 @@ Add the Statement
 
 and it will automatically be replaced.
 
+## I need a function in my configuration!
+
+Sorry, but that sounds like an oxymoron. itbldz is to maintain complex scenarios in an easy way, and adding logic to your configuration does not seem to help reducing complexity. 
+
+If you want a grunt task to do more then what is configured, then create an npm package, test it and use this. 
+
 ## Contributing
 
 ### Getting started
