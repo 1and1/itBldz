@@ -31,6 +31,8 @@
         <h1>
 <a id="itbldz-build-tools" class="anchor" href="#itbldz-build-tools" aria-hidden="true"><span class="octicon octicon-link"></span></a>itBldz Build-Tools</h1>
 
+<p><a href="https://travis-ci.org/1and1/itBldz"><img src="https://api.travis-ci.org/1and1/itBldz.svg?branch=master" alt="travisci-build"></a> <a href="https://nodei.co/npm/itbldz/"><img src="https://nodei.co/npm/itbldz.png?downloads=true&amp;downloadRank=true&amp;stars=true" alt="NPM"></a></p>
+
 <p><strong>The only build-tool you'll ever need</strong></p>
 
 <p>The goal is to provide an easy to setup framework which allow every development team a "closed for modification, open for extension"-plattform for their own needs.</p>
@@ -90,7 +92,7 @@
 
 <div class="highlight highlight-shell"><pre>build-it --verbose</pre></div>
 
-<p>Given this config: </p>
+<p>Given this config:</p>
 
 <pre><code>{
     "compile": { /* compile your sources */ },
@@ -146,14 +148,14 @@ they are using.
 Which grunt-task they run is specified by the properties <em>task</em> and <em>package</em>.
 The <em>task</em> field specifies the name of the grunt-task that should be run, while
 the <em>package</em> field specifies which npm package is required to run the task.
-<strong>Note</strong>: itBldz will try to install all required packages automatically. However, 
+<strong>Note</strong>: itBldz will try to install all required packages automatically. However,
 at the current moment for global installation of itblz that's only true for references
-you do not require('') in your application. These you will have to add to your 
+you do not require('') in your application. These you will have to add to your
 package.json.</p>
 
 <p>The build.json is to be the same on every environment you run the build.</p>
 
-<p>An example: </p>
+<p>An example:</p>
 
 <div class="highlight highlight-json"><pre>{
     <span class="pl-s"><span class="pl-pds">"</span>test<span class="pl-pds">"</span></span>: {
@@ -229,9 +231,9 @@ and reference the correct config when starting the build.</p>
 <h2>
 <a id="i-need-a-function-in-my-configuration" class="anchor" href="#i-need-a-function-in-my-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>I need a function in my configuration!</h2>
 
-<p>Sorry, but that sounds like an oxymoron. itbldz is to maintain complex scenarios in an easy way, and adding logic to your configuration does not seem to help reducing complexity. </p>
+<p>Sorry, but that sounds like an oxymoron. itbldz is to maintain complex scenarios in an easy way, and adding logic to your configuration does not seem to help reducing complexity.</p>
 
-<p>If you want a grunt task to do more then what is configured, then create an npm package, test it and use this. </p>
+<p>If you want a grunt task to do more then what is configured, then create an npm package, test it and use this.</p>
 
 <h2>
 <a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributing</h2>
@@ -239,15 +241,15 @@ and reference the correct config when starting the build.</p>
 <h3>
 <a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting started</h3>
 
-<p>Git clone this repository, run a </p>
+<p>Git clone this repository, run a</p>
 
 <pre><code>npm install -g itbldz
-npm install 
+npm install
 </code></pre>
 
-<p>and then </p>
+<p>and then</p>
 
-<pre><code>build-it 
+<pre><code>build-it
 </code></pre>
 
 <p>to have it set up</p>
