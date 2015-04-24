@@ -1,4 +1,5 @@
 # itBldz Build-Tools
+[![travisci-build](https://api.travis-ci.org/1and1/itBldz.svg?branch=master)](https://travis-ci.org/1and1/itBldz) [![NPM](https://nodei.co/npm/itbldz.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/itbldz/)
 
 __The only build-tool you'll ever need__
 
@@ -67,7 +68,7 @@ Verbose output:
 build-it --verbose
 ```
 
-Given this config: 
+Given this config:
 ````
 {
     "compile": { /* compile your sources */ },
@@ -117,14 +118,14 @@ they are using.
 Which grunt-task they run is specified by the properties _task_ and _package_.
 The _task_ field specifies the name of the grunt-task that should be run, while
 the _package_ field specifies which npm package is required to run the task.
-**Note**: itBldz will try to install all required packages automatically. However, 
+**Note**: itBldz will try to install all required packages automatically. However,
 at the current moment for global installation of itblz that's only true for references
-you do not require('') in your application. These you will have to add to your 
+you do not require('') in your application. These you will have to add to your
 package.json.
 
 The build.json is to be the same on every environment you run the build.
 
-An example: 
+An example:
 ````json
 {
     "test": {
@@ -189,25 +190,25 @@ and it will automatically be replaced.
 
 ## I need a function in my configuration!
 
-Sorry, but that sounds like an oxymoron. itbldz is to maintain complex scenarios in an easy way, and adding logic to your configuration does not seem to help reducing complexity. 
+Sorry, but that sounds like an oxymoron. itbldz is to maintain complex scenarios in an easy way, and adding logic to your configuration does not seem to help reducing complexity.
 
-If you want a grunt task to do more then what is configured, then create an npm package, test it and use this. 
+If you want a grunt task to do more then what is configured, then create an npm package, test it and use this.
 
 ## Contributing
 
 ### Getting started
 
-Git clone this repository, run a 
+Git clone this repository, run a
 
 ````
 npm install -g itbldz
-npm install 
+npm install
 ````
 
-and then 
+and then
 
 ````
-build-it 
+build-it
 ````
 
 to have it set up
