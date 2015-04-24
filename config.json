@@ -2,7 +2,8 @@
     "directories": {
         "ts": [ "<%= config.directories.root %>/**/*.ts", "!<%= config.directories.root %>/node_modules/**/*.ts" ],
         "results": "<%= config.directories.root %>/../results",
-        "target": "<%= config.directories.root %>/../target"
+        "target": "<%= config.directories.root %>/../target",
+        "destination": "<%= config.directories.target %>/itbldz"
     },
     "files": {
         "application": {
@@ -18,7 +19,7 @@
                     "expand": true,
                     "cwd": "<%= config.directories.root %>/",
                     "src": "<%= config.files.application.files %>",
-                    "dest": "<%= config.directories.target %>/itbldz"
+                    "dest": "<%= config.directories.destination %>"
                 }
             ]
         }

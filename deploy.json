@@ -1,5 +1,19 @@
 ﻿{
-    "deploy": { },
     "regression-tests": { },
-    "release" :  {}
+    "release": {
+        "npm-publish": {
+            "task": "release",
+            "package": "grunt-release",
+            "options": {
+                "bump": false,
+                "add": false,
+                "commit": false,
+                "tag": false,
+                "push": false,
+                "pushTags": false,
+                "file": "<%= config.directories.destination %>/package.json",
+                "folder": "<%= config.directories.destination %>"
+            }
+        }
+    }
 }

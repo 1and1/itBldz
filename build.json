@@ -40,7 +40,23 @@
             }
         }
     },
-    "create-deployable": { 
+    "create-deployable": {
+        "bump-version": {
+            "task": "release",
+            "package": "grunt-release",
+            "options": {
+                "bump": true,
+                "add": false,
+                "commit": false,
+                "tag": false,
+                "push": false,
+                "pushTags": false,
+                "npm": false,
+                "npmtag": true, 
+                "file": "<%= config.directories.root %>/package.json",
+                "folder": "<%= config.directories.root %>"
+            }
+        },
         "copy": {
             "task": "copy",
             "package": "grunt-contrib-copy",
