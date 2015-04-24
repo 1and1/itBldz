@@ -1,39 +1,47 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
-
     <title>Itbldz by 1and1</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
-
   <body>
-
-    <header>
-      <div class="container">
+    <div class="wrapper">
+      <header>
         <h1>Itbldz</h1>
-        <h2>MyWebsite Build-Tools - The only build-tools you&#39;ll ever need</h2>
+        <p>MyWebsite Build-Tools - The only build-tools you&#39;ll ever need</p>
 
-        <section id="downloads">
-          <a href="https://github.com/1and1/itBldz/zipball/master" class="btn">Download as .zip</a>
-          <a href="https://github.com/1and1/itBldz/tarball/master" class="btn">Download as .tar.gz</a>
-          <a href="https://github.com/1and1/itBldz" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
-      </div>
-    </header>
+        <p class="view"><a href="https://github.com/1and1/itBldz">View the Project on GitHub <small>1and1/itBldz</small></a></p>
 
-    <div class="container">
-      <section id="main_content">
+
+        <ul>
+          <li><a href="https://github.com/1and1/itBldz/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/1and1/itBldz/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/1and1/itBldz">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
         <h1>
 <a id="itbldz-build-tools" class="anchor" href="#itbldz-build-tools" aria-hidden="true"><span class="octicon octicon-link"></span></a>itBldz Build-Tools</h1>
 
 <p><strong>The only build-tool you'll ever need</strong></p>
 
 <p>The goal is to provide an easy to setup framework which allow every development team a "closed for modification, open for extension"-plattform for their own needs.</p>
+
+<p><strong>Breaking Changes to v1</strong></p>
+
+<ul>
+<li>bpm was dropped. itbldz now setup itself</li>
+<li>Custom config files no longer supported</li>
+<li>custom tasks can no longer be added. all the tasks exist purely in memory, so every task that runs must be npm</li>
+</ul>
 
 <h2>
 <a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
@@ -43,55 +51,63 @@
 
 <p>Install itBldz</p>
 
-<div class="highlight highlight-shell"><pre>npm install itbldz</pre></div>
+<div class="highlight highlight-shell"><pre>npm install -g itbldz --save-dev</pre></div>
+
+<p><em>Note:</em> If you don't install it globally, you can use ./node_modules/itbldz/build|deploy|ship for "shorthand" commands</p>
 
 <p>create your config</p>
 
-<div class="highlight highlight-shell"><pre><span class="pl-s3">echo</span> <span class="pl-s1"><span class="pl-pds">'</span>{ "say-hi" : { "helloworld" : { "task" : "helloworld", "package" : "grunt-helloworld", "dummytarget": {} } } }<span class="pl-pds">'</span></span> <span class="pl-k">&gt;</span> build.json
-<span class="pl-s3">echo</span> <span class="pl-s1"><span class="pl-pds">'</span>{ }<span class="pl-pds">'</span></span> <span class="pl-k">&gt;</span> config.json</pre></div>
+<div class="highlight highlight-shell"><pre>init-itbldz</pre></div>
 
-<p>setup the build with your config</p>
+<p>if something is missing edit the config files that are created (config.json, build.json, deploy.json).</p>
 
-<div class="highlight highlight-shell"><pre>./node_modules/itbldz/bpm setup</pre></div>
+<p>build it</p>
 
-<p>execute</p>
+<div class="highlight highlight-shell"><pre>build-it</pre></div>
 
-<div class="highlight highlight-shell"><pre>./node_modules/itbldz/build</pre></div>
+<p>deploy it</p>
+
+<div class="highlight highlight-shell"><pre>deploy-it</pre></div>
+
+<p>or ship it (build &amp; deploy)</p>
+
+<div class="highlight highlight-shell"><pre>ship-it</pre></div>
 
 <p>in the shell / commandline</p>
 
 <h3>
 <a id="options" class="anchor" href="#options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Options</h3>
 
-<p>All your arguments will be passed to grunt.</p>
+<p>All your arguments will be passed to grunt. To trigger tasks, simply add them.</p>
 
 <p>Examples:</p>
 
-<p>Verbose output:</p>
-
-<blockquote>
-<p>build --verbose</p>
-</blockquote>
-
-<p>Run only tests</p>
-
-<blockquote>
-<p>build test</p>
-</blockquote>
-
-<p>Run only tests but verbose</p>
-
-<blockquote>
-<p>build test --verbose</p>
-</blockquote>
-
 <p>Get all tasks with description</p>
 
-<blockquote>
-<p>build --help</p>
-</blockquote>
+<div class="highlight highlight-shell"><pre>build-it --help</pre></div>
 
-<p>Get configs for a specific target (see )</p>
+<p>Verbose output:</p>
+
+<div class="highlight highlight-shell"><pre>build-it --verbose</pre></div>
+
+<p>Given this config: </p>
+
+<pre><code>{
+    "compile": { /* compile your sources */ },
+    "build": {
+        "unit" : { /* unit tests */ },
+        "acceptance" : { /* acceptance tests */ }
+    }
+}
+</code></pre>
+
+<p>Compile your source:</p>
+
+<div class="highlight highlight-shell"><pre>build-it compile</pre></div>
+
+<p>Compile and trigger your unit tests:</p>
+
+<div class="highlight highlight-shell"><pre>build-it compile <span class="pl-c1">test</span>/unit</pre></div>
 
 <h3>
 <a id="configure-for-your-use-case" class="anchor" href="#configure-for-your-use-case" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configure for your use case</h3>
@@ -111,78 +127,59 @@ into build-steps, task-groups and tasks.</p>
 <a id="build-steps" class="anchor" href="#build-steps" aria-hidden="true"><span class="octicon octicon-link"></span></a>build-steps</h5>
 
 <p>The build-step is the first layer. It defines the main tasks of the build. You
-should use a natural language that fits your build-pipeline best.
-Typical steps would be:</p>
-
-<ul>
-<li>
-<em>prepare</em> - prepares the build-environment</li>
-<li>
-<em>validate</em> - validates the source for syntax, sematics and style conformance</li>
-<li>
-<em>compile</em> - compiles the source code</li>
-<li>
-<em>test</em> - runs unit and quality (i.e. coverage) tests</li>
-<li>
-<em>create-deployable</em> - creates a deployable package for your code</li>
-<li>
-<em>publish</em> - publishes your deployable package to your environment</li>
-</ul>
+should use a natural language that fits your build-pipeline best.</p>
 
 <h5>
-<a id="task-groups" class="anchor" href="#task-groups" aria-hidden="true"><span class="octicon octicon-link"></span></a>task-groups</h5>
+<a id="task-groups" class="anchor" href="#task-groups" aria-hidden="true"><span class="octicon octicon-link"></span></a>Task Groups</h5>
 
 <p>Task-groups are containers for other task-groups and tasks. They do not run
 by itself, but rather orchestrate the task-groups and tasks they contain.
 They are used to organize build-steps, and should use a natural language that
-describe their use best.
-An example would be:</p>
-
-<ul>
-<li>validate
-
-<ul>
-<li>
-<em>syntax</em> - syntax check of the language</li>
-<li>
-<em>semantic</em> - semantic check of the language</li>
-</ul>
-</li>
-</ul>
+describe their use best.</p>
 
 <h5>
-<a id="tasks" class="anchor" href="#tasks" aria-hidden="true"><span class="octicon octicon-link"></span></a>tasks</h5>
+<a id="tasks-runners" class="anchor" href="#tasks-runners" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tasks Runners</h5>
 
-<p>Tasks are the hard and soul, and are basically runners for grunt-tasks. They can
+<p>Task Runners are the hard and soul, and are executors for grunt-tasks. They can
 have arbitrary names and should describe best what they do, not what grunt task
 they are using.
 Which grunt-task they run is specified by the properties <em>task</em> and <em>package</em>.
 The <em>task</em> field specifies the name of the grunt-task that should be run, while
 the <em>package</em> field specifies which npm package is required to run the task.
-<strong>Note</strong>: itBldz will install all required packages automatically. There is no
-action required on your side.
-An example for tasks would be:  </p>
-
-<ul>
-<li>validate
-
-<ul>
-<li>syntax
-
-<ul>
-<li>
-<em>js</em>[task=jshint;package=grunt-contrib-jshint]<br>
-</li>
-</ul>
-</li>
-<li>
-<em>php</em>[task=phplint;package=grunt-phplint]<br>
-</li>
-</ul>
-</li>
-</ul>
+<strong>Note</strong>: itBldz will try to install all required packages automatically. However, 
+at the current moment for global installation of itblz that's only true for references
+you do not require('') in your application. These you will have to add to your 
+package.json.</p>
 
 <p>The build.json is to be the same on every environment you run the build.</p>
+
+<p>An example: </p>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>test<span class="pl-pds">"</span></span>: {
+        <span class="pl-s"><span class="pl-pds">"</span>unit<span class="pl-pds">"</span></span>: {
+            <span class="pl-s"><span class="pl-pds">"</span>task<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>mochaTest<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>package<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>grunt-mocha-test<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>dependencies<span class="pl-pds">"</span></span>: [ <span class="pl-s"><span class="pl-pds">"</span>chai<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>sinon<span class="pl-pds">"</span></span> ],
+            <span class="pl-s"><span class="pl-pds">"</span>test<span class="pl-pds">"</span></span>: {
+                <span class="pl-s"><span class="pl-pds">"</span>src<span class="pl-pds">"</span></span>: [ <span class="pl-s"><span class="pl-pds">"</span>&lt;%= config.files.unit %&gt;<span class="pl-pds">"</span></span> ],
+                <span class="pl-s"><span class="pl-pds">"</span>quiet<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span>
+            }
+        }
+    }
+}
+</pre></div>
+
+<p>This runs mocha unit tests</p>
+
+<ul>
+<li>
+<em>"task"</em>: the task name that should be executed</li>
+<li>
+<em>"package"</em>: the npm package that contains the task</li>
+<li>
+<em>"dependencies"</em> (optional): The dependencies the Task Runner may need</li>
+</ul>
 
 <h4>
 <a id="configjson" class="anchor" href="#configjson" aria-hidden="true"><span class="octicon octicon-link"></span></a>config.json</h4>
@@ -200,12 +197,12 @@ You can use all variables in the config.json in your build.json by typing</p>
 <p>An example would be:</p>
 
 <div class="highlight highlight-json"><pre>    {
-      <span class="pl-s1"><span class="pl-pds">"</span>directories<span class="pl-pds">"</span></span> : {
-        <span class="pl-s1"><span class="pl-pds">"</span>sources<span class="pl-pds">"</span></span> : <span class="pl-s1"><span class="pl-pds">"</span>sources<span class="pl-pds">"</span></span>,
-        <span class="pl-s1"><span class="pl-pds">"</span>output<span class="pl-pds">"</span></span> : <span class="pl-s1"><span class="pl-pds">"</span>target<span class="pl-pds">"</span></span>
+      <span class="pl-s"><span class="pl-pds">"</span>directories<span class="pl-pds">"</span></span> : {
+        <span class="pl-s"><span class="pl-pds">"</span>sources<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>sources<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>output<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>target<span class="pl-pds">"</span></span>
       },
-      <span class="pl-s1"><span class="pl-pds">"</span>filesets<span class="pl-pds">"</span></span> : {
-        <span class="pl-s1"><span class="pl-pds">"</span>php<span class="pl-pds">"</span></span> : [<span class="pl-s1"><span class="pl-pds">"</span>**/*.php<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">"</span>!**/framework/**<span class="pl-pds">"</span></span>]
+      <span class="pl-s"><span class="pl-pds">"</span>filesets<span class="pl-pds">"</span></span> : {
+        <span class="pl-s"><span class="pl-pds">"</span>php<span class="pl-pds">"</span></span> : [<span class="pl-s"><span class="pl-pds">"</span>**/*.php<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>!**/framework/**<span class="pl-pds">"</span></span>]
       }
     }
 </pre></div>
@@ -229,92 +226,31 @@ and reference the correct config when starting the build.</p>
 
 <p>and it will automatically be replaced.</p>
 
-<h4>
-<a id="create-your-configured-build" class="anchor" href="#create-your-configured-build" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create your configured build</h4>
+<h2>
+<a id="i-need-a-function-in-my-configuration" class="anchor" href="#i-need-a-function-in-my-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>I need a function in my configuration!</h2>
 
-<p>Once your done configuring the build, call</p>
+<p>Sorry, but that sounds like an oxymoron. itbldz is to maintain complex scenarios in an easy way, and adding logic to your configuration does not seem to help reducing complexity. </p>
 
-<div class="highlight highlight-shell"><pre>./node_modules/itbldz/bpm setup</pre></div>
-
-<p>on the folder and the build will be created automatically.</p>
-
-<p>If you want to add an additional module not in the configuration (which you
-don't want to do, you really want it all the configuration and not call manually,
-but it's always nice to know you could) you can call</p>
-
-<div class="highlight highlight-shell"><pre>./node_modules/itbldz/bpm add --m buildstep/module --t Taskname --p some-grunt-package</pre></div>
-
-<p>And the module will be added automatically to the buildstep. Note that this will
-not actually run the module as long as it is not configured in the build.json</p>
-
-<h4>
-<a id="adjust-build-for-different-environments" class="anchor" href="#adjust-build-for-different-environments" aria-hidden="true"><span class="octicon octicon-link"></span></a>Adjust build for different environments</h4>
-
-<p>Occasionally your environments are not the same from dev to live, and you want
-to adjust stuff. Most probably sensitive information you don't want to share
-on github.com.</p>
-
-<p>To achieve this, you can overwrite parts of the configuration (or the complete
-configuration) with target-files in the format "config.[target].json" by
-passing the following arguments to itbldz:</p>
-
-<ul>
-<li>
-<em>target</em> : string - The target to address</li>
-<li>
-<em>target-path</em> : string - The path to the target files. Defaults to current path</li>
-<li>
-<em>target-overwrite</em> (short: o) : boolean - If true, the leaf will be replaced by the target
-(default false)</li>
-</ul>
-
-<p>Example:</p>
-
-<div class="highlight highlight-json"><pre>{
-    <span class="pl-s1"><span class="pl-pds">"</span>other<span class="pl-pds">"</span></span> : {},
-    <span class="pl-s1"><span class="pl-pds">"</span>database<span class="pl-pds">"</span></span>: {
-        <span class="pl-s1"><span class="pl-pds">"</span>server<span class="pl-pds">"</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>localhost<span class="pl-pds">"</span></span>,
-        <span class="pl-s1"><span class="pl-pds">"</span>port<span class="pl-pds">"</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>123<span class="pl-pds">"</span></span>
-    },
-    <span class="pl-s1"><span class="pl-pds">"</span>stuff<span class="pl-pds">"</span></span> : {}
-}</pre></div>
-
-<p><em>config.json</em></p>
-
-<div class="highlight highlight-json"><pre>{
-    <span class="pl-s1"><span class="pl-pds">"</span>database<span class="pl-pds">"</span></span>: {
-        <span class="pl-s1"><span class="pl-pds">"</span>server<span class="pl-pds">"</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>dbserver.corp.contoso.com<span class="pl-pds">"</span></span>,
-        <span class="pl-s1"><span class="pl-pds">"</span>port<span class="pl-pds">"</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>1433<span class="pl-pds">"</span></span>,
-        <span class="pl-s1"><span class="pl-pds">"</span>user<span class="pl-pds">"</span></span> : <span class="pl-s1"><span class="pl-pds">"</span>web<span class="pl-pds">"</span></span>,
-        <span class="pl-s1"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span> : <span class="pl-s1"><span class="pl-pds">"</span>&lt;%= env.PASSWORD %&gt;<span class="pl-pds">"</span></span>
-    }
-}</pre></div>
-
-<p><em>config.live.json</em></p>
-
-<p>when calling</p>
-
-<div class="highlight highlight-shell"><pre>./node_modules/itbldz/build --target=live</pre></div>
-
-<p>The resulting config will look like:</p>
-
-<div class="highlight highlight-json"><pre>{
-    <span class="pl-s1"><span class="pl-pds">"</span>other<span class="pl-pds">"</span></span> : {},
-    <span class="pl-s1"><span class="pl-pds">"</span>database<span class="pl-pds">"</span></span>: {
-        <span class="pl-s1"><span class="pl-pds">"</span>server<span class="pl-pds">"</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>dbserver.corp.contoso.com<span class="pl-pds">"</span></span>,
-        <span class="pl-s1"><span class="pl-pds">"</span>port<span class="pl-pds">"</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>1433<span class="pl-pds">"</span></span>,
-        <span class="pl-s1"><span class="pl-pds">"</span>user<span class="pl-pds">"</span></span> : <span class="pl-s1"><span class="pl-pds">"</span>web<span class="pl-pds">"</span></span>,
-        <span class="pl-s1"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span> : <span class="pl-s1"><span class="pl-pds">"</span>&lt;%= env.PASSWORD %&gt;<span class="pl-pds">"</span></span>
-    },
-    <span class="pl-s1"><span class="pl-pds">"</span>stuff<span class="pl-pds">"</span></span> : {}
-}</pre></div>
-
-<p><strong>NOTE:</strong> You can only override defined steps in the master, you cannot add additional steps. Why? Because your deployment should be the same over all environments.</p>
-
-<p><strong>But my deployment to dev &amp; live is very VERY differnet!</strong> Then you will have to add both to the master, and then override and thus deleting it for every environment.</p>
+<p>If you want a grunt task to do more then what is configured, then create an npm package, test it and use this. </p>
 
 <h2>
-<a id="deving" class="anchor" href="#deving" aria-hidden="true"><span class="octicon octicon-link"></span></a>Deving</h2>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributing</h2>
+
+<h3>
+<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting started</h3>
+
+<p>Git clone this repository, run a </p>
+
+<pre><code>npm install -g itbldz
+npm install 
+</code></pre>
+
+<p>and then </p>
+
+<pre><code>build-it 
+</code></pre>
+
+<p>to have it set up</p>
 
 <h3>
 <a id="guidelines" class="anchor" href="#guidelines" aria-hidden="true"><span class="octicon octicon-link"></span></a>Guidelines</h3>
@@ -322,87 +258,14 @@ passing the following arguments to itbldz:</p>
 <p>You are free to extend the project as you wish. Every new code has to include
 unit tests and result in a green build when building the build-tools executing</p>
 
-<div class="highlight highlight-shell"><pre>./node_modules/itbldz/build</pre></div>
-
-<h3>
-<a id="working-with-the-task-engine" class="anchor" href="#working-with-the-task-engine" aria-hidden="true"><span class="octicon octicon-link"></span></a>Working with the task engine</h3>
-
-<p>The build-tools are using a simple task engine which allow for task aliasing and
-automatic dependency resolving in npm.
-Using the task engine you can easily extend the core of the build-tools. The bpm
-tools are following the conventions by the task engine to prepare the build.</p>
-
-<p>A build config step should look like the following to get you started:</p>
-
-<div class="highlight highlight-json"><pre>{
-  <span class="pl-s1"><span class="pl-pds">"</span>build-step<span class="pl-pds">"</span></span> : {
-    <span class="pl-s1"><span class="pl-pds">"</span>task<span class="pl-pds">"</span></span> : {
-      <span class="pl-s1"><span class="pl-pds">"</span>task<span class="pl-pds">"</span></span> : <span class="pl-s1"><span class="pl-pds">"</span>clean<span class="pl-pds">"</span></span>,
-      <span class="pl-s1"><span class="pl-pds">"</span>package<span class="pl-pds">"</span></span> : <span class="pl-s1"><span class="pl-pds">"</span>grunt-contrib-clean<span class="pl-pds">"</span></span>,
-      <span class="pl-s1"><span class="pl-pds">"</span>options<span class="pl-pds">"</span></span>: { <span class="pl-s1"><span class="pl-pds">"</span>force<span class="pl-pds">"</span></span>: <span class="pl-c1">true</span> },
-      <span class="pl-s1"><span class="pl-pds">"</span>target<span class="pl-pds">"</span></span>: [ <span class="pl-s1"><span class="pl-pds">"</span>.<span class="pl-pds">"</span></span> ]
-    }
-  }  
-}</pre></div>
-
-<p>When confronted with such a build-step, the folder structure expected by the
-task engine is:</p>
-
-<pre><code>  build-tools
-  |_ .build
-    |_ build-step
-      |_ task
-        task.js
-      build-step.js
-    gruntfile.js
-  build.json
-  config.json
-</code></pre>
-
-<p>When opening the build-step.js file you see the following code:</p>
-
-<div class="highlight highlight-js"><pre><span class="pl-s">var</span> conf <span class="pl-k">=</span> requireRoot(<span class="pl-s1"><span class="pl-pds">'</span>conf<span class="pl-pds">'</span></span>), path <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">"</span>path<span class="pl-pds">"</span></span>);
-<span class="pl-s">var</span> taskengine <span class="pl-k">=</span> requireRoot(<span class="pl-s1"><span class="pl-pds">'</span>taskengine<span class="pl-pds">'</span></span>);
-
-<span class="pl-s3">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-st">function</span> (<span class="pl-vpf">grunt</span>) {
-  <span class="pl-s">var</span> taskContext <span class="pl-k">=</span> taskengine.startup({
-    <span class="pl-s1"><span class="pl-pds">"</span>grunt<span class="pl-pds">"</span></span> <span class="pl-k">:</span> grunt,
-    <span class="pl-s1"><span class="pl-pds">"</span>buildStep<span class="pl-pds">"</span></span> <span class="pl-k">:</span> path.basename(<span class="pl-sv">__filename</span>, <span class="pl-s1"><span class="pl-pds">"</span>.js<span class="pl-pds">"</span></span>),
-    <span class="pl-s1"><span class="pl-pds">"</span>path<span class="pl-pds">"</span></span> <span class="pl-k">:</span> <span class="pl-sv">__dirname</span>
-  });
-
-  taskengine.run(taskContext);
-};</pre></div>
-
-<p>The build-step simply starts up the taskengine and registers itself. Then
-running the taskengine.</p>
-
-<p>Next open the task.js.</p>
-
-<div class="highlight highlight-js"><pre><span class="pl-s">var</span> conf <span class="pl-k">=</span> requireRoot(<span class="pl-s1"><span class="pl-pds">'</span>conf<span class="pl-pds">'</span></span>);
-
-<span class="pl-s">var</span> taskengine <span class="pl-k">=</span> requireRoot(<span class="pl-s1"><span class="pl-pds">'</span>lib/taskengine/te<span class="pl-pds">'</span></span>);
-
-<span class="pl-s3">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-st">function</span> (<span class="pl-vpf">grunt</span>) {
-  taskengine <span class="pl-k">=</span> taskengine({
-    <span class="pl-s1"><span class="pl-pds">"</span>parent<span class="pl-pds">"</span></span> <span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">"</span>build-step<span class="pl-pds">"</span></span>,
-    <span class="pl-s1"><span class="pl-pds">"</span>options<span class="pl-pds">"</span></span> <span class="pl-k">:</span> {
-      <span class="pl-s1"><span class="pl-pds">"</span>task<span class="pl-pds">"</span></span> <span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">"</span>clean<span class="pl-pds">"</span></span>,
-      <span class="pl-s1"><span class="pl-pds">"</span>package<span class="pl-pds">"</span></span> <span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">"</span>grunt-contrib-clean<span class="pl-pds">"</span></span>
-    }
-  });
-
-  taskengine.runSubtask(<span class="pl-s1"><span class="pl-pds">"</span>clean<span class="pl-pds">"</span></span>,
-    <span class="pl-s1"><span class="pl-pds">"</span>Cleaning everything from a directory<span class="pl-pds">"</span></span>,
-    grunt,
-    grunt.config(<span class="pl-s1"><span class="pl-pds">"</span>build<span class="pl-pds">"</span></span>)[<span class="pl-s1"><span class="pl-pds">"</span>build-step<span class="pl-pds">"</span></span>].task);
-};</pre></div>
-
-<p>The task itself is registering itself, referencing the parent build-step, and
-then running the subtask.</p>
+<div class="highlight highlight-shell"><pre>build-it</pre></div>
       </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/1and1">1and1</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
     </div>
-
+    <script src="javascripts/scale.fix.js"></script>
     
   </body>
 </html>
