@@ -6,6 +6,21 @@ var path = require('path');
 var merge = require('merge');
 
 export class ConfigurationFileLoaderService {
+    static fileExists(filePath) {
+        try {
+            require('fs').statSync(filePath);
+        } catch (err) {
+            if (err.code == 'ENOENT') return false;
+        }
+        return true;
+    }
+
+    static loadFile(fileName) : any {
+        var file = path.join(global.basedir, fileName);
+        if (!ConfigurationFileLoaderService.fileExists(file)) throw "You have to create a '" + fileName + "' file with your build-configuration first";
+        return require(file);
+    }
+
     public static load(grunt : any) : any {
         var steps: any;
         var stepsFile: string;
@@ -13,28 +28,45 @@ export class ConfigurationFileLoaderService {
         var currentAction = environment.Action.get();
         switch (environment.Action.get()) {
             case environment.ActionType.Build:
-                steps = require(path.join(global.basedir + '/build.json'));
+                steps = ConfigurationFileLoaderService.loadFile('build.json');
                 break;
             case environment.ActionType.Deploy:
-                steps = require(path.join(global.basedir + '/deploy.json'));
+                steps = ConfigurationFileLoaderService.loadFile('deploy.json');
                 break;
             case environment.ActionType.Ship:
-                var build = require(path.join(global.basedir + '/build.json'));
-                var deploy = require(path.join(global.basedir + '/deploy.json'));
-                steps = merge(build, deploy);
+                var build = ConfigurationFileLoaderService.loadFile('build.json');
+                var deploy = ConfigurationFileLoaderService.loadFile('deploy.json');
+                steps = {
+                    "build": build,
+                    "deploy": deploy
+                };
+                break;
+            case environment.ActionType.Init:
+                steps = {
+                    "initialize": {
+                        "itbldz": {
+                            "task": "init-itbldz",
+                            "package" : "grunt-itbldz-init"
+                        }
+                    }
+                };
                 break;
             default:
                 throw "No configuration for this build";
         }
-        
-        var config = require(path.join(global.basedir + '/config.json'));
-        config.directories = config.directories || {};
-        config.directories.root = global.basedir;
-        config.directories.itbldz = global.relativeDir;
 
         grunt.initConfig();
         grunt.config.set("steps", steps);
-        grunt.config.set("config", config);
+
+        var configFile = path.join(global.basedir, 'config.json');
+        if (ConfigurationFileLoaderService.fileExists(configFile)) {
+            var config = require(configFile);
+            config.directories = config.directories || {};
+            config.directories.root = global.basedir;
+            config.directories.itbldz = global.relativeDir;
+            grunt.config.set("config", config);
+        }
+
         grunt.config.set("env", new environment.Variables().get());
 
         var result = grunt.config.get("steps");
@@ -95,7 +127,7 @@ export class BuildConfigurationService implements ConfigurationService {
     public load(build, callback: (models: models.Configuration) => void): void {
         var steps = Object.keys(build);
 
-        var actions = ["build", "deploy", "ship"];
+        var actions = ["build", "deploy", "ship", "init"];
         var selectedTasks = <string[]>this.argv._.filter((_) => (actions.every((action) => action != _)));
         log.verbose.writeln("config", "Tasks selected to run=" + JSON.stringify(selectedTasks));
 

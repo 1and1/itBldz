@@ -1,13 +1,6 @@
-﻿{
-    "prepare": {
-        "clean": {
-            "task": "clean",
-            "package": "grunt-contrib-clean",
-            "options": { "force": true },
-            "target": [ "<%= config.directories.target %>" ]
-        }
-    },
-    "build": {
+{
+    "prepare": {},
+    "compile": {
         "typescript": {
             "task": "ts",
             "package": "grunt-ts",
@@ -16,35 +9,37 @@
                     "module": "commonjs",
                     "compile": true
                 },
-                "src": "<%= config.directories.ts %>"
+                "src": "<%= config.sources.TypeScript.files %>"
             }
         }
     },
     "test": {
-        "unit": {
-            "task": "mochaTest",
-            "package": "grunt-mocha-test",
-            "dependencies": [ "chai", "sinon" ],
-            "test": {
-                "src": [ "<%= config.files.unit %>" ],
-                "quiet": "true"
+        "typescript": {
+            "unit": {
+                "task": "mochaTest",
+                "package": "grunt-mocha-test",
+                "dependencies": [
+                    "chai",
+                    "sinon"
+                ],
+                "test": {
+                    "src": [
+                        "<%= config.sources.TypeScript.tests.unit %>"
+                    ]
+                }
+            },
+            "acceptance": {
+                "task": "cucumberjs",
+                "package": "grunt-cucumber",
+                "src": "<%= config.directories.TypeScript.acceptance %>",
+                "dependencies": [
+                    "cucumber"
+                ],
+                "options": {
+                    "steps": "<%= config.directories.TypeScript.acceptance %>",
+                    "modulePath": "<%= config.directories.root %>/node_modules/cucumber/lib/cucumber.js"
+                }
             }
-        },
-        "acceptance": {
-            "task": "cucumberjs",
-            "package": "grunt-cucumber",
-            "src": "<%= config.files.acceptance %>",
-            "options": {
-                "steps": "<%= config.files.acceptance %>",
-                "modulePath": "<%= config.directories.root %>/node_modules/cucumber/lib/cucumber.js"
-            }
-        }
-    },
-    "create-deployable": { 
-        "copy": {
-            "task": "copy",
-            "package": "grunt-contrib-copy",
-            "files": "<%= config.deployable.application %>"
         }
     }
 }

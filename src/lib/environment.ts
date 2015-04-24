@@ -13,7 +13,8 @@
 export enum ActionType {
     Build,
     Deploy,
-    Ship
+    Ship,
+    Init
 }
 
 export class Action {    
@@ -27,6 +28,9 @@ export class Action {
         }
         else if (_.some((_) => _ == "ship")) {
             return ActionType.Ship;
+        }
+        else if (_.some((_) => _ == "init")) {
+            return ActionType.Init;
         }
     }
 }

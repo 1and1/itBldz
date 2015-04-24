@@ -44,6 +44,11 @@ export class Engine {
                 var engine = new ShipEngine(new grunt.Grunt(g));
                 log.writeln("itbldz", "Ship engine loaded!");
                 return engine;
+            case environment.ActionType.Init:
+                var engine = new InitializeEngine(new grunt.Grunt(g));
+                log.writeln("itbldz", "Initialzation engine loaded!");
+                return engine;
+
         }
 
         throw Error("No engine available");
@@ -68,5 +73,12 @@ export class ShipEngine extends Engine {
     public constructor(grunt: grunt.Grunt, configuration = new config.BuildConfigurationService(), taskService = new tasks.ConfigTaskRegistrationService(grunt)) {
         super(grunt, configuration, taskService);
         this.currentEngine = "ShipEngine";
+    }
+}
+
+export class InitializeEngine extends Engine {
+    public constructor(grunt: grunt.Grunt, configuration = new config.BuildConfigurationService(), taskService = new tasks.ConfigTaskRegistrationService(grunt)) {
+        super(grunt, configuration, taskService);
+        this.currentEngine = "InitializationEngine";
     }
 }

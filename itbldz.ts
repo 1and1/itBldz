@@ -10,7 +10,7 @@ var nopt = require('nopt');
 var known = { help: Boolean, version: Boolean, completion: String };
 var aliases = { h: '--help', V: '--version', v: '--verbose' };
 
-var args = nopt(known, aliases, process.argv, 2);
+var _args = nopt(known, aliases, process.argv, 2);
 
 process.title = 'itbldz';
 
@@ -45,7 +45,7 @@ export function itbldz(args) {
                 });
             });
         } catch (error) {
-            log.error("itbldz", error);
+            log.error("itbldz", _args.stack ? error.stack : error);
             process.exit(1);
         }
     } else {

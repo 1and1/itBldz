@@ -1,26 +1,38 @@
-﻿{
+{
     "directories": {
-        "ts": [ "<%= config.directories.root %>/**/*.ts", "!<%= config.directories.root %>/node_modules/**/*.ts" ],
-        "results": "<%= config.directories.root %>/../results",
-        "target": "<%= config.directories.root %>/../target"
-    },
-    "files": {
-        "application": {
-            "files": [ "*.js", "*.json", "src/**/*.js", "build*", "deploy*", "ship*", "readme.md", "bin/*.js" ]
-        },
-        "acceptance": "<%= config.directories.root %>/tests/features",
-        "unit": "<%= config.directories.root %>/tests/units/**/*.js"
-    },
-    "deployable": {
-        "application": {
-            "files": [
-                {
-                    "expand": true,
-                    "cwd": "<%= config.directories.root %>/",
-                    "src": "<%= config.files.application.files %>",
-                    "dest": "<%= config.directories.target %>/itbldz"
-                }
-            ]
+        "target": "<%= config.directories.root %>/../target",
+        "TypeScript": {
+            "src": "<%= config.directories.root %>/",
+            "unit": "<%= config.directories.root %>/tests/units",
+            "acceptance": "<%= config.directories.root %>/tests/features"
         }
+    },
+    "sources": {
+        "TypeScript": {
+            "files": [
+                "<%= config.directories['TypeScript'].src %>/**/*.ts",
+                "!<%= config.directories['TypeScript'].src %>/node_modules/**/*"
+            ],
+            "tests": {
+                "unit": [
+                    "<%= config.directories['TypeScript'].unit %>/**/*.js"
+                ]
+            }
+        }
+    },
+    "deployables": {
+        "files": [
+            {
+                "expand": true,
+                "cwd": "<%= config.directories['TypeScript'].src %>/",
+                "src": [
+                    "**/*.js",
+                    "**/*.json",
+                    "!node_modules/**/*",
+                    "readme.md"
+                ],
+                "dest": "<%= config.directories.target %>"
+            }
+        ]
     }
 }
