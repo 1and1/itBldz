@@ -37,7 +37,8 @@
                 ],
                 "options": {
                     "steps": "<%= config.directories.TypeScript.acceptance %>",
-                    "modulePath": "<%= config.directories.root %>/node_modules/cucumber/lib/cucumber.js"
+                    "modulePath": "<%= config.directories.root %>/node_modules/cucumber/lib/cucumber.js",
+                    "format": "pretty"
                 }
             }
         }
