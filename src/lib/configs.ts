@@ -6,18 +6,9 @@ var path = require('path');
 var merge = require('merge');
 
 export class ConfigurationFileLoaderService {
-    static fileExists(filePath) {
-        try {
-            require('fs').statSync(filePath);
-        } catch (err) {
-            if (err.code == 'ENOENT') return false;
-        }
-        return true;
-    }
-
     static loadFile(fileName) : any {
         var file = path.join(global.basedir, fileName);
-        if (!ConfigurationFileLoaderService.fileExists(file)) throw "You have to create a '" + fileName + "' file with your build-configuration first";
+        if (!environment.FileSystem.fileExists(file)) throw "You have to create a '" + fileName + "' file with your build-configuration first";
         return require(file);
     }
 
@@ -59,7 +50,7 @@ export class ConfigurationFileLoaderService {
         grunt.config.set("steps", steps);
 
         var configFile = path.join(global.basedir, 'config.json');
-        if (ConfigurationFileLoaderService.fileExists(configFile)) {
+        if (environment.FileSystem.fileExists(configFile)) {
             var config = require(configFile);
             config.directories = config.directories || {};
             config.directories.root = global.basedir;

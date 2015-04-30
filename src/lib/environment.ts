@@ -17,6 +17,17 @@ export enum ActionType {
     Init
 }
 
+export class FileSystem {
+    public static fileExists(filePath) {
+        try {
+            require('fs').statSync(filePath);
+        } catch (err) {
+            if (err.code == 'ENOENT') return false;
+        }
+        return true;
+    }
+}
+
 export class Action {    
     public static get(): ActionType {
         var _ = require('yargs').argv._;
