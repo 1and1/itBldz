@@ -28,13 +28,13 @@ class StandardFileSystem implements IFileSystem {
         return environment.FileSystem.fileExists(this.create(directoryName, fileName));
     }
 
-    withFileInDirectory(fileName: string, directoryName: string, callback: (err) => void) {
+    withFileInDirectory(fileName: string, directoryName: string, callback: () => void) {
         this.withFileWithContentInDirectory(fileName, "", directoryName, callback);
     }
 
-    withFileWithContentInDirectory(fileName: string, content: any, directoryName: string, callback: (err) => void) {
+    withFileWithContentInDirectory(fileName: string, content: any, directoryName: string, callback: () => void) {
         fs.mkdir(this.create(directoryName), (err) => {
-            fs.writeFile(this.create(directoryName, fileName), content, callback);
+            fs.writeFile(this.create(directoryName, fileName), content, () => { callback(); });
         });
     }
 
