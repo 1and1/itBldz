@@ -8,7 +8,7 @@ target/**
 npm-debug.log
 .ntvs_analysis.dat
 itBldz.njsproj
-tests/**/*.js
+tests/units/**/*.js
 tests/**/*.js.map
 src/lib/**/*.js
 src/lib/**/*.js.map
@@ -20,3 +20,5 @@ node_modules/**
 bin/*.dll
 obj/**
 tscommand*
+tests/features/testdata/**
+tests/features/support/*.js

@@ -1,48 +1,48 @@
 {
-    "name": "itbldz",
-    "version": "2.0.12",
-    "description": "Gruntpowered CI loving awesomeness",
-    "repository": {
-        "type": "git",
-        "url": "http://1and1.github.io/itBldz/"
-    },
-    "keywords": [
-        "build",
-        "pipeline"
-    ],
-    "author": "1and1",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/1and1/itBldz/issues"
-    },
-    "homepage": "https://github.com/1and1/itBldz",
-    "dependencies": {
-        "async": "^0.9.0",
-        "chalk": "^1.0.0",
-        "findup-sync": "^0.2.1",
-        "grunt": "^0.4.5",
-        "grunt-prompt": "^1.3.0",
-        "merge": "^1.2.0",
-        "nopt": "^3.0.1",
-        "npm": "^2.7.6",
-        "resolve": "^1.1.6",
-        "time-grunt": "^1.1.1",
-        "yargs": "^3.7.2"
-    },
-    "bin": {
-        "build-it": "bin/build-it.js",
-        "deploy-it": "bin/deploy-it.js",
-        "ship-it": "bin/ship-it.js",
-        "init-itbldz": "bin/init-itbldz.js"
-    },
-    "scripts": {
-        "test": "build-it"
-    },
-    "main": "./itbldz.js",
-    "preferGlobal": "true",
-    "devDependencies": {
-        "chai": "^2.2.0",
-        "cucumber": "^0.4.8",
-        "sinon": "^1.14.1"
-    }
+  "name": "itbldz",
+  "version": "2.0.13",
+  "description": "Gruntpowered CI loving awesomeness",
+  "repository": {
+    "type": "git",
+    "url": "http://1and1.github.io/itBldz/"
+  },
+  "keywords": [
+    "build",
+    "pipeline"
+  ],
+  "author": "1and1",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/1and1/itBldz/issues"
+  },
+  "homepage": "https://github.com/1and1/itBldz",
+  "dependencies": {
+    "async": "^0.9.0",
+    "chalk": "^1.0.0",
+    "findup-sync": "^0.2.1",
+    "grunt": "^0.4.5",
+    "grunt-prompt": "^1.3.0",
+    "merge": "^1.2.0",
+    "nopt": "^3.0.1",
+    "npm": "^2.7.6",
+    "resolve": "^1.1.6",
+    "time-grunt": "^1.1.1",
+    "yargs": "^3.7.2"
+  },
+  "bin": {
+    "build-it": "bin/build-it.js",
+    "deploy-it": "bin/deploy-it.js",
+    "ship-it": "bin/ship-it.js",
+    "init-itbldz": "bin/init-itbldz.js"
+  },
+  "scripts": {
+    "test": "build-it"
+  },
+  "main": "./itbldz.js",
+  "preferGlobal": "true",
+  "devDependencies": {
+    "chai": "^2.2.0",
+    "cucumber": "^0.4.8",
+    "sinon": "^1.14.1"
+  }
 }
