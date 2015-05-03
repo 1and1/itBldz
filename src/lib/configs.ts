@@ -37,7 +37,7 @@ export class ConfigurationFileLoaderService {
                     "initialize": {
                         "itbldz": {
                             "task": "init-itbldz",
-                            "package" : "grunt-itbldz-init"
+                            "package": "grunt-itbldz-init"
                         }
                     }
                 };
