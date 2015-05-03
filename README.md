@@ -5,12 +5,6 @@ __The only build-tool you'll ever need__
 
 The goal is to provide an easy to setup framework which allow every development team a "closed for modification, open for extension"-plattform for their own needs.
 
-__Breaking Changes to v1__
-
-* bpm was dropped. itbldz now setup itself
-* Custom config files no longer supported
-* custom tasks can no longer be added. all the tasks exist purely in memory, so every task that runs must be npm
-
 ## Usage
 
 ### Setup
