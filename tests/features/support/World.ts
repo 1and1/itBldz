@@ -64,7 +64,7 @@ class StandardSystemTerminal implements ISystemTerminal {
 
     execute(command: string, callback: () => void) {
         this.output = "";
-
+        command = require("path").join(this.cwd, command);
         sys.exec(command, { cwd: this.cwd }, (error, stdout, stderr) => {
             this.output = stdout.toString();
             callback();

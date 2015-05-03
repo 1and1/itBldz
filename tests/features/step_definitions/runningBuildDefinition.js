@@ -1,6 +1,7 @@
 ﻿var runningBuild = function () {
     this.World = require("../support/World").World;
     require('chai').should();
+    require('hide-stack-frames-from')('cucumber');
     
     var setupFile;
     var config;
@@ -46,8 +47,6 @@
     });
     
     this.Given(/^the task group "([^"]*)" in the build step "([^"]*)" has a task runner that copies the src directory to the target directory$/, function (groupName, stepName, callback) {
-        var filesToCopy = this.fileSystem.getFullDirectory("src") + "/*.js";
-        
         config[stepName][groupName]["copy"] = {
             "task": "copy",
             "package": "grunt-contrib-copy",
@@ -66,11 +65,12 @@
     });
     
     this.When(/^I execute the build command$/, function (callback) {
-        this.terminal.execute("./../../../build", callback);
+        this.terminal.execute("../../../build", callback);
     });
     
     this.Then(/^all the steps should be executed in the precise order$/, function (callback) {
-        var template = "Running {what} task";
+        //var template = "Running {what} task";
+        var _ = this;
         var tasks = [];
         var steps = Object.keys(config);
         var traverse = function (config, item, parents) {
@@ -81,14 +81,15 @@
             if (node["task"]) {
                 return;
             }
-            var children = Object.keys(node[item]);
+            var children = Object.keys(node);
             children.forEach(function (child) {
-                traverse(node[item], child, name);
+                traverse(node, child, name);
             });
-        };        
-        traverse(config, steps);
+        };      
+        steps.forEach(function(step) {  
+            traverse(config, step);
+        });
         
-        var _ = this;
         var lastIndex = -1;
         tasks.forEach(function (task) {
             _.terminal.output.should.contain(task);
@@ -104,6 +105,6 @@
         this.fileSystem.isFileInDirectory(fileName, folder).should.be.true;
         callback();
     });
-}
+};
 
 module.exports = runningBuild;

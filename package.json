@@ -1,6 +1,6 @@
 {
   "name": "itbldz",
-  "version": "2.0.16",
+  "version": "2.0.18",
   "description": "Gruntpowered CI loving awesomeness",
   "repository": {
     "type": "git",
@@ -42,6 +42,7 @@
   "devDependencies": {
     "chai": "^2.2.0",
     "cucumber": "^0.4.8",
+    "hide-stack-frames-from": "^1.0.0",
     "sinon": "^1.14.1"
   }
 }

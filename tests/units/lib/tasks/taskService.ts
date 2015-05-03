@@ -92,7 +92,6 @@ describe("When registering a task group", () => {
         });
 
         it("should have registered the task once", () => {
-            console.log(grunt.mock.registerTask.calledTwice);
             expect(grunt.mock.registerTask.calledOnce).to.be.true;
         });
     });
