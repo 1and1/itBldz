@@ -1,4 +1,6 @@
-﻿export class Variables {
+﻿var fs = require('fs');
+
+export class Variables {
     public get() {
         var self = {};
 
@@ -21,10 +23,10 @@ export class FileSystem {
     public static fileExists(filePath) {
         try {
             console.log("Checking if file exists: " + filePath + " among the following files:");
-            readdirSync(filePath).forEach((file) => {
+            fs.readdirSync(filePath).forEach((file) => {
                 console.log("\t" + file);
             });
-            require('fs').statSync(filePath);
+            fs.statSync(filePath);
         } catch (err) {
             if (err.code == 'ENOENT') return false;
         }
