@@ -56,7 +56,7 @@
                         "expand": true,
                         "cwd": this.fileSystem.getFullDirectory("src"),
                         "src": "*.js",
-                        "dest": "target"
+                        "dest": "../target"
                     }
                 ]
             }
