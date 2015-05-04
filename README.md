@@ -1,5 +1,8 @@
 # itBldz Build-Tools
-[![travisci-build](https://api.travis-ci.org/1and1/itBldz.svg?branch=master)](https://travis-ci.org/1and1/itBldz) [![NPM](https://nodei.co/npm/itbldz.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/itbldz/)
+
+[![travisci-build](https://api.travis-ci.org/1and1/itBldz.svg?branch=master)](https://travis-ci.org/1and1/itBldz)
+[![david-dm](https://david-dm.org/1and1/itBldz.svg)](https://david-dm.org/1and1/itBldz)
+[![NPM](https://nodei.co/npm/itbldz.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/itbldz/)
 
 __The only build-tool you'll ever need__
 
