@@ -53,9 +53,9 @@
             "deployables": {
                 "files": [
                     {
-                        "expand": true,
+                        "expand": true, "flatten": true,
                         "cwd": this.fileSystem.baseDirectory,
-                        "src": "src/*.js",
+                        "src": ["src/*.js"],
                         "dest": "target/"
                     }
                 ]
