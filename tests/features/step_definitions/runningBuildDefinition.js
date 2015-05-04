@@ -7,6 +7,7 @@
     var config;
     
     this.Given(/^I have a src directory with a file "([^"]*)"$/, function (fileName, callback) {
+        this.fileSystem.withEmptyDirectory(".", callback);
         this.fileSystem.withFileInDirectory(fileName, "src", callback);
     });
     

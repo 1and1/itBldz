@@ -90,9 +90,6 @@ export class World {
         this.terminal = new StandardSystemTerminal(this.fileSystem.getFullDirectory("."),
             (stderr) => {
                 console.error(stderr);
-            },
-            (stdout) => {
-                console.log(stdout);
             });
         callback();
     }
