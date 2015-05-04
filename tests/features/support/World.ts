@@ -39,6 +39,9 @@ class StandardFileSystem implements IFileSystem {
     }
 
     withEmptyDirectory(directoryName: string, callback: () => void) {
+        try  {
+            fs.rmdirSync(this.create(directoryName));            
+        } catch (err) {}
         fs.mkdir(this.create(directoryName), (err) => {
             callback();
         });
@@ -57,15 +60,21 @@ export interface ISystemTerminal {
 class StandardSystemTerminal implements ISystemTerminal {
     cwd: string;
     output: string;
+    onError: (stderr) => void;
+    onOut: (stdout) => void;
 
-    public constructor(cwd: string) {
+    public constructor(cwd: string, onError = (stderr) => {}, onOut = (stdout) => {}) {
         this.cwd = cwd;
+        this.onError = onError;
+        this.onOut = onOut;
     }
 
     execute(command: string, callback: () => void) {
         this.output = "";
-        command = require("path").join(this.cwd, command);
+        command = path.join(this.cwd, command);
         sys.exec(command, { cwd: this.cwd }, (error, stdout, stderr) => {
+            if (stderr) this.onError(stderr);
+            this.onOut(stdout);
             this.output = stdout.toString();
             callback();
         });
@@ -78,7 +87,13 @@ export class World {
     
     public constructor(callback) {
         this.fileSystem = new StandardFileSystem();
-        this.terminal = new StandardSystemTerminal(this.fileSystem.getFullDirectory("."));
+        this.terminal = new StandardSystemTerminal(this.fileSystem.getFullDirectory("."),
+            (stderr) => {
+                console.error(stderr);
+            },
+            (stdout) => {
+                console.log(stdout);
+            });
         callback();
     }
 }

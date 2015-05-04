@@ -27,6 +27,19 @@
                         "<%= config.sources.TypeScript.tests.unit %>"
                     ]
                 }
+            },
+            "acceptance": {
+                "task": "cucumberjs",
+                "package": "grunt-cucumber",
+                "src": "<%= config.directories.TypeScript.acceptance %>",
+                "dependencies": [
+                    "cucumber"
+                ],
+                "options": {
+                    "steps": "<%= config.directories.TypeScript.acceptance %>",
+                    "modulePath": "<%= config.directories.root %>/node_modules/cucumber/lib/cucumber.js",
+                    "format": "pretty"
+                }
             }
         }
     }

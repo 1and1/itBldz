@@ -10,7 +10,7 @@
         this.fileSystem.withFileInDirectory(fileName, "src", callback);
     });
     
-    this.Given(/^I have a target directory$/, function (callback) {
+    this.Given(/^I have an empty target directory$/, function (callback) {
         this.fileSystem.withEmptyDirectory("target", callback);
     });
     
@@ -65,11 +65,11 @@
     });
     
     this.When(/^I execute the build command$/, function (callback) {
-        this.terminal.execute("../../../build", callback);
+        this.terminal.execute("../../../build --verbose", callback);
     });
     
     this.Then(/^all the steps should be executed in the precise order$/, function (callback) {
-        //var template = "Running {what} task";
+        var template = 'Running "{what}" task';
         var _ = this;
         var tasks = [];
         var steps = Object.keys(config);
@@ -77,10 +77,9 @@
             var node = config[item];
             if (!node) return;
             var name = (parents) ? parents + "/" + item : item;
-            tasks.push(name);
-            if (node["task"]) {
-                return;
-            }
+            tasks.push(template.replace("{what}", name));
+            if (node["task"]) return;
+            
             var children = Object.keys(node);
             children.forEach(function (child) {
                 traverse(node, child, name);

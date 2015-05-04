@@ -4,7 +4,7 @@
 
 Background: 
 	Given I have a src directory with a file "test.js"
-	And I have a target directory
+	And I have an empty target directory
 	Given I have an empty build file
 		And the build has the build steps "prepare"
 			And the build step "prepare" has a task runner that cleans the target folder
