@@ -54,9 +54,9 @@
                 "files": [
                     {
                         "expand": true,
-                        "cwd": this.fileSystem.getFullDirectory("src"),
-                        "src": "*.js",
-                        "dest": "../target"
+                        "cwd": this.fileSystem.baseDirectory,
+                        "src": "src/*.js",
+                        "dest": "target/"
                     }
                 ]
             }
