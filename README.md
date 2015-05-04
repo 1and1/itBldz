@@ -1,6 +1,8 @@
 # itBldz Build-Tools
 [![travisci-build](https://api.travis-ci.org/1and1/itBldz.svg?branch=master)](https://travis-ci.org/1and1/itBldz) [![NPM](https://nodei.co/npm/itbldz.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/itbldz/)
 
+[![david-dm](https://david-dm.org/1and1/itBldz.svg)](https://david-dm.org/1and1/itBldz)
+
 __The only build-tool you'll ever need__
 
 The goal is to provide an easy to setup framework which allow every development team a "closed for modification, open for extension"-plattform for their own needs.
