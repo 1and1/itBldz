@@ -65,7 +65,7 @@
     });
     
     this.When(/^I execute the build command$/, function (callback) {
-        this.terminal.execute("../../../build --verbose", callback);
+        this.terminal.execute("../../../build", callback);
     });
     
     this.Then(/^all the steps should be executed in the precise order$/, function (callback) {

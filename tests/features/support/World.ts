@@ -29,7 +29,7 @@ class StandardFileSystem implements IFileSystem {
     }
 
     withFileInDirectory(fileName: string, directoryName: string, callback: () => void) {
-        this.withFileWithContentInDirectory(fileName, "some content", directoryName, callback);
+        this.withFileWithContentInDirectory(fileName, "var content = 'some content';", directoryName, callback);
     }
 
     withFileWithContentInDirectory(fileName: string, content: any, directoryName: string, callback: () => void) {
