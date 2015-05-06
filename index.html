@@ -5,137 +5,99 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Itbldz by 1and1</title>
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <link rel="stylesheet" href="stylesheets/_.css">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
   </head>
   <body>
-    <div class="wrapper">
-      <header>
-        <h1>Itbldz</h1>
-        <p>MyWebsite Build-Tools - The only build-tools you&#39;ll ever need</p>
+    <div class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a href="../" class="navbar-brand">itbldz by 1and1</a>
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-main">
 
-        <p class="view"><a href="https://github.com/1and1/itBldz">View the Project on GitHub <small>1and1/itBldz</small></a></p>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="https://github.com/1and1/itbldz" target="_blank">itbldz on github</a></li>
+            <li><a href="https://www.npmjs.com/package/itbldz" target="_blank">itbldz on npm</a></li>
+          </ul>
 
-
-        <ul>
-          <li><a href="https://github.com/1and1/itBldz/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/1and1/itBldz/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/1and1/itBldz">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h1>
-<a id="itbldz-build-tools" class="anchor" href="#itbldz-build-tools" aria-hidden="true"><span class="octicon octicon-link"></span></a>itBldz Build-Tools</h1>
-
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <h1 id="itbldz-build-tools">itBldz Build-Tools</h1>
 <p><a href="https://travis-ci.org/1and1/itBldz"><img src="https://api.travis-ci.org/1and1/itBldz.svg?branch=master" alt="travisci-build"></a>
 <a href="https://david-dm.org/1and1/itBldz"><img src="https://david-dm.org/1and1/itBldz.svg" alt="david-dm"></a>
 <a href="https://nodei.co/npm/itbldz/"><img src="https://nodei.co/npm/itbldz.png?downloads=true&amp;downloadRank=true&amp;stars=true" alt="NPM"></a></p>
-
-<p><strong>The only build-tool you'll ever need</strong></p>
-
-<p>The goal is to provide an easy to setup framework which allow every development team a "closed for modification, open for extension"-plattform for their own needs.</p>
-
-<h2>
-<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
-
-<h3>
-<a id="setup" class="anchor" href="#setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setup</h3>
-
+<p><strong>The only build-tool you&#39;ll ever need</strong></p>
+<p>The goal is to provide an easy to setup framework which allow every development team a &quot;closed for modification, open for extension&quot;-plattform for their own needs.</p>
+<h2 id="usage">Usage</h2>
+<h3 id="setup">Setup</h3>
 <p>Install itBldz</p>
-
-<div class="highlight highlight-shell"><pre>npm install -g itbldz --save-dev</pre></div>
-
-<p><em>Note:</em> If you don't install it globally, you can use ./node_modules/itbldz/build|deploy|ship for "shorthand" commands</p>
-
+<pre><code class="lang-shell">npm install -g itbldz --save-dev
+</code></pre>
+<p><em>Note:</em> If you don&#39;t install it globally, you can use ./node_modules/itbldz/build|deploy|ship for &quot;shorthand&quot; commands</p>
 <p>create your config</p>
-
-<div class="highlight highlight-shell"><pre>init-itbldz</pre></div>
-
+<pre><code class="lang-shell">init-itbldz
+</code></pre>
 <p>if something is missing edit the config files that are created (config.json, build.json, deploy.json).</p>
-
 <p>build it</p>
-
-<div class="highlight highlight-shell"><pre>build-it</pre></div>
-
+<pre><code class="lang-shell">build-it
+</code></pre>
 <p>deploy it</p>
-
-<div class="highlight highlight-shell"><pre>deploy-it</pre></div>
-
+<pre><code class="lang-shell">deploy-it
+</code></pre>
 <p>or ship it (build &amp; deploy)</p>
-
-<div class="highlight highlight-shell"><pre>ship-it</pre></div>
-
+<pre><code class="lang-shell">ship-it
+</code></pre>
 <p>in the shell / commandline</p>
-
-<h3>
-<a id="options" class="anchor" href="#options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Options</h3>
-
+<h3 id="options">Options</h3>
 <p>All your arguments will be passed to grunt. To trigger tasks, simply add them.</p>
-
 <p>Examples:</p>
-
 <p>Get all tasks with description</p>
-
-<div class="highlight highlight-shell"><pre>build-it --help</pre></div>
-
+<pre><code class="lang-shell">build-it --help
+</code></pre>
 <p>Verbose output:</p>
-
-<div class="highlight highlight-shell"><pre>build-it --verbose</pre></div>
-
+<pre><code class="lang-shell">build-it --verbose
+</code></pre>
 <p>Given this config:</p>
-
 <pre><code>{
-    "compile": { /* compile your sources */ },
-    "build": {
-        "unit" : { /* unit tests */ },
-        "acceptance" : { /* acceptance tests */ }
+    &quot;compile&quot;: { /* compile your sources */ },
+    &quot;build&quot;: {
+        &quot;unit&quot; : { /* unit tests */ },
+        &quot;acceptance&quot; : { /* acceptance tests */ }
     }
 }
+</code></pre><p>Compile your source:</p>
+<pre><code class="lang-shell">build-it compile
 </code></pre>
-
-<p>Compile your source:</p>
-
-<div class="highlight highlight-shell"><pre>build-it compile</pre></div>
-
 <p>Compile and trigger your unit tests:</p>
-
-<div class="highlight highlight-shell"><pre>build-it compile <span class="pl-c1">test</span>/unit</pre></div>
-
-<h3>
-<a id="configure-for-your-use-case" class="anchor" href="#configure-for-your-use-case" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configure for your use case</h3>
-
+<pre><code class="lang-shell">build-it compile test/unit
+</code></pre>
+<h3 id="configure-for-your-use-case">Configure for your use case</h3>
 <p>To include this project, all you have to do is to configure the build.json and
 the config.json.</p>
-
-<h4>
-<a id="buildjson" class="anchor" href="#buildjson" aria-hidden="true"><span class="octicon octicon-link"></span></a>build.json</h4>
-
+<h4 id="build-json">build.json</h4>
 <p><strong>What to do</strong></p>
-
 <p>The build.json is the task-template. It orchestrates the build, and is separated
 into build-steps, task-groups and tasks.</p>
-
-<h5>
-<a id="build-steps" class="anchor" href="#build-steps" aria-hidden="true"><span class="octicon octicon-link"></span></a>build-steps</h5>
-
+<h5 id="build-steps">build-steps</h5>
 <p>The build-step is the first layer. It defines the main tasks of the build. You
 should use a natural language that fits your build-pipeline best.</p>
-
-<h5>
-<a id="task-groups" class="anchor" href="#task-groups" aria-hidden="true"><span class="octicon octicon-link"></span></a>Task Groups</h5>
-
+<h5 id="task-groups">Task Groups</h5>
 <p>Task-groups are containers for other task-groups and tasks. They do not run
 by itself, but rather orchestrate the task-groups and tasks they contain.
 They are used to organize build-steps, and should use a natural language that
 describe their use best.</p>
-
-<h5>
-<a id="tasks-runners" class="anchor" href="#tasks-runners" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tasks Runners</h5>
-
+<h5 id="tasks-runners">Tasks Runners</h5>
 <p>Task Runners are the hard and soul, and are executors for grunt-tasks. They can
 have arbitrary names and should describe best what they do, not what grunt task
 they are using.
@@ -143,122 +105,81 @@ Which grunt-task they run is specified by the properties <em>task</em> and <em>p
 The <em>task</em> field specifies the name of the grunt-task that should be run, while
 the <em>package</em> field specifies which npm package is required to run the task.
 <strong>Note</strong>: itBldz will try to install all required packages automatically. However,
-at the current moment for global installation of itblz that's only true for references
-you do not require('') in your application. These you will have to add to your
+at the current moment for global installation of itblz that&#39;s only true for references
+you do not require(&#39;&#39;) in your application. These you will have to add to your
 package.json.</p>
-
 <p>The build.json is to be the same on every environment you run the build.</p>
-
 <p>An example:</p>
-
-<div class="highlight highlight-json"><pre>{
-    <span class="pl-s"><span class="pl-pds">"</span>test<span class="pl-pds">"</span></span>: {
-        <span class="pl-s"><span class="pl-pds">"</span>unit<span class="pl-pds">"</span></span>: {
-            <span class="pl-s"><span class="pl-pds">"</span>task<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>mochaTest<span class="pl-pds">"</span></span>,
-            <span class="pl-s"><span class="pl-pds">"</span>package<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>grunt-mocha-test<span class="pl-pds">"</span></span>,
-            <span class="pl-s"><span class="pl-pds">"</span>dependencies<span class="pl-pds">"</span></span>: [ <span class="pl-s"><span class="pl-pds">"</span>chai<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>sinon<span class="pl-pds">"</span></span> ],
-            <span class="pl-s"><span class="pl-pds">"</span>test<span class="pl-pds">"</span></span>: {
-                <span class="pl-s"><span class="pl-pds">"</span>src<span class="pl-pds">"</span></span>: [ <span class="pl-s"><span class="pl-pds">"</span>&lt;%= config.files.unit %&gt;<span class="pl-pds">"</span></span> ],
-                <span class="pl-s"><span class="pl-pds">"</span>quiet<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span>
+<pre><code class="lang-json">{
+    &quot;test&quot;: {
+        &quot;unit&quot;: {
+            &quot;task&quot;: &quot;mochaTest&quot;,
+            &quot;package&quot;: &quot;grunt-mocha-test&quot;,
+            &quot;dependencies&quot;: [ &quot;chai&quot;, &quot;sinon&quot; ],
+            &quot;test&quot;: {
+                &quot;src&quot;: [ &quot;&lt;%= config.files.unit %&gt;&quot; ],
+                &quot;quiet&quot;: &quot;true&quot;
             }
         }
     }
 }
-</pre></div>
-
+</code></pre>
 <p>This runs mocha unit tests</p>
-
 <ul>
-<li>
-<em>"task"</em>: the task name that should be executed</li>
-<li>
-<em>"package"</em>: the npm package that contains the task</li>
-<li>
-<em>"dependencies"</em> (optional): The dependencies the Task Runner may need</li>
+<li><em>&quot;task&quot;</em>: the task name that should be executed</li>
+<li><em>&quot;package&quot;</em>: the npm package that contains the task</li>
+<li><em>&quot;dependencies&quot;</em> (optional): The dependencies the Task Runner may need</li>
 </ul>
-
-<h4>
-<a id="configjson" class="anchor" href="#configjson" aria-hidden="true"><span class="octicon octicon-link"></span></a>config.json</h4>
-
+<h4 id="config-json">config.json</h4>
 <p><strong>Where to do it</strong></p>
-
 <p>The config.json is describing the environment the build is running in. It is
 used to control the directories, file-patterns, or environmental specifics.
 You can use all variables in the config.json in your build.json by typing</p>
-
 <blockquote>
 <p>&lt;%= config.YOURKEY %&gt;</p>
 </blockquote>
-
 <p>An example would be:</p>
-
-<div class="highlight highlight-json"><pre>    {
-      <span class="pl-s"><span class="pl-pds">"</span>directories<span class="pl-pds">"</span></span> : {
-        <span class="pl-s"><span class="pl-pds">"</span>sources<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>sources<span class="pl-pds">"</span></span>,
-        <span class="pl-s"><span class="pl-pds">"</span>output<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>target<span class="pl-pds">"</span></span>
+<pre><code class="lang-json">    {
+      &quot;directories&quot; : {
+        &quot;sources&quot; : &quot;sources&quot;,
+        &quot;output&quot; : &quot;target&quot;
       },
-      <span class="pl-s"><span class="pl-pds">"</span>filesets<span class="pl-pds">"</span></span> : {
-        <span class="pl-s"><span class="pl-pds">"</span>php<span class="pl-pds">"</span></span> : [<span class="pl-s"><span class="pl-pds">"</span>**/*.php<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>!**/framework/**<span class="pl-pds">"</span></span>]
+      &quot;filesets&quot; : {
+        &quot;php&quot; : [&quot;**/*.php&quot;, &quot;!**/framework/**&quot;]
       }
     }
-</pre></div>
-
+</code></pre>
 <p>Make sure the configuration natively reflects the language on how you are
 talking about your environment.</p>
-
 <p>For different environments you might have different configurations. Split them
 and reference the correct config when starting the build.</p>
-
-<h4>
-<a id="environment" class="anchor" href="#environment" aria-hidden="true"><span class="octicon octicon-link"></span></a>Environment</h4>
-
+<h4 id="environment">Environment</h4>
 <p>In your configuration and build you can access the environment variables of your host system as well.</p>
-
 <p>Add the Statement</p>
-
 <blockquote>
 <p>&lt;%= env.ENV_VARIABLE %&gt;</p>
 </blockquote>
-
 <p>and it will automatically be replaced.</p>
-
-<h2>
-<a id="i-need-a-function-in-my-configuration" class="anchor" href="#i-need-a-function-in-my-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>I need a function in my configuration!</h2>
-
+<h2 id="i-need-a-function-in-my-configuration-">I need a function in my configuration!</h2>
 <p>Sorry, but that sounds like an oxymoron. itbldz is to maintain complex scenarios in an easy way, and adding logic to your configuration does not seem to help reducing complexity.</p>
-
 <p>If you want a grunt task to do more then what is configured, then create an npm package, test it and use this.</p>
-
-<h2>
-<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributing</h2>
-
-<h3>
-<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting started</h3>
-
+<h2 id="contributing">Contributing</h2>
+<h3 id="getting-started">Getting started</h3>
 <p>Git clone this repository, run a</p>
-
 <pre><code>npm install -g itbldz
 npm install
-</code></pre>
-
-<p>and then</p>
-
+</code></pre><p>and then</p>
 <pre><code>build-it
-</code></pre>
-
-<p>to have it set up</p>
-
-<h3>
-<a id="guidelines" class="anchor" href="#guidelines" aria-hidden="true"><span class="octicon octicon-link"></span></a>Guidelines</h3>
-
+</code></pre><p>to have it set up</p>
+<h3 id="guidelines">Guidelines</h3>
 <p>You are free to extend the project as you wish. Every new code has to include
 unit tests and result in a green build when building the build-tools executing</p>
+<pre><code class="lang-shell">build-it
+</code></pre>
 
-<div class="highlight highlight-shell"><pre>build-it</pre></div>
-      </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/1and1">1and1</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+        <p><small>&mdash; Hosted on GitHub Pages &mdash;</small></p>
       </footer>
     </div>
     <script src="javascripts/scale.fix.js"></script>
