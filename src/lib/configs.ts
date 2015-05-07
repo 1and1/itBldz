@@ -48,6 +48,10 @@ export class ConfigurationFileLoaderService {
 
         grunt.initConfig();
         grunt.config.set("steps", steps);
+        var packageFile = path.join(global.basedir, 'package.json');
+        if (environment.FileSystem.fileExists(packageFile)) {
+            grunt.config.set("pck", require(packageFile));
+        }
 
         var configFile = path.join(global.basedir, 'config.json');
         if (environment.FileSystem.fileExists(configFile)) {
