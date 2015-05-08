@@ -18,9 +18,7 @@ Install itBldz
 npm install -g itbldz --save-dev
 ```
 
-_Note:_ If you don't install it globally, you can use ./node_modules/itbldz/build|deploy|ship for "shorthand" commands
-
-create your config
+and create your config with
 
 ```shell
 init-itbldz
@@ -46,7 +44,10 @@ or ship it (build & deploy)
 ship-it
 ```
 
-in the shell / commandline
+_Note:_ If you don't install it globally, you can use 
+```shell
+[node] ./node_modules/itbldz/bin/build-it.js|deploy-it.js|ship-it.js|init-itbldz.js
+```
 
 ### Options
 
@@ -68,7 +69,9 @@ build-it --verbose
 Given this config:
 ````
 {
-    "compile": { /* compile your sources */ },
+    "compile": { 
+        "typescript : { /* compile your sources */ }
+    },
 	"build": {
 		"unit" : { /* unit tests */ },
 		"acceptance" : { /* acceptance tests */ }
@@ -78,12 +81,12 @@ Given this config:
 
 Compile your source:
 ```shell
-build-it compile
+build-it compile/typescript
 ```
 
 Compile and trigger your unit tests:
 ```shell
-build-it compile test/unit
+build-it compile/typescript test/unit
 ```
 
 ### Configure for your use case
@@ -93,8 +96,6 @@ the config.json.
 
 #### build.json
 
-**What to do**
-
 The build.json is the task-template. It orchestrates the build, and is separated
 into build-steps, task-groups and tasks.
 
@@ -102,14 +103,40 @@ into build-steps, task-groups and tasks.
 The build-step is the first layer. It defines the main tasks of the build. You
 should use a natural language that fits your build-pipeline best.
 
+
+An example:
+````json
+    {
+        "prepare build environment" : {},
+        "compile" : {},
+        "tests" : {}
+    }
+````
+
 ##### Task Groups
 Task-groups are containers for other task-groups and tasks. They do not run
 by itself, but rather orchestrate the task-groups and tasks they contain.
 They are used to organize build-steps, and should use a natural language that
 describe their use best.
 
+An example:
+````json
+    {
+        "compile" : {
+            "code" : { 
+                "java using maven" : {},
+                "typescript to javascript" : {}
+            },
+            "assets" : {
+                "less to css" : {}
+            }
+        },
+        "tests" : {}
+    }
+````
+
 ##### Tasks Runners
-Task Runners are the hard and soul, and are executors for grunt-tasks. They can
+Task Runners are the heart and soul, and are executors for grunt-tasks. They can
 have arbitrary names and should describe best what they do, not what grunt task
 they are using.
 Which grunt-task they run is specified by the properties _task_ and _package_.
@@ -125,7 +152,7 @@ The build.json is to be the same on every environment you run the build.
 An example:
 ````json
 {
-    "test": {
+    "tests": {
         "unit": {
             "task": "mochaTest",
             "package": "grunt-mocha-test",
@@ -187,9 +214,12 @@ and it will automatically be replaced.
 
 ## I need a function in my configuration!
 
-Sorry, but that sounds like an oxymoron. itbldz is to maintain complex scenarios in an easy way, and adding logic to your configuration does not seem to help reducing complexity.
+Sorry, but that sounds like an oxymoron. 
+itbldz is to **configure build scenarios** in an easy way, and adding logic to your configuration does not seem to help reducing complexity.
 
 If you want a grunt task to do more then what is configured, then create an npm package, test it and use this.
+
+If you need a task-runner where you can add functions to your configuration, then directly use grunt. 
 
 ## Contributing
 
