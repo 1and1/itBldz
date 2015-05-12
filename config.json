@@ -1,0 +1,30 @@
+{
+    "directories": {
+        "target": "<%= config.directories.root %>/",
+        "HTML": {
+            "src": "<%= config.directories.root %>/"
+        }
+    },
+    "sources": {
+        "HTML": {
+            "files": [
+                "<%= config.directories['HTML'].src %>/**/*.md",
+                "<%= config.directories['HTML'].src %>/**/*.markdown"
+            ]
+        }
+    },
+    "deployables": {
+        "files": [
+            {
+                "expand": true,
+                "cwd": "<%= config.directories['HTML'].src %>/",
+                "src": [
+                    "**/*.md",
+                    "**/*.markdown"
+                ],
+                "dest": "<%= config.directories.target %>",
+                "ext" : ".html"
+            }
+        ]
+    }
+}

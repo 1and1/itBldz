@@ -1,0 +1,56 @@
+{    
+    "prepare": {
+        "clone head of master git repository" : {
+            "task" : "shell",
+            "package" : "grunt-shell",
+            "git-clone": {
+                "command": "git clone --depth 1 --branch master https://github.com/1and1/itBldz.git master"
+            }
+        },
+        "copy the readme file to root" : {
+            "task" : "copy",
+            "package" : "grunt-contrib-copy",
+            "readme.md" : {
+                "files" : [
+                    { 
+                        "expand": true, "flatten": true,
+                        "src" : [ "<%= config.directories.root %>/master/*.md" ],
+                        "target" : "<%= config.directories.root %>/"
+                    }
+                ]
+            }
+        },
+        "clean-up": {
+            "task" : "clean",
+            "package" : "grunt-contrib-clean",
+            "options": {
+                "force": true
+            },
+            "target": [
+                "<%= config.directories.root %>/master"
+            ]
+        }
+    },
+    "build html from markdown": {
+        "HTML": {
+            "markdown": {
+                "task": "markdown",
+                "package": "grunt-markdown",
+                "dist": {
+                    "files": "<%= config.deployables.files %>",
+                    "options" : {
+                        "template" : "<%= config.directories.root %>/index.template.jst"
+                    }
+                }
+            }
+        },
+        "rename readme to index" : {
+            "task" : "rename",
+            "package" : "grunt-rename",
+            "readme" : {
+                "src" : "readme.html",
+                "dest": "index.html"
+            }
+        }
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "publish to github": {
+        "push to gh-pages orgigin" : {
+            "task" : "shell",
+            "package" : "grunt-shell",
+            "git-clone": {
+                "command": "git push"
+            }
+        }
+    }
+}
