@@ -57,7 +57,7 @@ export class ConfigurationFileLoaderService {
         if (environment.FileSystem.fileExists(configFile)) {
             var config = require(configFile);
             config.directories = config.directories || {};
-            config.directories.root = global.basedir;
+            config.directories.root =  config.directories.root || global.basedir;
             config.directories.itbldz = global.relativeDir;
             grunt.config.set("config", config);
         }
