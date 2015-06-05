@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Itbldz by 1and1</title>
 
-    <link rel="stylesheet" href="stylesheets/_.css">
+    <link rel="stylesheet" href="stylesheets/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -44,8 +44,7 @@
 <p>Install itBldz</p>
 <pre><code class="lang-shell">npm install -g itbldz --save-dev
 </code></pre>
-<p><em>Note:</em> If you don&#39;t install it globally, you can use ./node_modules/itbldz/build|deploy|ship for &quot;shorthand&quot; commands</p>
-<p>create your config</p>
+<p>and create your config with</p>
 <pre><code class="lang-shell">init-itbldz
 </code></pre>
 <p>if something is missing edit the config files that are created (config.json, build.json, deploy.json).</p>
@@ -58,7 +57,9 @@
 <p>or ship it (build &amp; deploy)</p>
 <pre><code class="lang-shell">ship-it
 </code></pre>
-<p>in the shell / commandline</p>
+<p><em>Note:</em> If you don&#39;t install it globally, you can use </p>
+<pre><code class="lang-shell">[node] ./node_modules/itbldz/bin/build-it.js|deploy-it.js|ship-it.js|init-itbldz.js
+</code></pre>
 <h3 id="options">Options</h3>
 <p>All your arguments will be passed to grunt. To trigger tasks, simply add them.</p>
 <p>Examples:</p>
@@ -70,35 +71,66 @@
 </code></pre>
 <p>Given this config:</p>
 <pre><code>{
-    &quot;compile&quot;: { /* compile your sources */ },
+    &quot;compile&quot;: { 
+        &quot;typescript : { /* compile your sources */ }
+    },
     &quot;build&quot;: {
         &quot;unit&quot; : { /* unit tests */ },
         &quot;acceptance&quot; : { /* acceptance tests */ }
     }
 }
 </code></pre><p>Compile your source:</p>
-<pre><code class="lang-shell">build-it compile
+<pre><code class="lang-shell">build-it compile/typescript
 </code></pre>
 <p>Compile and trigger your unit tests:</p>
-<pre><code class="lang-shell">build-it compile test/unit
+<pre><code class="lang-shell">build-it compile/typescript test/unit
+</code></pre>
+<p>Build it using another config &quot;uglify.json&quot;</p>
+<pre><code class="lang-shell">build-it --with=uglify
+</code></pre>
+<p>Deploy using another config &quot;heroku.json&quot;</p>
+<pre><code class="lang-shell">deploy-it --to=heroku
+</code></pre>
+<p>Ship it with &quot;uglify.json&quot; and &quot;heroku.json&quot;</p>
+<pre><code class="lang-shell">ship-it --with=uglify --to=heroku
 </code></pre>
 <h3 id="configure-for-your-use-case">Configure for your use case</h3>
 <p>To include this project, all you have to do is to configure the build.json and
 the config.json.</p>
 <h4 id="build-json">build.json</h4>
-<p><strong>What to do</strong></p>
 <p>The build.json is the task-template. It orchestrates the build, and is separated
 into build-steps, task-groups and tasks.</p>
 <h5 id="build-steps">build-steps</h5>
 <p>The build-step is the first layer. It defines the main tasks of the build. You
 should use a natural language that fits your build-pipeline best.</p>
+<p>An example:</p>
+<pre><code class="lang-json">    {
+        &quot;prepare build environment&quot; : {},
+        &quot;compile&quot; : {},
+        &quot;tests&quot; : {}
+    }
+</code></pre>
 <h5 id="task-groups">Task Groups</h5>
 <p>Task-groups are containers for other task-groups and tasks. They do not run
 by itself, but rather orchestrate the task-groups and tasks they contain.
 They are used to organize build-steps, and should use a natural language that
 describe their use best.</p>
+<p>An example:</p>
+<pre><code class="lang-json">    {
+        &quot;compile&quot; : {
+            &quot;code&quot; : { 
+                &quot;java using maven&quot; : {},
+                &quot;typescript to javascript&quot; : {}
+            },
+            &quot;assets&quot; : {
+                &quot;less to css&quot; : {}
+            }
+        },
+        &quot;tests&quot; : {}
+    }
+</code></pre>
 <h5 id="tasks-runners">Tasks Runners</h5>
-<p>Task Runners are the hard and soul, and are executors for grunt-tasks. They can
+<p>Task Runners are the heart and soul, and are executors for grunt-tasks. They can
 have arbitrary names and should describe best what they do, not what grunt task
 they are using.
 Which grunt-task they run is specified by the properties <em>task</em> and <em>package</em>.
@@ -111,7 +143,7 @@ package.json.</p>
 <p>The build.json is to be the same on every environment you run the build.</p>
 <p>An example:</p>
 <pre><code class="lang-json">{
-    &quot;test&quot;: {
+    &quot;tests&quot;: {
         &quot;unit&quot;: {
             &quot;task&quot;: &quot;mochaTest&quot;,
             &quot;package&quot;: &quot;grunt-mocha-test&quot;,
@@ -161,8 +193,10 @@ and reference the correct config when starting the build.</p>
 </blockquote>
 <p>and it will automatically be replaced.</p>
 <h2 id="i-need-a-function-in-my-configuration-">I need a function in my configuration!</h2>
-<p>Sorry, but that sounds like an oxymoron. itbldz is to maintain complex scenarios in an easy way, and adding logic to your configuration does not seem to help reducing complexity.</p>
+<p>Sorry, but that sounds like an oxymoron. 
+itbldz is to <strong>configure build scenarios</strong> in an easy way, and adding logic to your configuration does not seem to help reducing complexity.</p>
 <p>If you want a grunt task to do more then what is configured, then create an npm package, test it and use this.</p>
+<p>If you need a task-runner where you can add functions to your configuration, then directly use grunt. </p>
 <h2 id="contributing">Contributing</h2>
 <h3 id="getting-started">Getting started</h3>
 <p>Git clone this repository, run a</p>
