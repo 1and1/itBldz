@@ -4,6 +4,7 @@ import environment = require('./environment');
 var log = new logging.Log();
 var path = require('path');
 var merge = require('merge');
+var args = require('nopt')({}, {}, process.argv, 2);
 
 export class ConfigurationFileLoaderService {
     static loadFile(fileName) : any {
@@ -16,20 +17,23 @@ export class ConfigurationFileLoaderService {
         var steps: any;
         var stepsFile: string;
         
+        var build = (args.with || "build") + ".json";
+        var deploy = (args.to || "deploy") + ".json";
+        
         var currentAction = environment.Action.get();
         switch (environment.Action.get()) {
             case environment.ActionType.Build:
-                steps = ConfigurationFileLoaderService.loadFile('build.json');
+                steps = ConfigurationFileLoaderService.loadFile(build);
                 break;
             case environment.ActionType.Deploy:
-                steps = ConfigurationFileLoaderService.loadFile('deploy.json');
+                steps = ConfigurationFileLoaderService.loadFile(deploy);
                 break;
             case environment.ActionType.Ship:
-                var build = ConfigurationFileLoaderService.loadFile('build.json');
-                var deploy = ConfigurationFileLoaderService.loadFile('deploy.json');
+                var withBuild = ConfigurationFileLoaderService.loadFile(build);
+                var withDeploy = ConfigurationFileLoaderService.loadFile(deploy);
                 steps = {
-                    "build": build,
-                    "deploy": deploy
+                    "build": withBuild,
+                    "deploy": withDeploy
                 };
                 break;
             case environment.ActionType.Init:
