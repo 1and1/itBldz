@@ -17,7 +17,12 @@ class StandardFileSystem implements IFileSystem {
     baseDirectory;
 
     public constructor() {
-        this.baseDirectory = path.join(__dirname, "../testdata");
+        var testContext = path.join(__dirname, "../testdata");
+        try { fs.mkdirSync(testContext); } catch (err) {}
+        
+        this.baseDirectory = path.join(testContext, Math.floor((Math.random() * 1000)).toString());
+        try { fs.rmdirSync(this.create(this.baseDirectory)); } catch (err) {}        
+        try { fs.mkdirSync(this.baseDirectory); } catch (err) {}
     }
 
     create(directory, file = "") : string {
@@ -76,6 +81,7 @@ class StandardSystemTerminal implements ISystemTerminal {
             if (stderr) this.onError(stderr);
             this.onOut(stdout);
             this.output = stdout.toString();
+            console.log(stdout);
             callback();
         });
     }

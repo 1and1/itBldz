@@ -89,6 +89,21 @@ Compile and trigger your unit tests:
 build-it compile/typescript test/unit
 ```
 
+Build it using another config "uglify.json"
+```shell
+build-it --with=uglify
+```
+
+Deploy using another config "heroku.json"
+```shell
+deploy-it --to=heroku
+```
+
+Ship it with "uglify.json" and "heroku.json"
+```shell
+ship-it --with=uglify --to=heroku
+```
+
 ### Configure for your use case
 
 To include this project, all you have to do is to configure the build.json and

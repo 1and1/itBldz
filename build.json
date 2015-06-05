@@ -29,16 +29,33 @@
                 }
             },
             "acceptance": {
-                "task": "cucumberjs",
-                "package": "grunt-cucumber",
-                "src": "<%= config.directories.TypeScript.acceptance %>",
-                "dependencies": [
-                    "cucumber"
-                ],
-                "options": {
-                    "steps": "<%= config.directories.TypeScript.acceptance %>",
-                    "modulePath": "<%= config.directories.root %>/node_modules/cucumber/lib/cucumber.js",
-                    "format" : "pretty"
+                "clean-test-results" : {
+                    "task": "clean",
+                    "package": "grunt-contrib-clean",
+                    "options": {
+                        "force": true
+                    },
+                    "target": [
+                        "<%= config.directories.TypeScript.acceptance %>/testdata"
+                    ]
+                },
+                "running-build" : {
+                    "task": "cucumberjs",
+                    "package": "grunt-cucumber",
+                    "src": "<%= config.directories.TypeScript.acceptance %>/RunningBuild.feature",
+                    "dependencies": [
+                        "cucumber"
+                    ],
+                    "options": "<%= config.test.acceptance.options %>"
+                }, 
+                "different-configs" : {
+                    "task": "cucumberjs",
+                    "package": "grunt-cucumber",
+                    "src": "<%= config.directories.TypeScript.acceptance %>/UsingDifferentConfiguration.feature",
+                    "dependencies": [
+                        "cucumber"
+                    ],
+                    "options": "<%= config.test.acceptance.options %>"
                 }
             }
         }
