@@ -16,7 +16,8 @@ export enum ActionType {
     Build,
     Deploy,
     Ship,
-    Init
+    Init,
+    Watch
 }
 
 export class FileSystem {

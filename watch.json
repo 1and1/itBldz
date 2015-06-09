@@ -1,0 +1,11 @@
+{
+      "scripts": {
+            "files": ["**/*.ts"],
+            "tasks": ["compile/typescript"],
+            "options": {
+                  "perFile": {
+                        "targets" : ["default"]
+                  }
+            }
+      }
+}
