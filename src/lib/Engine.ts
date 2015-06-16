@@ -23,7 +23,10 @@ export class Engine {
         this.configuration.load(configuration, (config) => {
             log.verbose.writeln(this.currentEngine, "Configuration loaded!");
             log.verbose.writeln(this.currentEngine, "\tSteps:\t\t" + (config.steps ? config.steps.length : 0));
-            log.verbose.writeln(this.currentEngine, "\tBuildTasks:\t" + (config.steps ? config.steps.reduce((_: any, current) => _ + (current.tasks ? current.tasks.length : 0), 0) : 0));
+            log.verbose.writeln(this.currentEngine, "\tBuildTasks:\t" + (config.steps ? 
+                config.steps.reduce((_: any, current) => _ + (current.tasks ? current.tasks.length : 0), 0) : 
+                0));
+                
             this.taskService.register(config);
             callback(this.grunt.registeredTasks);
         });
@@ -52,7 +55,6 @@ export class Engine {
                 var engine = new WatchEngine(new grunt.Grunt(g));
                 log.writeln("itbldz", "Watch engine loaded!");
                 return engine;
-
         }
 
         throw Error("No engine available");

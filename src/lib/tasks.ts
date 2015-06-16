@@ -4,11 +4,15 @@ import logging = require('./logging');
 var log = new logging.Log();
 
 export class TaskExecutionPrepareService {
-    public static initTaskConfig(grunt, task, config): any {
-        if (!config) throw "A task requires a configuration to run";
+    public static gruntifyTask(config, task) {
         delete config[task].task;
         delete config[task].package;
         delete config[task].dependencies;
+    }
+    
+    public static initTaskConfig(grunt, task, config): any {
+        if (!config) throw "A task requires a configuration to run";
+        TaskExecutionPrepareService.gruntifyTask(config, task);
         grunt.initConfig(config);
     }
 }

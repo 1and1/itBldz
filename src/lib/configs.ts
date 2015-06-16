@@ -1,6 +1,9 @@
-﻿import models = require('./models');
+﻿/// <reference path="../../Scripts/typings/node/node.d.ts" />
+
+import models = require('./models');
 import logging = require('./logging');
 import environment = require('./environment');
+import tasks = require('./tasks');
 var log = new logging.Log();
 var path = require('path');
 var merge = require('merge');
@@ -51,6 +54,7 @@ export class ConfigurationFileLoaderService {
         var packageFile = path.join(global.basedir, 'package.json');
         if (environment.FileSystem.fileExists(packageFile)) {
             grunt.config.set("pck", require(packageFile));
+            grunt.config.set("pkg", require(packageFile));
         }
 
         var configFile = path.join(global.basedir, 'config.json');
@@ -66,6 +70,66 @@ export class ConfigurationFileLoaderService {
 
         var result = grunt.config.get("steps");
         grunt.initConfig();
+        return result;
+    }
+}
+
+export class WatchConfigurationService {
+    public static load(grunt : any) : any {
+        
+        var steps: any;
+        var stepsFile: string;
+        var build = ConfigurationFileLoaderService.loadFile('build.json');
+        var watch = ConfigurationFileLoaderService.loadFile('watch.json');
+        var run = {
+            watch: {
+                options: watch.options
+            }
+        };
+        Object.keys(watch).filter((target) => target !== "options").forEach((target) => {
+            var watchedTasks = watch[target].tasks;
+            if (!watchedTasks) return;
+            var newWatchTargets = [];
+            watchedTasks.forEach((task: string) => {
+                var taskSet = task.split('/').reverse();
+                var step = (set: string[], result) => {
+                    var current = set.pop();
+                    result = result[current];
+                    if (set.length <= 0) return result;
+                    return step(set, result);
+                };
+
+                var tasksToRun = step(taskSet, build);
+                if (!tasksToRun.task) throw new Error("Only build-steps can be set as target");
+                run[tasksToRun.task] = tasksToRun;
+                newWatchTargets.push(tasksToRun.task);
+                tasks.TaskExecutionPrepareService.gruntifyTask(run, tasksToRun.task);
+            });
+
+            watch[target].tasks = newWatchTargets;
+            run.watch[target] = watch[target];
+        });
+
+        grunt.initConfig();
+        grunt.config.set("steps", run);
+        var packageFile = path.join(global.basedir, 'package.json');
+        if (environment.FileSystem.fileExists(packageFile)) {
+            grunt.config.set("pck", require(packageFile));
+        }
+
+        var configFile = path.join(global.basedir, 'config.json');
+        if (environment.FileSystem.fileExists(configFile)) {
+            var config = require(configFile);
+            config.directories = config.directories || {};
+            config.directories.root =  config.directories.root || global.basedir;
+            config.directories.itbldz = global.relativeDir;
+            grunt.config.set("config", config);
+        }
+
+        grunt.config.set("env", new environment.Variables().get());
+
+        var result = grunt.config.get("steps");
+        grunt.initConfig(result);
         return result;
     }
 }
@@ -88,6 +152,17 @@ export class TaskRunnerConfigurationService {
     }
 }
 
+export class GruntConfigurationService implements ConfigurationService {
+    public load(build, callback: (models: models.Configuration) => void): void {
+        var result: models.BuildStep[] = [];
+
+        var buildConfiguration = {
+            steps : result
+        };
+        callback(buildConfiguration);
+    };
+}
+
 export class BuildConfigurationService implements ConfigurationService {
     argv;
 
@@ -95,8 +170,7 @@ export class BuildConfigurationService implements ConfigurationService {
         this.argv = argv;
     }
 
-    public loadTasks(parent: string, step: any): models.Task[]{
-
+    public loadTasks(parent: string, step: any): models.Task[] {
         log.verbose.writeln("Config", "Loading for step " + JSON.stringify(step, undefined, 2));
         if (!step) return [];
         var tasks = Object.keys(step);
