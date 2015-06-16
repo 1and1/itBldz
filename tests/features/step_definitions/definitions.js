@@ -1,7 +1,6 @@
 ﻿var runningBuild = function () {
     this.World = require("../support/World").World;
     require('chai').should();
-    require('hide-stack-frames-from')('cucumber');
     
     var setupFile;
     var config;
@@ -20,8 +19,12 @@
         callback();
     });
     
-    this.Given(/^the build file is in the root of my application$/, function (callback) {
+    this.Given("the build file is in the root of my application", function (callback) {
         this.fileSystem.withFileWithContentInDirectory("build.json", JSON.stringify(config), ".", callback);
+    });
+    
+    this.Given(/^the build file is in the root of my application with the name "([^"]*)"$/, function (name, callback) {
+        this.fileSystem.withFileWithContentInDirectory(name, JSON.stringify(config), ".", callback);
     });
     
     this.Given(/^the build has the build steps "([^"]*)"$/, function (stepName, callback) {
@@ -65,8 +68,12 @@
         callback();
     });
     
-    this.When(/^I execute the build command$/, function (callback) {
-        this.terminal.execute("../../../build", callback);
+    this.When("I execute the build command", function (callback) {
+        this.terminal.execute("../../../../build", callback);
+    });
+    
+    this.When(/^I execute a custom build command with argument "([^"]*)"$/, function (arg, callback) {
+        this.terminal.execute("../../../../build " + arg, callback);
     });
     
     this.Then(/^all the steps should be executed in the precise order$/, function (callback) {
