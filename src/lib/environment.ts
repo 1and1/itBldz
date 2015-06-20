@@ -1,4 +1,5 @@
 ﻿var fs = require('fs');
+var _ = require('yargs').argv;
 
 export class Variables {
     public get() {
@@ -32,18 +33,27 @@ export class FileSystem {
 
 export class Action {    
     public static get(): ActionType {
-        var _ = require('yargs').argv._;
-        if (_.some((_) => _ == "build")) {
+        if (_._.some((_) => _ == "build")) {
             return ActionType.Build;
         }
-        else if (_.some((_) => _ == "deploy")) {
+        else if (_._.some((_) => _ == "deploy")) {
             return ActionType.Deploy;
         }
-        else if (_.some((_) => _ == "ship")) {
+        else if (_._.some((_) => _ == "ship")) {
             return ActionType.Ship;
         }
-        else if (_.some((_) => _ == "init")) {
+        else if (_._.some((_) => _ == "init")) {
             return ActionType.Init;
         }
+    }
+}
+
+export class Settings {
+    public static isVerbose() : boolean {
+        return _.verbose || false;
+    }
+    
+    public static showStack() : boolean {
+        return _.stack || false;
     }
 }

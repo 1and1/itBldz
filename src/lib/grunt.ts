@@ -1,5 +1,6 @@
 ﻿import logging = require('./logging');
 import npm = require('./npm-package');
+import environment = require('./environment')
 var log = new logging.Log();
 
 export class Grunt {
@@ -33,6 +34,10 @@ export class Grunt {
     }
 
     public run(task : string) {
+        if (environment.Settings.isVerbose())
+            this.grunt.option("verbose", environment.Settings.isVerbose());
+        if (environment.Settings.showStack())
+            this.grunt.option("stack", environment.Settings.showStack());
         this.grunt.task.run(task);
     }
 }
