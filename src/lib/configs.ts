@@ -22,6 +22,7 @@ export class ConfigurationFileLoaderService {
         
         var build = (args.with || "build") + ".json";
         var deploy = (args.to || "deploy") + ".json";
+        var configFile = (args.as || "config") + ".json";
         
         var currentAction = environment.Action.get();
         switch (environment.Action.get()) {
@@ -61,7 +62,7 @@ export class ConfigurationFileLoaderService {
             grunt.config.set("pkg", require(packageFile));
         }
 
-        var configFile = path.join(global.basedir, 'config.json');
+        configFile = path.join(global.basedir, configFile);
         if (environment.FileSystem.fileExists(configFile)) {
             var config = require(configFile);
             config.directories = config.directories || {};
