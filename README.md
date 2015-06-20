@@ -99,6 +99,11 @@ Deploy using another config "heroku.json"
 deploy-it --to=heroku
 ```
 
+Change the configuration to point to the production.json file
+```shell
+deploy-it --to=heroku --as=production
+```
+
 Ship it with "uglify.json" and "heroku.json"
 ```shell
 ship-it --with=uglify --to=heroku
