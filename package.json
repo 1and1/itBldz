@@ -35,7 +35,7 @@
     "init-itbldz": "bin/init-itbldz.js"
   },
   "scripts": {
-    "test": "build-it"
+    "test": "./build"
   },
   "main": "./itbldz.js",
   "preferGlobal": "true",
