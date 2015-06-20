@@ -38,9 +38,11 @@
                 "add": false,
                 "commit": false,
                 "tag": true,
-				"commitMessage": "[RELEASE] releasing version <%= pkg.version %>",
+				"commitMessage": "[RELEASE] releasing version <%= pck.version %>",
                 "push": false,
                 "pushTags": true,
+                "npm": false,
+                "npmtag": true,
                 "file": "<%= config.directories.root %>/package.json",
                 "folder": "<%= config.directories.root %>",
 				"github" : {
