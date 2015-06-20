@@ -184,7 +184,7 @@ An example:
 
 This runs mocha unit tests
 * _"task"_: the task name that should be executed
-* _"package"_: the npm package that contains the task
+* _"package"_: the npm package that contains the task. The reference a specific version, add "@1.0.0" to the package name (replace 1.0.0 with the version you want...)
 * _"dependencies"_ (optional): The dependencies the Task Runner may need
 
 #### config.json
