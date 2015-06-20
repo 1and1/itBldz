@@ -1,0 +1,53 @@
+{
+    "prepare": {
+        "clean": {
+            "task": "clean",
+            "package": "grunt-contrib-clean",
+            "options": {
+                "force": true
+            },
+            "target": [
+                "<%= config.directories.target %>"
+            ]
+        },
+        "npm": {
+            "bump-version": {
+                "task": "release",
+                "package": "grunt-release",
+                "options": {
+                    "bump": true,
+                    "add": false,
+                    "commit": false,
+                    "tag": false,
+                    "push": false,
+                    "pushTags": false,
+                    "npm": false,
+                    "npmtag": true,
+                    "file": "<%= config.directories.root %>/package.json",
+                    "folder": "<%= config.directories.root %>"
+                }
+            }
+        }
+    },
+    "publish": {
+        "npm": {
+            "task": "release",
+            "package": "grunt-release",
+            "options": {
+                "bump": false,
+                "add": true,
+                "commit": true,
+                "tag": true,
+				"commitMessage": "[RELEASE] releasing version <%= version %>",
+                "push": true,
+                "pushTags": true,
+                "file": "<%= config.directories.root %>/package.json",
+                "folder": "<%= config.directories.root %>",
+				"github" : {
+					"repo": "1and1/itBldz",
+					"accessTokenVar" : "GITHUB_TOKEN"
+				}
+            }
+        }
+    }
+}
