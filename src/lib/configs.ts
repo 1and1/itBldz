@@ -12,6 +12,24 @@ export class ConfigurationFileLoaderService {
         if (!environment.FileSystem.fileExists(file)) throw "You have to create a '" + fileName + "' file with your build-configuration first";
         return require(file);
     }
+    
+    static loadModules(modulesDefinition) : any {
+        if (!environment.FileSystem.fileExists(path.join(global.basedir, modulesDefinition))) return {};
+        
+        var modules : any = {};
+        modulesDefinition = ConfigurationFileLoaderService.loadFile(modulesDefinition);
+        
+        modulesDefinition.forEach((module) => {
+            var file = path.join(module);
+            var requiredModule = require(file);
+            Object.keys(requiredModule).forEach((exportedClass) => {
+                modules[exportedClass] = new (requiredModule[exportedClass])();
+            });
+            
+        });
+        
+        return modules;
+    }
 
     public static load(grunt : any) : any {
         var steps: any;
@@ -20,6 +38,8 @@ export class ConfigurationFileLoaderService {
         var build = (args.with || "build") + ".json";
         var deploy = (args.to || "deploy") + ".json";
         var configFile = (args.as || "config") + ".json";
+        var moduleDefinition = (args.modules || "modules") + ".json";
+        var modules = ConfigurationFileLoaderService.loadModules(moduleDefinition);
         
         var currentAction = environment.Action.get();
         switch (environment.Action.get()) {
@@ -52,6 +72,8 @@ export class ConfigurationFileLoaderService {
         }
 
         grunt.initConfig();
+        grunt.config.set("modules", modules);
+        
         grunt.config.set("steps", steps);
         var packageFile = path.join(global.basedir, 'package.json');
         if (environment.FileSystem.fileExists(packageFile)) {
