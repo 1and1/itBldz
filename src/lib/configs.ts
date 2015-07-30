@@ -72,7 +72,7 @@ export class ConfigurationFileLoaderService {
         }
 
         grunt.initConfig();
-        if (environment.FileSystem.fileExists(moduleDefinition)) {
+        if (environment.FileSystem.fileExists(path.join(global.basedir, moduleDefinition))) {
             var modules = ConfigurationFileLoaderService.loadModules(moduleDefinition);
             grunt.config.set("modules", modules);
         }
