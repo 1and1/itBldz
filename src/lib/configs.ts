@@ -6,20 +6,31 @@ var path = require('path');
 var merge = require('merge');
 var args = require('nopt')({}, {}, process.argv, 2);
 
-export class ConfigurationFileLoaderService {
-    static loadFile(fileName) : any {
-        var file = path.join(global.basedir, fileName);
-        if (!environment.FileSystem.fileExists(file)) throw "You have to create a '" + fileName + "' file with your build-configuration first";
-        return require(file);
+interface IDeserializeAType {
+    type : RegExp;
+    deserialize(type, value) : any;
+}
+
+class DeserializeRegex implements IDeserializeAType {
+    type : RegExp = /^RegExp$/gi;
+    public deserialize(type, value) {
+        return new RegExp(value.pattern, value.flags);
     }
+}
+
+class ModuleService {
+    static modules;
     
-    static loadModules(modulesDefinition) : any {
+    public load(modulesDefinition = (args.modules || "modules") + ".json") : any {
+        console.log("modulesDefinition: " + modulesDefinition);
         if (!environment.FileSystem.fileExists(path.join(global.basedir, modulesDefinition))) return {};
         
-        var modules : any = {};
-        modulesDefinition = ConfigurationFileLoaderService.loadFile(modulesDefinition);
+        if (ModuleService.modules) return ModuleService.modules;
         
-        modulesDefinition.forEach((module) => {
+        var modules : any = {};
+        var loadedModules = ConfigurationFileLoaderService.loadFile(modulesDefinition);
+        
+        loadedModules.forEach((module) => {
             var file = path.join(module);
             var requiredModule = require(file);
             Object.keys(requiredModule).forEach((exportedClass) => {
@@ -28,7 +39,94 @@ export class ConfigurationFileLoaderService {
             
         });
         
+        ModuleService.modules = modules;
         return modules;
+    }
+}
+
+class DeserializeModule implements IDeserializeAType {
+    type : RegExp = /^modules\..*/gi;
+    modules;
+    
+    constructor() {
+        this.modules = new ModuleService().load();
+    }
+    
+    public deserialize(type, value) {
+        console.log("Deserializing module " + type + "...");
+        var currentModule = this.modules[type];
+        if (!currentModule) throw new Error("A module that was specified could not be loaded. Module: " + type);
+        if (currentModule.deserialize) {
+            return currentModule.deserialize(value);
+        }
+        
+        try {
+            var valueAsObject = JSON.parse(value);
+            Object.keys(valueAsObject).forEach((key) => {
+               currentModule[key] = valueAsObject[key];
+            });
+            return currentModule;
+        } catch (err) {}
+        
+        return currentModule;
+    }
+}
+
+class EmptyDeserializer implements IDeserializeAType {
+    type;
+    public deserialize(type, value) {
+        return value;
+    }
+}
+
+class DeserializerFactory {
+    static deserializers : IDeserializeAType[] = [new DeserializeRegex(), new DeserializeModule()];
+        
+    public get(type : string) : IDeserializeAType {
+        console.log("Testing type " + type);
+        return DeserializerFactory.deserializers.filter((item) => item.type.test(type))[0] || 
+            new EmptyDeserializer();
+    }
+}
+
+class ConfigurationTypeDeserializer {
+    config : any;
+    
+    public constructor(config) { this.config = config; }
+    
+    private serializeByDisriminator(type, value) : any {
+        return new DeserializerFactory().get(type).deserialize(type, value);
+    }
+    
+    private forEachKeyIn(object) : any {
+        if (Array.isArray(object)) return object;
+        if (object !== Object(object)) return object;
+        console.log("Current object: " + JSON.stringify(object));
+        if (object["serialized:type"]) {
+            var serialized = this.serializeByDisriminator(object["serialized:type"], object["serialized:object"]);
+            console.log("Serialized " + object["serialized:type"] + " to " + JSON.stringify(serialized));
+            return serialized;
+        }
+        
+        var result = {};
+        
+        Object.keys(object).forEach((key) => {
+            result[key] = this.forEachKeyIn(object[key]);
+        });
+        
+        return result;
+    }
+    
+    public deserialize() : any {
+        return this.forEachKeyIn(this.config);
+    }
+}
+
+export class ConfigurationFileLoaderService {
+    static loadFile(fileName) : any {
+        var file = path.join(global.basedir, fileName);
+        if (!environment.FileSystem.fileExists(file)) throw "You have to create a '" + fileName + "' file with your build-configuration first";
+        return require(file);
     }
 
     public static load(grunt : any) : any {
@@ -38,8 +136,7 @@ export class ConfigurationFileLoaderService {
         var build = (args.with || "build") + ".json";
         var deploy = (args.to || "deploy") + ".json";
         var configFile = (args.as || "config") + ".json";
-        var moduleDefinition = (args.modules || "modules") + ".json";
-        var modules = ConfigurationFileLoaderService.loadModules(moduleDefinition);
+        var modules = new ModuleService().load();
         
         var currentAction = environment.Action.get();
         switch (environment.Action.get()) {
@@ -74,7 +171,7 @@ export class ConfigurationFileLoaderService {
         grunt.initConfig();
         grunt.config.set("modules", modules);
         
-        grunt.config.set("steps", steps);
+        grunt.config.set("steps", new ConfigurationTypeDeserializer(steps).deserialize());
         var packageFile = path.join(global.basedir, 'package.json');
         if (environment.FileSystem.fileExists(packageFile)) {
             grunt.config.set("pck", require(packageFile));

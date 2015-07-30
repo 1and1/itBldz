@@ -36,7 +36,7 @@
             "options": {
                 "bump": false,
                 "add": false,
-                "commit": false,
+                "commit": true,
                 "tag": true,
 				"commitMessage": "[RELEASE] releasing version <%= pck.version %>",
                 "push": false,

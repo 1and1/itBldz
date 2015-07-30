@@ -80,7 +80,7 @@
     
     this.Given(/^the module HelloWorld is defined and exists$/, function (callback) {
         modules.push(require('path').join(this.fileSystem.baseDirectory, "HelloWorld.js"));
-        var helloWorld = "var HelloWorld = (function () { function HelloWorld() {}; HelloWorld.prototype.greet = function (name) { return \"Hello \" + name; }; return HelloWorld; })(); exports.HelloWorld = HelloWorld;";
+        var helloWorld = 'var HelloWorld = (function () { function HelloWorld() { this.defaultPersonToGreet = "Clint Eastwood";}HelloWorld.prototype.greet = function (whom) {        return "Hello " + whom || this.defaultPersonToGreet;};    return HelloWorld; })(); exports.HelloWorld = HelloWorld;';
        this.fileSystem.withFileWithContentInDirectory("HelloWorld.js", helloWorld, ".", callback);
     });
 
@@ -99,8 +99,26 @@
       callback();
     });
     
+    this.Given(/^the build step "([^"]*)" has a exec task runner with a type discriminator for the HelloWorld Module$/, function (arg1, callback) {
+        config = {
+        "test-module": {
+            "hello world" : {
+                "task": "exec",
+                "package": "grunt-exec",
+                "echo-module" : {
+                    "cmd" : {
+                        "serialized:type" : "modules.HelloWorld",
+                        "serialized:value" : "{ \"defaultPersonToGreet\" : \"Bruce Lee\"  }"
+                    }
+                }
+            }
+         }
+      };
+      callback();
+    });
+    
     this.When("I execute the build command", function (callback) {
-        this.terminal.execute("../../../../build", callback);
+        this.terminal.execute("../../../../build --verbose", callback);
     });
     
     this.When(/^I execute a custom build command with argument "([^"]*)"$/, function (arg, callback) {
