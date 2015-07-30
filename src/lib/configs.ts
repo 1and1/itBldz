@@ -37,6 +37,7 @@ export class ConfigurationFileLoaderService {
         
         var build = (args.with || "build") + ".json";
         var deploy = (args.to || "deploy") + ".json";
+        var varsFile = (args.vars || "vars") + ".yml";
         var configFile = (args.as || "config") + ".json";
         var moduleDefinition = (args.modules || "modules") + ".json";
         var modules = ConfigurationFileLoaderService.loadModules(moduleDefinition);
@@ -87,6 +88,12 @@ export class ConfigurationFileLoaderService {
             config.directories.root =  config.directories.root || global.basedir;
             config.directories.itbldz = global.relativeDir;
             grunt.config.set("config", config);
+        }
+
+        varsFile = path.join(global.basedir, varsFile);
+        if (environment.FileSystem.fileExists(varsFile)) {
+            var vars = require(varsFile);
+            grunt.config.set("vars", vars);
         }
 
         grunt.config.set("env", new environment.Variables().get());
