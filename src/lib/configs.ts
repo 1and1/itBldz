@@ -13,9 +13,7 @@ export class ConfigurationFileLoaderService {
         return require(file);
     }
     
-    static loadModules(modulesDefinition) : any {
-        if (!environment.FileSystem.fileExists(path.join(global.basedir, modulesDefinition))) return {};
-        
+    static loadModules(modulesDefinition) : any {        
         var modules : any = {};
         modulesDefinition = ConfigurationFileLoaderService.loadFile(modulesDefinition);
         
@@ -40,7 +38,8 @@ export class ConfigurationFileLoaderService {
         var varsFile = (args.vars || "vars") + ".yml";
         var configFile = (args.as || "config") + ".json";
         var moduleDefinition = (args.modules || "modules") + ".json";
-        var modules = ConfigurationFileLoaderService.loadModules(moduleDefinition);
+        
+        configFile = path.join(global.basedir, configFile);
         
         var currentAction = environment.Action.get();
         switch (environment.Action.get()) {
@@ -73,7 +72,10 @@ export class ConfigurationFileLoaderService {
         }
 
         grunt.initConfig();
-        grunt.config.set("modules", modules);
+        if (environment.FileSystem.fileExists(moduleDefinition)) {
+            var modules = ConfigurationFileLoaderService.loadModules(moduleDefinition);
+            grunt.config.set("modules", modules);
+        }
         
         grunt.config.set("steps", steps);
         var packageFile = path.join(global.basedir, 'package.json');
