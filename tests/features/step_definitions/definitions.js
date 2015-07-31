@@ -7,6 +7,7 @@
     var setupFile;
     var config;
     var modules;
+    var vars;
     
     this.Given(/^I have a src directory with a file "([^"]*)"$/, function (fileName, callback) {
         this.fileSystem.withEmptyDirectory(".", callback);
@@ -24,6 +25,11 @@
     
     this.Given(/^I have an empty modules file$/, function (callback) {
         modules = [];
+        callback();
+    });
+
+    this.Given(/^I have an empty vars file$/, function (callback) {
+        vars = "";
         callback();
     });
     
@@ -88,14 +94,14 @@
         });
     });
 
-    this.Given(/^the build step "([^"]*)" has a exec task runner with the command "([^"]*)"$/, function (arg1, arg2,callback) {
+    this.Given(/^the build step "([^"]*)" has a exec task runner with the command "([^"]*)"$/, function (buildStepName, command, callback) {
       config = {
-        "test-module": {
+          buildStepName : {
             "hello world" : {
                 "task": "exec",
                 "package": "grunt-exec",
                 "echo-module" : {
-                    "cmd" : "<%= modules.HelloWorld.greet('me') %>"
+                    "cmd" : command
                 }
             }
          }
@@ -121,7 +127,17 @@
       };
       callback();
     });
-    
+
+    this.Given(/^the variable "([^"]*)" exists under "([^"]*)"$/, function (innerVariable, outerVariable, callback) {
+        vars += outerVariable + ":\n  " + innerVariable + ": Hello world"
+        callback();
+    });
+
+    this.Given(/^the vars file is in the root of my application$/, function (callback) {
+        this.fileSystem.withFileWithContentInDirectory("vars.yml", vars, ".", callback);
+    });
+
+
     this.When("I execute the build command", function (callback) {
         this.terminal.execute("../../../../build", callback);
     });
