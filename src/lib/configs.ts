@@ -121,7 +121,14 @@ class ConfigurationTypeDeserializer {
     }
     
     private forEachKeyIn(object) : any {
-        if (Array.isArray(object)) return object;
+        if (Array.isArray(object)){
+            for (var index = 0; index < object.length; index++) {
+                object[index] = this.forEachKeyIn(object[index]);
+            }
+            
+            return object;
+        }
+        
         if (object !== Object(object)) return object;
         log.verbose.writeln("ConfigurationTypeDeserializer", "Current object: " + JSON.stringify(object));
         if (object["serialized:type"]) {
