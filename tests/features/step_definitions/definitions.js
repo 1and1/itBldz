@@ -2,6 +2,8 @@
     this.World = require("../support/World").World;
     require('chai').should();
     
+    var fs = require('fs');
+    
     var setupFile;
     var config;
     var modules;
@@ -80,8 +82,10 @@
     
     this.Given(/^the module HelloWorld is defined and exists$/, function (callback) {
         modules.push(require('path').join(this.fileSystem.baseDirectory, "HelloWorld.js"));
-        var helloWorld = "var HelloWorld = (function () { function HelloWorld() {}; HelloWorld.prototype.greet = function (name) { return \"Hello \" + name; }; return HelloWorld; })(); exports.HelloWorld = HelloWorld;";
-       this.fileSystem.withFileWithContentInDirectory("HelloWorld.js", helloWorld, ".", callback);
+        var self = this;
+        this.fileSystem.readFile("../../support/HelloWorld.js", function (moduleContent) {
+            self.fileSystem.withFileWithContentInDirectory("HelloWorld.js", moduleContent, ".", callback);
+        });
     });
 
     this.Given(/^the build step "([^"]*)" has a exec task runner with the command "([^"]*)"$/, function (arg1, arg2,callback) {
@@ -91,7 +95,26 @@
                 "task": "exec",
                 "package": "grunt-exec",
                 "echo-module" : {
-                    "cmd" : "echo '<%= modules.HelloWorld.greet('me') %>'"
+                    "cmd" : "<%= modules.HelloWorld.greet('me') %>"
+                }
+            }
+         }
+      };
+      callback();
+    });
+    
+    this.Given(/^the build step echo has a exec task runner with a type discriminator for the HelloWorld Module with "(.*)" as actor$/, function (arg1, callback) {
+        config = {
+        "test-module": {
+            "hello world" : {
+                "task": "exec",
+                "package": "grunt-exec",
+                "echo-module" : {
+                    "cmd" : {
+                        "serialized:type" : "modules.HelloWorld",
+                        "serialized:object" : "{ \"defaultPersonToGreet\" : \"" + arg1 + "\"  }",
+                        "serialized:call" : "greet"
+                    }
                 }
             }
          }
@@ -146,7 +169,7 @@
 
     this.Then(/^the message "([^"]*)" should appear on the command line$/, function (arg1, callback) {
       var _ = this;
-      _.terminal.output.should.contain("Hello me");
+      _.terminal.output.should.contain(arg1);
       callback();
     });
 };
