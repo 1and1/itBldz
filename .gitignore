@@ -22,3 +22,4 @@ obj/**
 tscommand*
 tests/features/testdata/**
 tests/features/support/*.js
+.settings/*

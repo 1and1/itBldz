@@ -9,6 +9,7 @@ export interface IFileSystem {
     withFileInDirectory(fileName: string, directoryName: string, callback: () => void);
     withFileWithContentInDirectory(fileName: string, content: any, directoryName: string, callback: () => void);
     withEmptyDirectory(directoryName: string, callback: () => void);
+    readFile(fileName: string, callback: (content) => void);
     getFullDirectory(directoryName: string);
 }
 
@@ -54,6 +55,13 @@ class StandardFileSystem implements IFileSystem {
 
     getFullDirectory(directoryName: string) {
         return this.create(directoryName);
+    }
+    
+    readFile(fileName: string, callback: (content) => void) {
+        fs.readFile(path.join(this.baseDirectory, fileName), function read(err, data) {
+            if (err) console.error(err); 
+            callback(data); 
+        });
     }
 }
 
