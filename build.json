@@ -40,6 +40,15 @@
                         "<%= config.directories.TypeScript.acceptance %>/testdata"
                     ]
                 },
+                "vars" : {
+                    "task": "cucumberjs",
+                    "package": "grunt-cucumber",
+                    "src": "<%= config.directories.TypeScript.acceptance %>/YamlVars.feature",
+                    "dependencies": [
+                        "cucumber", "chai"
+                    ],
+                    "options": "<%= config.test.acceptance.options %>"
+                },
                 "type-discriminators" : {
                     "task": "cucumberjs",
                     "package": "grunt-cucumber",
