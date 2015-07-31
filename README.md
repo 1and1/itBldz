@@ -99,6 +99,11 @@ Deploy using another config "heroku.json"
 deploy-it --to=heroku
 ```
 
+Change the configuration to point to the production.json file
+```shell
+deploy-it --to=heroku --as=production
+```
+
 Ship it with "uglify.json" and "heroku.json"
 ```shell
 ship-it --with=uglify --to=heroku
@@ -184,7 +189,7 @@ An example:
 
 This runs mocha unit tests
 * _"task"_: the task name that should be executed
-* _"package"_: the npm package that contains the task
+* _"package"_: the npm package that contains the task. The reference a specific version, add "@1.0.0" to the package name (replace 1.0.0 with the version you want...)
 * _"dependencies"_ (optional): The dependencies the Task Runner may need
 
 #### config.json
@@ -234,7 +239,63 @@ itbldz is to **configure build scenarios** in an easy way, and adding logic to y
 
 If you want a grunt task to do more then what is configured, then create an npm package, test it and use this.
 
-If you need a task-runner where you can add functions to your configuration, then directly use grunt. 
+However, now that you know that you shouldn't do it, here's the way on how to do it. In the template syntax you can execute functions as well: 
+
+````json
+    {
+        "example-timestamp": "<%= Date.now() %>'"
+    }
+````
+
+This can be extended - you can create simple Modules that look like the following (TypeScript): 
+
+````ts
+    export class HelloWorld {
+    	public greet(name) {
+    		return "Hello " + name;
+    	}
+    }
+````
+
+Then in your configuration (i.e. build.json) you can include the module like this:
+
+````json
+    {
+        "test-module": {
+            "hello world" : {
+                "task": "exec",
+                "package": "grunt-exec",
+                "echo-module" : {
+                    "cmd" : "echo '<%= modules.HelloWorld.greet('me') %>'"
+                }
+            }
+        }
+    }
+````
+
+To control the modules that should be loaded, a module.js file is added that is automatically included if available or can be included with --modules=path/to/modules.js which looks like the following: 
+
+````json
+    [
+    	"modules/HelloWorld.js"
+    ]
+````
+
+The name of the module is the name of the class in the file that should be loaded for this keyword, so that when you have multiple classes like so: 
+
+````ts
+    export class HelloWorld {
+    	public greet(name) {
+    		return "Hello " + name;
+    	}
+    }
+    export class GoodbyeWorld {
+    	public greet(name) {
+    		return "Goodbye " + name;
+    	}
+    }
+````
+you will have both available in the configuration. 
 
 ## Contributing
 

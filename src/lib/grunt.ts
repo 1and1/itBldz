@@ -1,5 +1,6 @@
 ﻿import logging = require('./logging');
 import npm = require('./npm-package');
+import environment = require('./environment')
 var log = new logging.Log();
 
 export class Grunt {
@@ -13,6 +14,7 @@ export class Grunt {
     public registerExternalTask(name: string, dependencies : string[], callback) {
         new npm.Package().installIfFileNotExist(name, dependencies, () => {
             process.chdir(global.relativeDir);
+            if (name.indexOf("@") > 0) name = name.substring(0, name.indexOf("@"))
             this.grunt.loadNpmTasks(name);
             process.chdir(global.basedir);
             callback();
@@ -33,6 +35,10 @@ export class Grunt {
     }
 
     public run(task : string) {
+        if (environment.Settings.isVerbose())
+            this.grunt.option("verbose", environment.Settings.isVerbose());
+        if (environment.Settings.showStack())
+            this.grunt.option("stack", environment.Settings.showStack());
         this.grunt.task.run(task);
     }
 }
