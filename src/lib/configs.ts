@@ -12,15 +12,22 @@ interface IDeserializeAType {
     deserialize(type, value, call) : any;
 }
 
+class DeserializationHelper {
+    public static toObject(value) {
+        var data = value;
+        if (Object.prototype.toString.call(value) === "[object String]") {
+            data = JSON.parse(value);
+        }
+        
+        return data;
+    }
+}
+
 class DeserializeRegex implements IDeserializeAType {
     type : RegExp = /^RegExp$/gi;
     public deserialize(type, value, call) {
         try {
-            var data = value;
-            if (Object.prototype.toString.call(value) === "[object String]") {
-                data = JSON.parse(value);
-            } 
-                
+            var data = DeserializationHelper.toObject(value);                
             return new RegExp(data.pattern, data.flags);
         }
         catch(err) {
@@ -76,8 +83,8 @@ class DeserializeModule implements IDeserializeAType {
         }
         
         try {
-            log.verbose.writeln("DeserializeModule", "Applying " + value + " to " + JSON.stringify(currentModule));
-            var valueAsObject = JSON.parse(value);
+            var valueAsObject = DeserializationHelper.toObject(value);
+            log.verbose.writeln("DeserializeModule", "Applying " + JSON.stringify(value) + " to " + JSON.stringify(currentModule));
             Object.keys(valueAsObject).forEach((key) => {
                currentModule[key] = valueAsObject[key];
             });
