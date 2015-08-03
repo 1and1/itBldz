@@ -9,14 +9,30 @@ var path = require('path');
 var merge = require('merge');
 var args = require('nopt')({}, {}, process.argv, 2);
 
-export class ConfigurationFileLoaderService {
+export class ConfigurationLoaderServiceFactory {
+    public static get() {
+        var currentAction = environment.Action.get();
+        switch (environment.Action.get()) {
+            case environment.ActionType.Watch:
+                return new WatchConfigurationService();
+            default: 
+                return new ConfigurationFileLoaderService();
+        }
+    }
+}
+
+export interface ConfigurationLoaderService {
+    load(grunt : any) : any;
+}
+
+export class ConfigurationFileLoaderService implements ConfigurationLoaderService {
     static loadFile(fileName) : any {
         var file = path.join(global.basedir, fileName);
         if (!environment.FileSystem.fileExists(file)) throw "You have to create a '" + fileName + "' file with your build-configuration first";
         return require(file);
     }
 
-    public static load(grunt : any) : any {
+    public load(grunt : any) : any {
         var steps: any;
         var stepsFile: string;
         
@@ -30,9 +46,6 @@ export class ConfigurationFileLoaderService {
         
         var currentAction = environment.Action.get();
         switch (environment.Action.get()) {
-            case environment.ActionType.Watch:
-                steps = {};
-                break;
             case environment.ActionType.Build:
                 steps = ConfigurationFileLoaderService.loadFile(build);
                 break;
@@ -93,8 +106,8 @@ export class ConfigurationFileLoaderService {
     }
 }
 
-export class WatchConfigurationService {
-    public static load(grunt : any) : any {
+export class WatchConfigurationService implements ConfigurationLoaderService {
+    public load(grunt : any) : any {
         
         var steps: any;
         var stepsFile: string;
@@ -176,7 +189,7 @@ export class GruntConfigurationService implements ConfigurationService {
         var result: models.BuildStep[] = [];
 
         var buildConfiguration = {
-            steps : result
+            steps : build
         };
         callback(buildConfiguration);
     }

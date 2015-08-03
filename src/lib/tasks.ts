@@ -56,7 +56,11 @@ export class TaskRegisterService {
     }
 }
 
-export class ConfigTaskRegistrationService {
+export interface IRegisterTasksService {
+    register(config: models.Configuration);
+}
+
+export class ConfigTaskRegistrationService implements IRegisterTasksService {
     grunt: grunt.Grunt;
     taskRegisterService: TaskRegisterService;
 
@@ -73,5 +77,18 @@ export class ConfigTaskRegistrationService {
 
             step.tasks.forEach((_) => this.taskRegisterService.registerTask(_));
         });
+    }
+}
+
+export class GruntTaskRegistrationService implements IRegisterTasksService {
+    grunt: grunt.Grunt;
+
+    public constructor(grunt: grunt.Grunt) {
+        this.grunt = grunt;
+    }
+
+    public register(config: models.Configuration) {
+        var result: string[] = [];
+        this.grunt.registerTask("watch", "Build Step for watch", () => { });
     }
 }
