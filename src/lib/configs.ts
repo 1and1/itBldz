@@ -166,6 +166,7 @@ export class ConfigurationFileLoaderService {
         
         var build = (args.with || "build") + ".json";
         var deploy = (args.to || "deploy") + ".json";
+        var watch = (args.watch || "watch") + ".json";
         var configFile = (args.as || "config") + ".json";
         var varsFile = (args.vars || "vars") + ".yml";
         var modules = (args.modules || "modules") + ".json";
@@ -173,6 +174,9 @@ export class ConfigurationFileLoaderService {
         
         var currentAction = environment.Action.get();
         switch (environment.Action.get()) {
+            case environment.ActionType.Watch:
+                steps = {};
+                break;
             case environment.ActionType.Build:
                 steps = ConfigurationFileLoaderService.loadFile(build);
                 break;
@@ -319,7 +323,7 @@ export class GruntConfigurationService implements ConfigurationService {
             steps : result
         };
         callback(buildConfiguration);
-    };
+    }
 }
 
 export class BuildConfigurationService implements ConfigurationService {

@@ -46,7 +46,7 @@ export class Action {
         else if (_._.some((_) => _ == "init")) {
             return ActionType.Init;
         }
-        else if (_.some((_) => _ == "watch")) {
+        else if (_._.some((_) => _ == "watch")) {
             return ActionType.Watch;
         }
     }
