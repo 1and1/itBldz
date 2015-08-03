@@ -3,155 +3,11 @@
 import models = require('./models');
 import logging = require('./logging');
 import environment = require('./environment');
-import tasks = require('./tasks');
-var log = new logging.Log();
+import deserializer = require('./deserialization');
+import modules = require('./modules');import tasks = require('./tasks');var log = new logging.Log();
 var path = require('path');
 var merge = require('merge');
 var args = require('nopt')({}, {}, process.argv, 2);
-
-interface IDeserializeAType {
-    type : RegExp;
-    deserialize(type, value, call) : any;
-}
-
-class DeserializeRegex implements IDeserializeAType {
-    type : RegExp = /^RegExp$/gi;
-    public deserialize(type, value, call) {
-        try {
-            var data = JSON.parse(value);
-            return new RegExp(data.pattern, data.flags);
-        }
-        catch(err) {
-            return new RegExp(value);
-        }
-    }
-}
-
-export class ModuleService {
-    static modules;
-    
-    public load(modulesDefinition) : any {
-        log.verbose.writeln("Config", "modulesDefinition: " + modulesDefinition);
-        if (!environment.FileSystem.fileExists(modulesDefinition)) return {};
-        
-        if (ModuleService.modules) return ModuleService.modules;
-        
-        var modules : any = {};
-        var loadedModules = require(modulesDefinition);
-        
-        loadedModules.forEach((module) => {
-            var requiredModule = require(module);
-            log.verbose.writeln("ModuleService", "Loaded " + Object.keys(requiredModule) + " modules from file " + module);
-            Object.keys(requiredModule).forEach((exportedClass) => {
-                modules[exportedClass] = new (requiredModule[exportedClass])();
-            });
-        });
-        
-        log.verbose.writeln("ModuleService", Object.keys(modules).length + " modules loaded");
-        log.verbose.writeln("ModuleService", JSON.stringify(modules));
-        ModuleService.modules = modules;
-        return modules;
-    }
-}
-
-class DeserializeModule implements IDeserializeAType {
-    type : RegExp = /^modules\./gi;
-    modules;
-    
-    constructor(modules) {
-        this.modules = modules;
-    }
-    
-    public deserialize(type : string, value : string, call : string) {
-        type = type.replace(this.type, "");
-        log.verbose.writeln("DeserializeModule", "Deserializing module " + type + "...");
-        var currentModule = this.modules[type];
-        var self = this;
-        
-        if (!currentModule) throw new Error("A module that was specified could not be loaded. Module: " + type);
-        if (currentModule.deserialize) {
-            return function() { currentModule.deserialize(value); return currentModule[call].apply(currentModule, arguments); };
-        }
-        
-        try {
-            log.verbose.writeln("DeserializeModule", "Applying " + value + " to " + JSON.stringify(currentModule));
-            var valueAsObject = JSON.parse(value);
-            Object.keys(valueAsObject).forEach((key) => {
-               currentModule[key] = valueAsObject[key];
-            });
-            log.verbose.writeln("DeserializeModule", "Result: " + JSON.stringify(currentModule));
-            
-            return function () { return currentModule[call].apply(currentModule, arguments); };
-        } catch (err) {}
-        
-        return function () { return currentModule[call].apply(currentModule, arguments); };
-    }
-}
-
-class EmptyDeserializer implements IDeserializeAType {
-    type;
-    public deserialize(type, value, call) {
-        return value;
-    }
-}
-
-class DeserializerFactory {
-    deserializers : IDeserializeAType[] = [new DeserializeRegex()];
-        
-    public constructor(modules) {
-        this.deserializers.push(new DeserializeModule(modules));
-    }
-        
-    public get(type : string) : IDeserializeAType {
-        log.verbose.writeln("DeserializerFactory", "Testing type " + type);
-        return this.deserializers.filter((item) => item.type.test(type))[0] || 
-            new EmptyDeserializer();
-    }
-}
-
-class ConfigurationTypeDeserializer {
-    config : any;
-    deserializerFactory : DeserializerFactory;
-    
-    public constructor(config, modules) { 
-        this.config = config; 
-        this.deserializerFactory = new DeserializerFactory(modules);
-    }
-    
-    private serializeByDisriminator(type, value, call) : any {
-        return this.deserializerFactory.get(type).deserialize(type, value, call);
-    }
-    
-    private forEachKeyIn(object) : any {
-        if (Array.isArray(object)){
-            for (var index = 0; index < object.length; index++) {
-                object[index] = this.forEachKeyIn(object[index]);
-            }
-            
-            return object;
-        }
-        
-        if (object !== Object(object)) return object;
-        log.verbose.writeln("ConfigurationTypeDeserializer", "Current object: " + JSON.stringify(object));
-        if (object["serialized:type"]) {
-            var serialized = this.serializeByDisriminator(object["serialized:type"], object["serialized:object"], object["serialized:call"]);
-            log.verbose.writeln("ConfigurationTypeDeserializer", "Serialized " + object["serialized:type"] + " to " + JSON.stringify(serialized));
-            return serialized;
-        }
-        
-        var result = {};
-        
-        Object.keys(object).forEach((key) => {
-            result[key] = this.forEachKeyIn(object[key]);
-        });
-        
-        return result;
-    }
-    
-    public deserialize() : any {
-        return this.forEachKeyIn(this.config);
-    }
-}
 
 export class ConfigurationFileLoaderService {
     static loadFile(fileName) : any {
@@ -169,8 +25,8 @@ export class ConfigurationFileLoaderService {
         var watch = (args.watch || "watch") + ".json";
         var configFile = (args.as || "config") + ".json";
         var varsFile = (args.vars || "vars") + ".yml";
-        var modules = (args.modules || "modules") + ".json";
-        modules = new ModuleService().load(path.join(global.basedir, modules));
+        var _modules = (args.modules || "modules") + ".json";
+        _modules = new modules.ModuleService().load(path.join(global.basedir, _modules));
         
         var currentAction = environment.Action.get();
         switch (environment.Action.get()) {
@@ -206,9 +62,9 @@ export class ConfigurationFileLoaderService {
         }
 
         grunt.initConfig();
-        grunt.config.set("modules", modules);
+        grunt.config.set("modules", _modules);
         
-        grunt.config.set("steps", new ConfigurationTypeDeserializer(steps, modules).deserialize());
+        grunt.config.set("steps", new deserializer.ConfigurationTypeDeserializer(steps, _modules).deserialize());
         var packageFile = path.join(global.basedir, 'package.json');
         if (environment.FileSystem.fileExists(packageFile)) {
             grunt.config.set("pck", require(packageFile));
