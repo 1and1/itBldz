@@ -16,7 +16,11 @@ class DeserializeRegex implements IDeserializeAType {
     type : RegExp = /^RegExp$/gi;
     public deserialize(type, value, call) {
         try {
-            var data = JSON.parse(value);
+            var data = value;
+            if (Object.prototype.toString.call(value) === "[object String]") {
+                data = JSON.parse(value);
+            } 
+                
             return new RegExp(data.pattern, data.flags);
         }
         catch(err) {
