@@ -232,6 +232,16 @@ Add the Statement
 
 and it will automatically be replaced.
 
+#### Variables
+
+Apart of the config and the environment, you can add an additional yaml file. The default name for the files is "vars.yml".
+
+Now you can add the Statement
+
+> &lt;%= vars.your.variable %&gt;
+
+and it will automatically be replaced.
+
 ## I need a function in my configuration!
 
 Sorry, but that sounds like an oxymoron. 
@@ -296,6 +306,63 @@ The name of the module is the name of the class in the file that should be loade
     }
 ````
 you will have both available in the configuration. 
+
+## Type Discriminators
+
+JSON-Files do not support objects, but JavaScript (and Grunt) does. For instance, some tasks require Regular Expressions. This can be implemented by using Type-Discriminators in your configuration. The Syntax is the following:
+
+````json
+{
+    "myKey" : {
+        "serialized:type":"RegExp",
+        "serialized:object": { "pattern" : ".*?", "flags" : "gmi" }
+    }
+}
+````
+
+will become: 
+
+````js
+{
+    "myKey" : /.*?/gmi
+}
+````
+
+This can be used with Modules as well. Given you have a module
+
+````ts
+    export class HelloWorld {
+        defaultPersonToGreet:string;
+    	public greet(name) {
+    		return "Hello " + (name || this.defaultPersonToGreet);
+    	}
+    }
+````
+
+and a configuration
+
+````json
+{
+    "myKey" : {
+        "serialized:type":"modules.HelloWorld",
+        "serialized:object":{ "defaultPersonToGreet" : "Bruce Lee"  },
+        "serialized:call":"greet"
+    }
+}
+````
+
+will then become: 
+
+````js
+{
+    "myKey" : function(){ return modules.HelloWorld.greet.apply(deserializedModule, arguments); }
+}
+````
+
+Types available for deserialization are: 
+
+* RegExp
+* Modules
 
 ## Contributing
 
