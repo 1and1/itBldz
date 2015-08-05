@@ -1,6 +1,6 @@
 {
   "name": "itbldz",
-  "version": "2.0.40",
+  "version": "2.0.41",
   "description": "Gruntpowered CI loving awesomeness",
   "repository": {
     "type": "git",
@@ -17,16 +17,16 @@
   },
   "homepage": "https://github.com/1and1/itBldz",
   "dependencies": {
-    "async": "*",
-    "chalk": "*",
-    "findup-sync": "*",
-    "grunt": "*",
-    "merge": "*",
-    "nopt": "*",
-    "npm": "*",
-    "resolve": "*",
-    "time-grunt": "*",
-    "yargs": "*"
+    "async": "^1.4.0",
+    "chalk": "^1.1.0",
+    "findup-sync": "^0.2.1",
+    "grunt": "^0.4.5",
+    "merge": "^1.2.0",
+    "nopt": "^3.0.3",
+    "npm": "^2.13.3",
+    "resolve": "^1.1.6",
+    "time-grunt": "^1.2.1",
+    "yargs": "^3.17.1"
   },
   "bin": {
     "build-it": "bin/build-it.js",
