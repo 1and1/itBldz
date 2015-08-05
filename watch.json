@@ -1,6 +1,6 @@
 {
       "scripts": {
-            "files": ["**/*.ts"],
+            "files": ["<%= config.sources.TypeScript.files %>"],
             "tasks": ["compile/typescript"],
             "options": {
                   "perFile": {
