@@ -20,7 +20,7 @@ describe("When registering a configuration", () => {
 
     describe("When the configuration is empty", () => {
         beforeEach(() => {
-            taskConfigurationRegisterService.register({ steps: [] });
+            taskConfigurationRegisterService.register({ steps: [] }, () => {});
         });
 
         it("should not have registered anything", () => {
@@ -30,7 +30,7 @@ describe("When registering a configuration", () => {
 
     describe("When the configuration has steps and tasks", () => {
         beforeEach(() => {
-            taskConfigurationRegisterService.register({ steps: [{ name: "step1", tasks: [new models.TaskGroup()] }, { name: "step2", tasks: [new models.TaskGroup()] }] });
+            taskConfigurationRegisterService.register({ steps: [{ name: "step1", tasks: [new models.TaskGroup()] }, { name: "step2", tasks: [new models.TaskGroup()] }] }, ()=>{});
         });
 
         it("should have registered all steps", () => {            

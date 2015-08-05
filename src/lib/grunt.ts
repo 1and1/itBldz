@@ -16,6 +16,7 @@ export class Grunt {
             process.chdir(global.relativeDir);
             if (name.indexOf("@") > 0) name = name.substring(0, name.indexOf("@"))
             this.grunt.loadNpmTasks(name);
+            log.verbose.writeln("Grunt", "npm task " + name + " loaded");
             process.chdir(global.basedir);
             callback();
         });
@@ -25,6 +26,7 @@ export class Grunt {
         if (this.registeredTasks.some((_) => _ === name)) {
             return;
         }
+        
         this.registeredTasks.push(name);
         this.grunt.registerTask(name, description, onTaskStart);
         log.verbose.writeln("Grunt", "Loaded task " + name);
@@ -39,6 +41,7 @@ export class Grunt {
             this.grunt.option("verbose", environment.Settings.isVerbose());
         if (environment.Settings.showStack())
             this.grunt.option("stack", environment.Settings.showStack());
+        log.verbose.writeln("Grunt", "Schedule run for task " + task);
         this.grunt.task.run(task);
     }
 }

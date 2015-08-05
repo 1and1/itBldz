@@ -222,6 +222,50 @@ talking about your environment.
 For different environments you might have different configurations. Split them
 and reference the correct config when starting the build.
 
+#### watch.json
+
+The watch.json helps you in describing what tasks you want to run automatically. It consists of generic blocks (i.e. "compile", "test") that describe what you are doing  
+
+Given you have a build.json with a compile typescript task:
+
+````json
+{
+    /* other stuff */
+    "compile": {
+        "typescript": {
+            "task": "ts",
+            "package": "grunt-ts",
+            "default": {
+                "options": {
+                    "module": "commonjs",
+                    "compile": true
+                },
+                "src": "<%= config.sources.TypeScript.files %>"
+            }
+        }
+    }    
+    /* other stuff */
+}
+````
+
+Now you don't want to trigger the full build everytime, but rather every time a file changes. Then you would have a watch.json that would look like the following:
+
+````json
+{
+      "compile": {
+            "files": ["**/*.ts"],
+            "tasks": ["compile/typescript"],
+            "options": {
+                  "perFile": {
+                        "targets" : ["default"]
+                  }
+            }
+      }
+}
+````
+
+In the "tasks" you can reference the build-tasks that should run, the "options" are the options that will be provided to the grunt-contrib-watch library.   
+
 #### Environment
 
 In your configuration and build you can access the environment variables of your host system as well.

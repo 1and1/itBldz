@@ -57,7 +57,7 @@ export class TaskRegisterService {
 }
 
 export interface IRegisterTasksService {
-    register(config: models.Configuration);
+    register(config: models.Configuration, callback : () => void);
 }
 
 export class ConfigTaskRegistrationService implements IRegisterTasksService {
@@ -70,25 +70,30 @@ export class ConfigTaskRegistrationService implements IRegisterTasksService {
         this.grunt = grunt;
     }
 
-    public register(config: models.Configuration) {
+    public register(config: models.Configuration, callback) {
         var result: string[] = [];
         config.steps.forEach((step) => {
             this.grunt.registerTask(step.name, "Build Step for " + step.name, () => { });
 
             step.tasks.forEach((_) => this.taskRegisterService.registerTask(_));
+            callback();
         });
     }
 }
 
-export class GruntTaskRegistrationService implements IRegisterTasksService {
+export class GruntWatchRegistrationService implements IRegisterTasksService {
     grunt: grunt.Grunt;
 
     public constructor(grunt: grunt.Grunt) {
         this.grunt = grunt;
     }
 
-    public register(config: models.Configuration) {
+    public register(config: models.Configuration, callback : () => void) {
         var result: string[] = [];
-        this.grunt.registerTask("watch", "Build Step for watch", () => { });
+        this.grunt.registerExternalTask("grunt-contrib-watch", ["glob", "minimatch"], () => {
+            log.verbose.writeln("GruntWatchRegistrationService", "grunt-contrib-watch loaded");
+            this.grunt.run("watch");
+            callback();
+        })
     }
 }

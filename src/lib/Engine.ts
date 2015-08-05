@@ -27,7 +27,7 @@ export class Engine {
                 config.steps.reduce((_: any, current) => _ + (current.tasks ? current.tasks.length : 0), 0) : 
                 0));
                 
-            this.taskService.register(config);
+            this.taskService.register(config, () => { });
             callback(this.grunt.registeredTasks);
         });
     }
@@ -90,7 +90,7 @@ export class InitializeEngine extends Engine {
 }
 
 export class WatchEngine extends Engine {
-    public constructor(grunt: grunt.Grunt, configuration = new config.GruntConfigurationService(), taskService = new tasks.GruntTaskRegistrationService(grunt)) {
+    public constructor(grunt: grunt.Grunt, configuration = new config.GruntConfigurationService(), taskService = new tasks.GruntWatchRegistrationService(grunt)) {
         super(grunt, configuration, taskService);
         this.currentEngine = "WatchEngine";
     }
@@ -99,9 +99,9 @@ export class WatchEngine extends Engine {
         log.verbose.writeln(this.currentEngine, "Loading configuration...");
         this.configuration.load(configuration, (config) => {
             log.verbose.writeln(this.currentEngine, "Configuration loaded!");
-            log.verbose.writeln(this.currentEngine, "\tSteps:\t\t" + (config.steps ? config.steps.length : 0));
-            this.taskService.register(config);
-            callback(this.grunt.registeredTasks);
+            this.taskService.register(config, () => {
+                callback(this.grunt.registeredTasks);
+            });
         });
     }
 }
