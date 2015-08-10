@@ -8,6 +8,12 @@ __The only build-tool you'll ever need__
 
 The goal is to provide an easy to setup framework which allow every development team a "closed for modification, open for extension"-plattform for their own needs.
 
+## Principles
+
+1. The build and deployment pipelines are to be explicit, repeatable, and tested.
+2. It must be easy to understand what happens when.
+3. A build/deployment-definition is configuration
+
 ## Usage
 
 ### Setup
