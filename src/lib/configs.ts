@@ -106,6 +106,115 @@ export class TaskRunnerConfigurationService {
     }
 }
 
+class FilterBySelectedTasks {
+    selectedTasks : string[];
+    
+    protected isParent(task, step) {
+        return task.split("/")[0] == step.name
+    }
+    
+    protected reduce(current: models.Task[]) {
+        var result: models.Task[] = [];
+        if (current.length < 1) return result;
+        current.forEach((_) => {
+            if (this.selectedTasks.every((selected) => 
+                selected.indexOf(_.qualifiedName) !== 0 && _.qualifiedName.indexOf(selected) !== 0)) 
+                return;
+            
+            if (_._t === "TaskGroup") {
+                result = result.concat(this.reduce((<models.TaskGroup>_).tasks));
+            } else {
+                result.push(_);
+            }
+        });
+        return result;
+    }
+    
+}
+
+class FilterTasksByArgumentsSelectionService extends FilterBySelectedTasks implements IFilterTasksBySelections {
+    argv;
+    
+    public constructor(argv = require('yargs').argv) {
+        this.argv = argv;
+        super();
+    }    
+    
+    public filter(allSteps : models.BuildStep[]) : models.BuildStep[] {
+        var actions = ["build", "deploy", "ship", "init"];
+        this.selectedTasks = <string[]>this.argv._.filter((_) => (actions.every((action) => action != _)));
+        
+        if (this.selectedTasks.length > 0) {
+            log.verbose.writeln("filterByArgs", "Tasks selected to run=" + JSON.stringify(this.selectedTasks));
+            allSteps = allSteps.filter((step) => {
+                return this.selectedTasks.some((_) => _ == step.name || 
+                    (_.indexOf('/') >= 0 && _.split("/")[0] == step.name));
+            });
+
+            allSteps.forEach((step) => {
+                step.tasks = this.reduce(step.tasks);
+            });
+        }
+        
+        return allSteps;
+    }
+}
+
+class FilterTaskByScenarioContext extends FilterBySelectedTasks implements IFilterTasksBySelections {
+    argv;
+    
+    public constructor(argv = require('yargs').argv) {
+        this.argv = argv;
+        super();
+    }
+    
+    public filter(allSteps : models.BuildStep[]) : models.BuildStep[] {
+        if (!this.argv.scenario) return allSteps;
+        log.verbose.writeln("filterByScenario", "Running scenario " + this.argv.scenario);
+ 
+        var scenario = require(path.join(global.basedir, this.argv["scenario"] + ".yml"));
+        if (!scenario) throw new Error("The specified scenario does not exist.");
+        if (!scenario.steps) throw new Error("The scenario does not contain any steps");
+        this.selectedTasks = scenario.steps;
+        log.verbose.writeln("filterByScenario", "Tasks selected to run=" + JSON.stringify(this.selectedTasks));
+ 
+        allSteps = allSteps.filter((step) => {
+            return this.selectedTasks.some((_) => _ == step.name || 
+                (_.indexOf('/') >= 0 && _.split("/")[0] == step.name));
+        });
+
+        allSteps.forEach((step) => {
+            step.tasks = this.reduce(step.tasks);
+        });
+        
+        return allSteps;
+    }
+}
+
+interface IFilterTasksBySelections {
+    filter(allSteps : models.BuildStep[]) : models.BuildStep[];
+}
+
+class FilterTaskSelectionFactory {
+    filters : IFilterTasksBySelections[];
+    
+    public constructor(argv = require('yargs').argv) {
+        this.filters = [
+            new FilterTasksByArgumentsSelectionService(argv),
+            new FilterTaskByScenarioContext(argv)
+        ];
+    }
+    
+    public applyTo(steps : models.BuildStep[]) {
+        log.verbose.writeln("config", "Filtering tasks...");
+        this.filters.forEach((_) => {
+            steps = _.filter(steps);
+        });
+        
+        return steps;
+    }
+}
+
 export class BuildConfigurationService implements ConfigurationService {
     argv;
 
@@ -140,39 +249,14 @@ export class BuildConfigurationService implements ConfigurationService {
     public load(build, callback: (models: models.Configuration) => void): void {
         var steps = Object.keys(build);
 
-        var actions = ["build", "deploy", "ship", "init"];
-        var selectedTasks = <string[]>this.argv._.filter((_) => (actions.every((action) => action != _)));
-        log.verbose.writeln("config", "Tasks selected to run=" + JSON.stringify(selectedTasks));
-
         var result: models.BuildStep[] = steps.map((step) => {
             return {
                 name: step,
                 tasks: this.loadTasks(step, build[step])
             };
         });
-
-        if (selectedTasks.length > 0) {
-            var reduce = (current : models.Task[]) => {
-                var result: models.Task[] = [];
-                if (current.length < 1) return result;
-                current.forEach((_) => {
-                    if (selectedTasks.every((selected) => selected.indexOf(_.qualifiedName) !== 0 && _.qualifiedName.indexOf(selected) !== 0)) return;
-                    result.push(_);
-                    if (_._t === "TaskGroup") {
-                        result = result.concat(reduce((<models.TaskGroup>_).tasks));
-                    }
-                });
-                return result;
-            }
-
-            result = result.filter((step) => {
-                return selectedTasks.some((_) => _ == step.name || (_.indexOf('/') >= 0 && _.split("/")[0] == step.name));
-            });
-
-            result.forEach((step) => {
-                step.tasks = reduce(step.tasks);
-            });
-        }
+        
+        result = new FilterTaskSelectionFactory(this.argv).applyTo(result);
 
         var buildConfiguration = {
             steps : result
