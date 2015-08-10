@@ -8,6 +8,7 @@
     var config;
     var modules;
     var vars;
+    var scenarios = {};
     
     this.Given(/^I have a src directory with a file "([^"]*)"$/, function (fileName, callback) {
         this.fileSystem.withEmptyDirectory(".", callback);
@@ -33,8 +34,22 @@
         callback();
     });
     
+    this.Given(/^I have a build scenario file "([^"]*)"$/, function (name, callback) {
+      scenarios[name] = "steps:";
+      callback();
+    });
+
+    this.Given(/^the scenario "([^"]*)" executes the step "([^"]*)"$/, function (name, step, callback) {
+      scenarios[name] += "\n- \"" + step + "\"";
+      callback();
+    });
+        
     this.Given("the build file is in the root of my application", function (callback) {
         this.fileSystem.withFileWithContentInDirectory("build.json", JSON.stringify(config), ".", callback);
+    });
+        
+    this.Given(/the scenario file "([^"]*)" is in the root of my application$/, function (name, callback) {
+        this.fileSystem.withFileWithContentInDirectory(name + ".yml", scenarios[name], ".", callback);
     });
     
     this.Given("the modules file is in the root of my application", function (callback) {
@@ -137,7 +152,6 @@
         this.fileSystem.withFileWithContentInDirectory("vars.yml", vars, ".", callback);
     });
 
-
     this.When("I execute the build command", function (callback) {
         this.terminal.execute("../../../../build", callback);
     });
@@ -186,6 +200,22 @@
     this.Then(/^the message "([^"]*)" should appear on the command line$/, function (arg1, callback) {
       var _ = this;
       _.terminal.output.should.contain(arg1);
+      callback();
+    });
+
+    this.Then(/^the step "([^"]*)" should have been executed$/, function (task, callback) {
+      var expected = "Running \""+ task + "\" task";
+      // Write code here that turns the phrase above into concrete actions
+      var _ = this;
+      _.terminal.output.should.contain(expected);
+      callback();
+    });
+    
+    this.Then(/^the step "([^"]*)" should not have been executed$/, function (task, callback) {
+      var not_expected = "Running \""+ task + "\" task";
+      // Write code here that turns the phrase above into concrete actions
+      var _ = this;
+      _.terminal.output.should.not.contain(not_expected);
       callback();
     });
 };

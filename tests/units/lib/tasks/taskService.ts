@@ -1,4 +1,8 @@
-﻿import mocha = require('mocha');
+﻿/// <reference path="../../../../Scripts/typings/mocha/mocha.d.ts" />
+/// <reference path="../../../../Scripts/typings/chai/chai.d.ts" />
+/// <reference path="../../../../Scripts/typings/sinon/sinon.d.ts" />
+
+import mocha = require('mocha');
 import chai = require('chai');
 import sinon = require('sinon');
 var expect = chai.expect;

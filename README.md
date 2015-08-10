@@ -8,6 +8,12 @@ __The only build-tool you'll ever need__
 
 The goal is to provide an easy to setup framework which allow every development team a "closed for modification, open for extension"-plattform for their own needs.
 
+## Principles
+
+1. The build and deployment pipelines are to be explicit, repeatable, and tested.
+2. It must be easy to understand what happens when.
+3. A build/deployment-definition is configuration
+
 ## Usage
 
 ### Setup
@@ -44,7 +50,7 @@ or ship it (build & deploy)
 ship-it
 ```
 
-_Note:_ If you don't install it globally, you can use 
+_Note:_ If you don't install it globally, you can use
 ```shell
 [node] ./node_modules/itbldz/bin/build-it.js|deploy-it.js|ship-it.js|init-itbldz.js
 ```
@@ -69,7 +75,7 @@ build-it --verbose
 Given this config:
 ````
 {
-    "compile": { 
+    "compile": {
         "typescript : { /* compile your sources */ }
     },
 	"build": {
@@ -143,7 +149,7 @@ An example:
 ````json
     {
         "compile" : {
-            "code" : { 
+            "code" : {
                 "java using maven" : {},
                 "typescript to javascript" : {}
             },
@@ -286,14 +292,33 @@ Now you can add the Statement
 
 and it will automatically be replaced.
 
+## Build Scenarios
+
+As your build grows, different scenarios might be required for your build to run in. Typical scenarios are "development" and "continuous integration build". While the latter might be your full build, for the first you might only a subset to be run every time you trigger the build.
+
+To enable this behavior you can create specific scenario files to target only a subset of the tasks in your build.json. These files are yaml files with the following syntax:
+
+````yml
+steps:
+- "test/typescript/acceptance/clean-test-results"
+- "test/typescript/acceptance/scenarios"
+````
+
+This scenario executes only the two specified build steps, and only if they are defined in your build definition.
+Given this file is called "test.yml" you can now call it using:
+
+````shell
+build-it --scenario=test
+````
+
 ## I need a function in my configuration!
 
-Sorry, but that sounds like an oxymoron. 
+Sorry, but that sounds like an oxymoron.
 itbldz is to **configure build scenarios** in an easy way, and adding logic to your configuration does not seem to help reducing complexity.
 
 If you want a grunt task to do more then what is configured, then create an npm package, test it and use this.
 
-However, now that you know that you shouldn't do it, here's the way on how to do it. In the template syntax you can execute functions as well: 
+However, now that you know that you shouldn't do it, here's the way on how to do it. In the template syntax you can execute functions as well:
 
 ````json
     {
@@ -301,7 +326,7 @@ However, now that you know that you shouldn't do it, here's the way on how to do
     }
 ````
 
-This can be extended - you can create simple Modules that look like the following (TypeScript): 
+This can be extended - you can create simple Modules that look like the following (TypeScript):
 
 ````ts
     export class HelloWorld {
@@ -327,7 +352,7 @@ Then in your configuration (i.e. build.json) you can include the module like thi
     }
 ````
 
-To control the modules that should be loaded, a module.js file is added that is automatically included if available or can be included with --modules=path/to/modules.js which looks like the following: 
+To control the modules that should be loaded, a module.js file is added that is automatically included if available or can be included with --modules=path/to/modules.js which looks like the following:
 
 ````json
     [
@@ -335,7 +360,7 @@ To control the modules that should be loaded, a module.js file is added that is 
     ]
 ````
 
-The name of the module is the name of the class in the file that should be loaded for this keyword, so that when you have multiple classes like so: 
+The name of the module is the name of the class in the file that should be loaded for this keyword, so that when you have multiple classes like so:
 
 ````ts
     export class HelloWorld {
@@ -349,7 +374,7 @@ The name of the module is the name of the class in the file that should be loade
     	}
     }
 ````
-you will have both available in the configuration. 
+you will have both available in the configuration.
 
 ## Type Discriminators
 
@@ -364,7 +389,7 @@ JSON-Files do not support objects, but JavaScript (and Grunt) does. For instance
 }
 ````
 
-will become: 
+will become:
 
 ````js
 {
@@ -395,7 +420,7 @@ and a configuration
 }
 ````
 
-will then become: 
+will then become:
 
 ````js
 {
@@ -403,7 +428,7 @@ will then become:
 }
 ````
 
-Types available for deserialization are: 
+Types available for deserialization are:
 
 * RegExp
 * Modules

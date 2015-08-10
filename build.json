@@ -40,6 +40,15 @@
                         "<%= config.directories.TypeScript.acceptance %>/testdata"
                     ]
                 },
+                "scenarios" : {
+                    "task": "cucumberjs",
+                    "package": "grunt-cucumber",
+                    "src": "<%= config.directories.TypeScript.acceptance %>/BuildScenarios.feature",
+                    "dependencies": [
+                        "cucumber", "chai"
+                    ],
+                    "options": "<%= config.test.acceptance.options %>"
+                },
                 "vars" : {
                     "task": "cucumberjs",
                     "package": "grunt-cucumber",

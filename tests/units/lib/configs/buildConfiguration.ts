@@ -1,4 +1,7 @@
-﻿import mocha = require('mocha');
+﻿/// <reference path="../../../../Scripts/typings/mocha/mocha.d.ts" />
+/// <reference path="../../../../Scripts/typings/chai/chai.d.ts" />
+
+import mocha = require('mocha');
 import chai = require('chai');
 var expect = chai.expect;
 import configs = require('../../../../src/lib/configs');
@@ -156,8 +159,7 @@ describe("When loading a build configuration", () => {
                 expect(models).to.exist;
                 expect(models.steps).not.to.be.empty;
                 expect(models.steps).to.have.lengthOf(1);
-                expect(models.steps[0].tasks).not.to.be.empty;
-                expect(models.steps[0].tasks).to.have.lengthOf(1);
+                expect(models.steps[0].tasks).to.be.empty;
                 done();
             });
         });
@@ -168,9 +170,12 @@ describe("When loading a build configuration", () => {
             argv._ = ["build-task/sub-task-2/task"];
             configuration = {
                 "build-task": {
-                    "sub-task-1": {},
-                    "sub-task-2": {
+                    "sub-task-1": {
                         "task": "task"
+                    },
+                    "sub-task-2": {
+                        "task": "task",                        
+                        "another-task": "task"
                     }
                 },
                 "other-task": {
