@@ -116,8 +116,10 @@ export class WatchConfigurationService implements ConfigurationLoaderService {
         var run = {
             watch: {
                 options: watch.options
-            }
+            },
+            steps : {}
         };
+        
         Object.keys(watch).filter((target) => target !== "options").forEach((target) => {
             var watchedTasks = watch[target].tasks;
             if (!watchedTasks) return;
@@ -133,9 +135,9 @@ export class WatchConfigurationService implements ConfigurationLoaderService {
 
                 var tasksToRun = step(taskSet, build);
                 if (!tasksToRun.task) throw new Error("Only build-steps can be set as target");
-                run[tasksToRun.task] = tasksToRun;
+                
+                run.steps[tasksToRun.task] = tasksToRun;
                 newWatchTargets.push(tasksToRun.task);
-                tasks.TaskExecutionPrepareService.gruntifyTask(run, tasksToRun.task);
             });
 
             watch[target].tasks = newWatchTargets;
@@ -166,10 +168,6 @@ export class WatchConfigurationService implements ConfigurationLoaderService {
     }
 }
 
-export interface ConfigurationService {
-    load(config, callback: (models: models.Configuration) => void);
-}
-
 export class TaskRunnerConfigurationService {
     public get(task, parent, currentStep): models.TaskRunner {
         var result = new models.TaskRunner();
@@ -181,17 +179,6 @@ export class TaskRunnerConfigurationService {
         (<models.TaskRunner>result).package = currentStep.package;
         (<models.TaskRunner>result).dependencies = currentStep.dependencies;
         return result;
-    }
-}
-
-export class GruntConfigurationService implements ConfigurationService {
-    public load(build, callback: (models: models.Configuration) => void): void {
-        var result: models.BuildStep[] = [];
-
-        var buildConfiguration = {
-            steps : build
-        };
-        callback(buildConfiguration);
     }
 }
 
@@ -304,6 +291,10 @@ class FilterTaskSelectionFactory {
     }
 }
 
+export interface ConfigurationService {
+    load(config, callback: (models: models.Configuration) => void);
+}
+
 export class BuildConfigurationService implements ConfigurationService {
     argv;
 
@@ -350,6 +341,29 @@ export class BuildConfigurationService implements ConfigurationService {
             steps : result
         };
 
+        callback(buildConfiguration);
+    }
+}
+
+export class GruntConfigurationService extends BuildConfigurationService {
+    public load(build, callback: (models: models.Configuration) => void): void {
+        var steps = Object.keys(build);
+        var result: models.BuildStep[] = steps
+            .filter((step) => step != "watch")
+            .map((step) => {
+                return {
+                    name: step,
+                    tasks: this.loadTasks(step, build[step])
+                };
+            });
+
+        // TODO: Add filter task selection
+        //          right now all args are replaced
+        // result = new FilterTaskSelectionFactory(this.argv).applyTo(result);
+        var buildConfiguration = {
+            steps : result
+        };
+                
         callback(buildConfiguration);
     }
 }

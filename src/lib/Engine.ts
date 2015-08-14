@@ -90,7 +90,9 @@ export class InitializeEngine extends Engine {
 }
 
 export class WatchEngine extends Engine {
-    public constructor(grunt: grunt.Grunt, configuration = new config.GruntConfigurationService(), taskService = new tasks.GruntWatchRegistrationService(grunt)) {
+    public constructor(grunt: grunt.Grunt, 
+        configuration = new config.GruntConfigurationService(), 
+        taskService = new tasks.GruntWatchRegistrationService(grunt)) {
         super(grunt, configuration, taskService);
         this.currentEngine = "WatchEngine";
     }

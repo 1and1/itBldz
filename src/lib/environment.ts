@@ -49,6 +49,12 @@ export class Action {
         else if (_._.some((_) => _ == "watch")) {
             return ActionType.Watch;
         }
+        else {
+            throw new Error(`No action specified to run.
+
+Syntax: 
+    node itbldz.tz build|deploy|ship|init|watch`);
+        }
     }
 }
 
