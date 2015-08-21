@@ -2,8 +2,13 @@
     this.World = require("../support/World").World;
     require('chai').should();
     
+    var fs = require('fs');
+    
     var setupFile;
     var config;
+    var modules;
+    var vars;
+    var scenarios = {};
     
     this.Given(/^I have a src directory with a file "([^"]*)"$/, function (fileName, callback) {
         this.fileSystem.withEmptyDirectory(".", callback);
@@ -19,8 +24,36 @@
         callback();
     });
     
+    this.Given(/^I have an empty modules file$/, function (callback) {
+        modules = [];
+        callback();
+    });
+
+    this.Given(/^I have an empty vars file$/, function (callback) {
+        vars = "";
+        callback();
+    });
+    
+    this.Given(/^I have a build scenario file "([^"]*)"$/, function (name, callback) {
+      scenarios[name] = "steps:";
+      callback();
+    });
+
+    this.Given(/^the scenario "([^"]*)" executes the step "([^"]*)"$/, function (name, step, callback) {
+      scenarios[name] += "\n- \"" + step + "\"";
+      callback();
+    });
+        
     this.Given("the build file is in the root of my application", function (callback) {
         this.fileSystem.withFileWithContentInDirectory("build.json", JSON.stringify(config), ".", callback);
+    });
+        
+    this.Given(/the scenario file "([^"]*)" is in the root of my application$/, function (name, callback) {
+        this.fileSystem.withFileWithContentInDirectory(name + ".yml", scenarios[name], ".", callback);
+    });
+    
+    this.Given("the modules file is in the root of my application", function (callback) {
+        this.fileSystem.withFileWithContentInDirectory("modules.json", JSON.stringify(modules), ".", callback);
     });
     
     this.Given(/^the build file is in the root of my application with the name "([^"]*)"$/, function (name, callback) {
@@ -68,6 +101,57 @@
         callback();
     });
     
+    this.Given(/^the module HelloWorld is defined and exists$/, function (callback) {
+        modules.push(require('path').join(this.fileSystem.baseDirectory, "HelloWorld.js"));
+        var self = this;
+        this.fileSystem.readFile("../../support/HelloWorld.js", function (moduleContent) {
+            self.fileSystem.withFileWithContentInDirectory("HelloWorld.js", moduleContent, ".", callback);
+        });
+    });
+
+    this.Given(/^the build step "([^"]*)" has a exec task runner with the command "([^"]*)"$/, function (buildStepName, command, callback) {
+      config = {
+          buildStepName : {
+            "hello world" : {
+                "task": "exec",
+                "package": "grunt-exec",
+                "echo-module" : {
+                    "cmd" : command
+                }
+            }
+         }
+      };
+      callback();
+    });
+    
+    this.Given(/^the build step echo has a exec task runner with a type discriminator for the HelloWorld Module with "(.*)" as actor$/, function (arg1, callback) {
+        config = {
+        "test-module": {
+            "hello world" : {
+                "task": "exec",
+                "package": "grunt-exec",
+                "echo-module" : {
+                    "cmd" : {
+                        "serialized:type" : "modules.HelloWorld",
+                        "serialized:object" : "{ \"defaultPersonToGreet\" : \"" + arg1 + "\"  }",
+                        "serialized:call" : "greet"
+                    }
+                }
+            }
+         }
+      };
+      callback();
+    });
+
+    this.Given(/^the variable "([^"]*)" exists under "([^"]*)"$/, function (innerVariable, outerVariable, callback) {
+        vars += outerVariable + ":\n  " + innerVariable + ": Hello world"
+        callback();
+    });
+
+    this.Given(/^the vars file is in the root of my application$/, function (callback) {
+        this.fileSystem.withFileWithContentInDirectory("vars.yml", vars, ".", callback);
+    });
+
     this.When("I execute the build command", function (callback) {
         this.terminal.execute("../../../../build", callback);
     });
@@ -111,6 +195,28 @@
     this.Then(/^the file "([^"]*)" should exist in folder "([^"]*)"$/, function (fileName, folder, callback) {
         this.fileSystem.isFileInDirectory(fileName, folder).should.be.true;
         callback();
+    });
+
+    this.Then(/^the message "([^"]*)" should appear on the command line$/, function (arg1, callback) {
+      var _ = this;
+      _.terminal.output.should.contain(arg1);
+      callback();
+    });
+
+    this.Then(/^the step "([^"]*)" should have been executed$/, function (task, callback) {
+      var expected = "Running \""+ task + "\" task";
+      // Write code here that turns the phrase above into concrete actions
+      var _ = this;
+      _.terminal.output.should.contain(expected);
+      callback();
+    });
+    
+    this.Then(/^the step "([^"]*)" should not have been executed$/, function (task, callback) {
+      var not_expected = "Running \""+ task + "\" task";
+      // Write code here that turns the phrase above into concrete actions
+      var _ = this;
+      _.terminal.output.should.not.contain(not_expected);
+      callback();
     });
 };
 

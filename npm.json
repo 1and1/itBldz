@@ -1,0 +1,39 @@
+{
+    "prepare": {
+        "clean": {
+            "task": "clean",
+            "package": "grunt-contrib-clean",
+            "options": {
+                "force": true
+            },
+            "target": [
+                "<%= config.directories.target %>"
+            ]
+        }
+    },
+    "create-deployable": {
+        "copy": {
+            "task": "copy",
+            "package": "grunt-contrib-copy",
+            "deployables": {
+                "files": "<%= config.deployables.files %>"
+            }
+        }
+    },
+    "publish": {
+        "npm": {
+            "task": "release",
+            "package": "grunt-release",
+            "options": {
+                "bump": false,
+                "add": false,
+                "commit": false,
+                "tag": false,
+                "push": false,
+                "pushTags": false,
+                "file": "<%= config.directories.target %>/package.json",
+                "folder": "<%= config.directories.target %>"
+            }
+        }
+    }
+}

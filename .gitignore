@@ -22,4 +22,5 @@ obj/**
 tscommand*
 tests/features/testdata/**
 tests/features/support/*.js
-.settings/launch.json
+.settings/*
+src/grunt-utils/.tscache/**/*

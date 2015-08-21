@@ -1,0 +1,3 @@
+steps:
+- "test/typescript/acceptance/clean-test-results"
+- "test/typescript/acceptance/scenarios"
