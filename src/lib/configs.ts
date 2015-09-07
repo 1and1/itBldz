@@ -98,7 +98,7 @@ export class TaskRunnerConfigurationService {
         result.parent = parent;
         result.name = task;
         result.config = {};
-        result.config[currentStep.task] = currentStep;
+        result.config[currentStep.task.split(":")[0]] = currentStep;
         (<models.TaskRunner>result).task = currentStep.task;
         (<models.TaskRunner>result).package = currentStep.package;
         (<models.TaskRunner>result).dependencies = currentStep.dependencies;
