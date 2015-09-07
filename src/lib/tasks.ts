@@ -6,6 +6,7 @@ var log = new logging.Log();
 export class TaskExecutionPrepareService {
     public static initTaskConfig(grunt, task, config): any {
         if (!config) throw "A task requires a configuration to run";
+        task = task.split(":")[0];
         delete config[task].task;
         delete config[task].package;
         delete config[task].dependencies;
