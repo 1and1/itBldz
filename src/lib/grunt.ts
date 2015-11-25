@@ -18,7 +18,7 @@ export class Grunt {
             this.grunt.loadNpmTasks(name);
             process.chdir(global["basedir"]);
             log.verbose.writeln("Grunt", "npm task " + name + " loaded");
-            process.chdir(global.basedir);
+            process.chdir(global["basedir"]);
             callback();
         });
     }
