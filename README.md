@@ -398,6 +398,7 @@ Git clone this repository, run a
 ````
 npm install -g itbldz
 npm install
+tsd reinstall
 ````
 
 and then

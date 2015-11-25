@@ -1,7 +1,4 @@
-﻿/// <reference path="../../../../Scripts/typings/mocha/mocha.d.ts" />
-/// <reference path="../../../../Scripts/typings/chai/chai.d.ts" />
-
-import mocha = require('mocha');
+﻿import mocha = require('mocha');
 import chai = require('chai');
 var expect = chai.expect;
 import configs = require('../../../../src/lib/configs');

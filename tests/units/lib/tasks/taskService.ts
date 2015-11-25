@@ -1,8 +1,4 @@
-﻿/// <reference path="../../../../Scripts/typings/mocha/mocha.d.ts" />
-/// <reference path="../../../../Scripts/typings/chai/chai.d.ts" />
-/// <reference path="../../../../Scripts/typings/sinon/sinon.d.ts" />
-
-import mocha = require('mocha');
+﻿import mocha = require('mocha');
 import chai = require('chai');
 import sinon = require('sinon');
 var expect = chai.expect;
@@ -43,7 +39,7 @@ describe("When registering a configuration", () => {
         });
 
         it("should have registered all inner tasks", () => {
-            expect((<SinonSpy><any>taskRegisterService.registerTask).calledTwice).to.be.true;
+            expect((<Sinon.SinonSpy><any>taskRegisterService.registerTask).calledTwice).to.be.true;
         });
     });
 });

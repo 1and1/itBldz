@@ -13,10 +13,10 @@ export class Grunt {
 
     public registerExternalTask(name: string, dependencies : string[], callback) {
         new npm.Package().installIfFileNotExist(name, dependencies, () => {
-            process.chdir(global.relativeDir);
+            process.chdir(global["relativeDir"]);
             if (name.indexOf("@") > 0) name = name.substring(0, name.indexOf("@"))
             this.grunt.loadNpmTasks(name);
-            process.chdir(global.basedir);
+            process.chdir(global["basedir"]);
             callback();
         });
     }

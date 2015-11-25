@@ -24,3 +24,4 @@ tests/features/testdata/**
 tests/features/support/*.js
 .settings/*
 **/.tscache/**
+typings/*
