@@ -14,16 +14,16 @@ var _args = nopt(known, aliases, process.argv, 2);
 
 process.title = 'itbldz';
 
-global.basedir = process.cwd();
-global.relativeDir = __dirname;
-global.requireRoot = function (name) {
+global["basedir"] = process.cwd();
+global["relativeDir"] = __dirname;
+global["requireRoot"] = function (name) {
     return require(__dirname + '/' + name);
 };
 
 log.writeln("itbldz", "Environment set up successfully.");
-log.verbose.writeln("itbldz", "\tBaseDir\t\t" + global.basedir);
-log.verbose.writeln("itbldz", "\tRelativeDir\t" + global.relativeDir);
-log.verbose.writeln("itbldz", "\tGruntVersion\t" + grunt.version);
+log.verbose.writeln("itbldz", "\tBaseDir\t\t" + global["basedir"]);
+log.verbose.writeln("itbldz", "\tRelativeDir\t" + global["relativeDir"]);
+log.verbose.writeln("itbldz", "\tGruntVersion\t" + grunt["requireRoot"]);
 
 export function itbldz(args) {
 
@@ -35,7 +35,7 @@ export function itbldz(args) {
     log.verbose.writeln("itbldz", "Config loaded: " + JSON.stringify(currentConfig, undefined, 2));
 
     if (engine) {
-        var gruntFile = path.join(global.relativeDir, "src/grunt-utils/gruntfile.js");
+        var gruntFile = path.join(global["relativeDir"], "src/grunt-utils/gruntfile.js");
         args["gruntfile"] = gruntFile;
         try {
             engine.startUp(currentConfig, (tasks) => {

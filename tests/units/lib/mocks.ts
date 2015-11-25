@@ -4,10 +4,10 @@ import tasks = require('../../../src/lib/tasks');
 import configs = require('../../../src/lib/configs');
 
 export interface MockedGruntInstance {
-    registerTask: SinonSpy;
-    initConfig: SinonSpy;
+    registerTask: Sinon.SinonSpy;
+    initConfig: Sinon.SinonSpy;
     task: {
-        run: SinonSpy;
+        run: Sinon.SinonSpy;
     };
 }
 
