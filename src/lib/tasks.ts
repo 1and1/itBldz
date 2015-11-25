@@ -40,7 +40,9 @@ export class TaskExecutionPrepareService {
         return result;
     }
     
-    public static gruntifyTask(config, task) {
+    public static gruntifyTask(config, task): any {
+        if (!config) throw "A task requires a configuration to run";
+        task = task.split(":")[0];
         delete config[task].task;
         delete config[task].package;
         delete config[task].dependencies;

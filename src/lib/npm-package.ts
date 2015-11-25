@@ -19,13 +19,13 @@ export class Package {
         if (!npm_package) throw Error("Npm Package required");
         log.verbose.writeln("npm", "check if package " + npm_package + " and " + dependencies.length + " dependencies exist... ");
         var cb = () => {
-            process.chdir(global.basedir);
+            process.chdir(global["basedir"]);
             callback();
         };
 
         dependencies.push(npm_package);
 
-        process.chdir(global.relativeDir);
+        process.chdir(global["relativeDir"]);
         require('npm').load((err, npm) => {
             
             if (packages.length > 0) {

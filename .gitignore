@@ -24,3 +24,5 @@ tests/features/testdata/**
 tests/features/support/*.js
 .settings/*
 src/grunt-utils/.tscache/**/*
+**/.tscache/**
+typings/*

@@ -1,10 +1,12 @@
-﻿/// <reference path="../../Scripts/typings/node/node.d.ts" />
-
+﻿
 import models = require('./models');
 import logging = require('./logging');
 import environment = require('./environment');
 import deserializer = require('./deserialization');
-import modules = require('./modules');import tasks = require('./tasks');var log = new logging.Log();
+import modules = require('./modules');
+import tasks = require('./tasks');
+import arg from './arguments';
+var log = new logging.Log();
 var path = require('path');
 var merge = require('merge');
 var args = require('nopt')({}, {}, process.argv, 2);
@@ -27,7 +29,7 @@ export interface ConfigurationLoaderService {
 
 export class ConfigurationFileLoaderService implements ConfigurationLoaderService {
     static loadFile(fileName) : any {
-        var file = path.join(global.basedir, fileName);
+        var file = path.join(global["basedir"], fileName);
         if (!environment.FileSystem.fileExists(file)) throw "You have to create a '" + fileName + "' file with your build-configuration first";
         return require(file);
     }
@@ -36,13 +38,13 @@ export class ConfigurationFileLoaderService implements ConfigurationLoaderServic
         var steps: any;
         var stepsFile: string;
         
-        var build = (args.with || "build") + ".json";
-        var deploy = (args.to || "deploy") + ".json";
-        var watch = (args.watch || "watch") + ".json";
-        var configFile = (args.as || "config") + ".json";
-        var varsFile = (args.vars || "vars") + ".yml";
-        var _modules = (args.modules || "modules") + ".json";
-        _modules = new modules.ModuleService().load(path.join(global.basedir, _modules));
+        var build = arg.getConfigArgument(args.with || "build");
+        var deploy = arg.getConfigArgument(args.to || "deploy");
+        var watch = arg.getConfigArgument(args.watch || "watch");
+        var configFile = arg.getConfigArgument(args.as || "config");
+        var varsFile = arg.getConfigArgument(args.vars || "vars", ".yml");
+        var _modules = arg.getConfigArgument(args.modules || "modules");
+        _modules = new modules.ModuleService().load(path.join(global["basedir"], _modules));
         
         var currentAction = environment.Action.get();
         switch (environment.Action.get()) {
@@ -78,22 +80,22 @@ export class ConfigurationFileLoaderService implements ConfigurationLoaderServic
         grunt.config.set("modules", _modules);
         
         grunt.config.set("steps", new deserializer.ConfigurationTypeDeserializer(steps, _modules).deserialize());
-        var packageFile = path.join(global.basedir, 'package.json');
+        var packageFile = path.join(global["basedir"], 'package.json');
         if (environment.FileSystem.fileExists(packageFile)) {
             grunt.config.set("pck", require(packageFile));
             grunt.config.set("pkg", require(packageFile));
         }
 
-        configFile = path.join(global.basedir, configFile);
+        configFile = path.join(global["basedir"], configFile);
         if (environment.FileSystem.fileExists(configFile)) {
             var config = require(configFile);
             config.directories = config.directories || {};
-            config.directories.root =  config.directories.root || global.basedir;
-            config.directories.itbldz = global.relativeDir;
+            config.directories.root =  config.directories.root || global["basedir"];
+            config.directories.itbldz = global["relativeDir"];
             grunt.config.set("config", config);
         }
         
-        varsFile = path.join(global.basedir, varsFile);
+        varsFile = path.join(global["basedir"], varsFile);
         if (environment.FileSystem.fileExists(varsFile)) {
             grunt.config.set("vars", require(varsFile));
         }
@@ -146,17 +148,17 @@ export class WatchConfigurationService implements ConfigurationLoaderService {
 
         grunt.initConfig();
         grunt.config.set("steps", run);
-        var packageFile = path.join(global.basedir, 'package.json');
+        var packageFile = path.join(global["basedir"], 'package.json');
         if (environment.FileSystem.fileExists(packageFile)) {
             grunt.config.set("pck", require(packageFile));
         }
 
-        var configFile = path.join(global.basedir, 'config.json');
+        var configFile = path.join(global["basedir"], 'config.json');
         if (environment.FileSystem.fileExists(configFile)) {
             var config = require(configFile);
             config.directories = config.directories || {};
-            config.directories.root =  config.directories.root || global.basedir;
-            config.directories.itbldz = global.relativeDir;
+            config.directories.root =  config.directories.root || global["basedir"];
+            config.directories.itbldz = global["relativeDir"];
             grunt.config.set("config", config);
         }
 
@@ -174,7 +176,7 @@ export class TaskRunnerConfigurationService {
         result.parent = parent;
         result.name = task;
         result.config = {};
-        result.config[currentStep.task] = currentStep;
+        result.config[currentStep.task.split(":")[0]] = currentStep;
         (<models.TaskRunner>result).task = currentStep.task;
         (<models.TaskRunner>result).package = currentStep.package;
         (<models.TaskRunner>result).dependencies = currentStep.dependencies;
@@ -248,7 +250,7 @@ class FilterTaskByScenarioContext extends FilterBySelectedTasks implements IFilt
         if (!this.argv.scenario) return allSteps;
         log.verbose.writeln("filterByScenario", "Running scenario " + this.argv.scenario);
  
-        var scenario = require(path.join(global.basedir, this.argv["scenario"] + ".yml"));
+        var scenario = require(path.join(global["basedir"], this.argv["scenario"] + ".yml"));
         if (!scenario) throw new Error("The specified scenario does not exist.");
         if (!scenario.steps) throw new Error("The scenario does not contain any steps");
         this.selectedTasks = scenario.steps;

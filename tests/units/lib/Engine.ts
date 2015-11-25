@@ -1,6 +1,4 @@
-﻿/// <reference path="../../../Scripts/typings/mocha/mocha.d.ts" />
-/// <reference path="../../../Scripts/typings/chai/chai.d.ts" />
-import mocha = require('mocha');
+﻿import mocha = require('mocha');
 import chai = require('chai');
 
 import engines = require('../../../src/lib/Engine');
@@ -38,7 +36,7 @@ describe("When starting a build engine", () => {
         });
         
         it("should have registered the config", (done) => {
-            expect((<SinonSpy>configTaskRegistrationSevice.register).called).to.be.true;
+            expect((<Sinon.SinonSpy>configTaskRegistrationSevice.register).called).to.be.true;
             done();
         });
     });
@@ -60,7 +58,7 @@ describe("When starting a build engine", () => {
         });
 
         it("should have registered the config", (done) => {
-            expect((<SinonSpy>configTaskRegistrationSevice.register).called).to.be.true;
+            expect((<Sinon.SinonSpy>configTaskRegistrationSevice.register).called).to.be.true;
             done();
         });
     });
@@ -82,7 +80,7 @@ describe("When starting a build engine", () => {
         });
 
         it("should have registered the config", (done) => {
-            expect((<SinonSpy>configTaskRegistrationSevice.register).called).to.be.true;
+            expect((<Sinon.SinonSpy>configTaskRegistrationSevice.register).called).to.be.true;
             done();
         });
     });
