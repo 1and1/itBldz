@@ -4,6 +4,7 @@ import logging = require('./logging');
 import environment = require('./environment');
 import deserializer = require('./deserialization');
 import modules = require('./modules');
+import arg from './arguments';
 var log = new logging.Log();
 var path = require('path');
 var merge = require('merge');
@@ -20,11 +21,11 @@ export class ConfigurationFileLoaderService {
         var steps: any;
         var stepsFile: string;
         
-        var build = (args.with || "build") + ".json";
-        var deploy = (args.to || "deploy") + ".json";
-        var configFile = (args.as || "config") + ".json";
-        var varsFile = (args.vars || "vars") + ".yml";
-        var _modules = (args.modules || "modules") + ".json";
+        var build = arg.getConfigArgument(args.with || "build");
+        var deploy = arg.getConfigArgument(args.to || "deploy");
+        var configFile = arg.getConfigArgument(args.as || "config");
+        var varsFile = arg.getConfigArgument(args.vars || "vars", ".yml");
+        var _modules = arg.getConfigArgument(args.modules || "modules");
         _modules = new modules.ModuleService().load(path.join(global.basedir, _modules));
         
         var currentAction = environment.Action.get();
