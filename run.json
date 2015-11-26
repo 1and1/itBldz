@@ -1,0 +1,12 @@
+{
+      "scripts": {
+            "files": ["<%= config.sources.TypeScript.files %>"],
+            "tasks": ["compile/typescript"],
+            "options": {
+                  "spawn" : false,
+                  "perFile": {
+                        "targets" : ["default"]
+                  }
+            }
+      }
+}

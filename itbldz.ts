@@ -31,7 +31,7 @@ export function itbldz(args) {
     var engine = engines.Engine.get(grunt);
 
     log.writeln("itbldz", "Loading steps...");
-    var currentConfig = config.ConfigurationFileLoaderService.load(grunt);
+    var currentConfig = config.ConfigurationLoaderServiceFactory.get().load(grunt);
     log.verbose.writeln("itbldz", "Config loaded: " + JSON.stringify(currentConfig, undefined, 2));
 
     if (engine) {

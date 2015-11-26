@@ -10,9 +10,9 @@ export class Engine {
     currentEngine;
     grunt: grunt.Grunt;
     configuration: config.ConfigurationService;
-    taskService: tasks.ConfigTaskRegistrationService;
+    taskService: tasks.IRegisterTasksService;
 
-    public constructor(grunt: grunt.Grunt, configuration, taskService) {
+    public constructor(grunt: grunt.Grunt, configuration, taskService : tasks.IRegisterTasksService) {
         this.grunt = grunt;
         this.configuration = configuration;
         this.taskService = taskService;
@@ -23,8 +23,11 @@ export class Engine {
         this.configuration.load(configuration, (config) => {
             log.verbose.writeln(this.currentEngine, "Configuration loaded!");
             log.verbose.writeln(this.currentEngine, "\tSteps:\t\t" + (config.steps ? config.steps.length : 0));
-            log.verbose.writeln(this.currentEngine, "\tBuildTasks:\t" + (config.steps ? config.steps.reduce((_: any, current) => _ + (current.tasks ? current.tasks.length : 0), 0) : 0));
-            this.taskService.register(config);
+            log.verbose.writeln(this.currentEngine, "\tBuildTasks:\t" + (config.steps ? 
+                config.steps.reduce((_: any, current) => _ + (current.tasks ? current.tasks.length : 0), 0) : 
+                0));
+                
+            this.taskService.register(config, () => { });
             callback(this.grunt.registeredTasks);
         });
     }
@@ -48,7 +51,10 @@ export class Engine {
                 var engine = new InitializeEngine(new grunt.Grunt(g));
                 log.writeln("itbldz", "Initialzation engine loaded!");
                 return engine;
-
+            case environment.ActionType.Run:
+                var engine = new RunEngine(new grunt.Grunt(g));
+                log.writeln("itbldz", "Run engine loaded!");
+                return engine;
         }
 
         throw Error("No engine available");
@@ -80,5 +86,24 @@ export class InitializeEngine extends Engine {
     public constructor(grunt: grunt.Grunt, configuration = new config.BuildConfigurationService(), taskService = new tasks.ConfigTaskRegistrationService(grunt)) {
         super(grunt, configuration, taskService);
         this.currentEngine = "InitializationEngine";
+    }
+}
+
+export class RunEngine extends Engine {
+    public constructor(grunt: grunt.Grunt, 
+        configuration = new config.GruntConfigurationService(), 
+        taskService = new tasks.GruntWatchRegistrationService(grunt)) {
+        super(grunt, configuration, taskService);
+        this.currentEngine = "RunEngine";
+    }
+    
+    public startUp(configuration, callback: (tasks: string[]) => void) {
+        log.verbose.writeln(this.currentEngine, "Loading configuration...");
+        this.configuration.load(configuration, (config) => {
+            log.verbose.writeln(this.currentEngine, "Configuration loaded!");
+            this.taskService.register(config, () => {
+                callback(this.grunt.registeredTasks);
+            });
+        });
     }
 }

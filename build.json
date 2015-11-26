@@ -8,7 +8,8 @@
             "default": {
                 "options": {
                     "module": "commonjs",
-                    "compile": true
+                    "compile": true,
+                    "experimentalDecorators": true
                 },
                 "src": "<%= config.sources.TypeScript.files %>"
             }

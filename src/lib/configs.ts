@@ -1,27 +1,46 @@
-﻿import models = require('./models');
+﻿
+import models = require('./models');
 import logging = require('./logging');
 import environment = require('./environment');
 import deserializer = require('./deserialization');
 import modules = require('./modules');
+import tasks = require('./tasks');
 import arg from './arguments';
 var log = new logging.Log();
 var path = require('path');
 var merge = require('merge');
 var args = require('nopt')({}, {}, process.argv, 2);
 
-export class ConfigurationFileLoaderService {
+export class ConfigurationLoaderServiceFactory {
+    public static get() {
+        var currentAction = environment.Action.get();
+        switch (environment.Action.get()) {
+            case environment.ActionType.Run:
+                return new RunConfigurationService();
+            default: 
+                return new ConfigurationFileLoaderService();
+        }
+    }
+}
+
+export interface ConfigurationLoaderService {
+    load(grunt : any) : any;
+}
+
+export class ConfigurationFileLoaderService implements ConfigurationLoaderService {
     static loadFile(fileName) : any {
         var file = path.join(global["basedir"], fileName);
         if (!environment.FileSystem.fileExists(file)) throw "You have to create a '" + fileName + "' file with your build-configuration first";
         return require(file);
     }
 
-    public static load(grunt : any) : any {
+    public load(grunt : any) : any {
         var steps: any;
         var stepsFile: string;
         
         var build = arg.getConfigArgument(args.with || "build");
         var deploy = arg.getConfigArgument(args.to || "deploy");
+        var watch = arg.getConfigArgument(args.run || "run");
         var configFile = arg.getConfigArgument(args.as || "config");
         var varsFile = arg.getConfigArgument(args.vars || "vars", ".yml");
         var _modules = arg.getConfigArgument(args.modules || "modules");
@@ -64,6 +83,7 @@ export class ConfigurationFileLoaderService {
         var packageFile = path.join(global["basedir"], 'package.json');
         if (environment.FileSystem.fileExists(packageFile)) {
             grunt.config.set("pck", require(packageFile));
+            grunt.config.set("pkg", require(packageFile));
         }
 
         configFile = path.join(global["basedir"], configFile);
@@ -88,8 +108,66 @@ export class ConfigurationFileLoaderService {
     }
 }
 
-export interface ConfigurationService {
-    load(config, callback: (models: models.Configuration) => void);
+export class RunConfigurationService implements ConfigurationLoaderService {
+    public load(grunt : any) : any {
+        
+        var steps: any;
+        var stepsFile: string;
+        var build = ConfigurationFileLoaderService.loadFile('build.json');
+        var watch = ConfigurationFileLoaderService.loadFile('run.json');
+        var run = {
+            watch: {
+                options: watch.options
+            },
+            steps : {}
+        };
+        
+        Object.keys(watch).filter((target) => target !== "options").forEach((target) => {
+            var watchedTasks = watch[target].tasks;
+            if (!watchedTasks) return;
+            var newWatchTargets = [];
+            watchedTasks.forEach((task: string) => {
+                var taskSet = task.split('/').reverse();
+                var step = (set: string[], result) => {
+                    var current = set.pop();
+                    result = result[current];
+                    if (set.length <= 0) return result;
+                    return step(set, result);
+                };
+
+                var tasksToRun = step(taskSet, build);
+                if (!tasksToRun.task) throw new Error("Only build-steps can be set as target");
+                
+                run.steps[tasksToRun.task] = tasksToRun;
+                newWatchTargets.push(tasksToRun.task);
+            });
+
+            watch[target].tasks = newWatchTargets;
+            run.watch[target] = watch[target];
+        });
+
+        grunt.initConfig();
+        grunt.config.set("steps", run);
+        var packageFile = path.join(global["basedir"], 'package.json');
+        if (environment.FileSystem.fileExists(packageFile)) {
+            grunt.config.set("pck", require(packageFile));
+        }
+
+        var configFile = path.join(global["basedir"], 'config.json');
+        if (environment.FileSystem.fileExists(configFile)) {
+            var config = require(configFile);
+            config.directories = config.directories || {};
+            config.directories.root =  config.directories.root || global["basedir"];
+            config.directories.itbldz = global["relativeDir"];
+            grunt.config.set("config", config);
+        }
+
+        grunt.config.set("env", new environment.Variables().get());
+
+        var result = grunt.config.get("steps");
+        grunt.initConfig(result);
+        return result;
+    }
 }
 
 export class TaskRunnerConfigurationService {
@@ -215,6 +293,10 @@ class FilterTaskSelectionFactory {
     }
 }
 
+export interface ConfigurationService {
+    load(config, callback: (models: models.Configuration) => void);
+}
+
 export class BuildConfigurationService implements ConfigurationService {
     argv;
 
@@ -222,8 +304,7 @@ export class BuildConfigurationService implements ConfigurationService {
         this.argv = argv;
     }
 
-    public loadTasks(parent: string, step: any): models.Task[]{
-
+    public loadTasks(parent: string, step: any): models.Task[] {
         log.verbose.writeln("Config", "Loading for step " + JSON.stringify(step, undefined, 2));
         if (!step) return [];
         var tasks = Object.keys(step);
@@ -262,6 +343,29 @@ export class BuildConfigurationService implements ConfigurationService {
             steps : result
         };
 
+        callback(buildConfiguration);
+    }
+}
+
+export class GruntConfigurationService extends BuildConfigurationService {
+    public load(build, callback: (models: models.Configuration) => void): void {
+        var steps = Object.keys(build);
+        var result: models.BuildStep[] = steps
+            .filter((step) => step != "watch")
+            .map((step) => {
+                return {
+                    name: step,
+                    tasks: this.loadTasks(step, build[step])
+                };
+            });
+
+        // TODO: Add filter task selection
+        //          right now all args are replaced
+        // result = new FilterTaskSelectionFactory(this.argv).applyTo(result);
+        var buildConfiguration = {
+            steps : result
+        };
+                
         callback(buildConfiguration);
     }
 }

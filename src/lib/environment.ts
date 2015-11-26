@@ -17,7 +17,8 @@ export enum ActionType {
     Build,
     Deploy,
     Ship,
-    Init
+    Init,
+    Run
 }
 
 export class FileSystem {
@@ -44,6 +45,15 @@ export class Action {
         }
         else if (_._.some((_) => _ == "init")) {
             return ActionType.Init;
+        }
+        else if (_._.some((_) => _ == "run")) {
+            return ActionType.Run;
+        }
+        else {
+            throw new Error(`No action specified to run.
+
+Syntax: 
+    node itbldz.tz build|deploy|ship|init|run`);
         }
     }
 }
