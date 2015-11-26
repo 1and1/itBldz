@@ -12,7 +12,7 @@ Background:
 	And I have a configuration to trigger the build-step "compile" for changes on "**/*.ts"
 
 Scenario: I want to update changes in my typescript files automatically
-	Given start the watcher for updating changes
+	Given start the runner for updating changes
 	When I add the character "test" to the file
 	Then the javascript file "myscript.js" should be created automatically
 	And the javascript file "myscript.js" should contain the characters "test"

@@ -15,8 +15,8 @@ export class ConfigurationLoaderServiceFactory {
     public static get() {
         var currentAction = environment.Action.get();
         switch (environment.Action.get()) {
-            case environment.ActionType.Watch:
-                return new WatchConfigurationService();
+            case environment.ActionType.Run:
+                return new RunConfigurationService();
             default: 
                 return new ConfigurationFileLoaderService();
         }
@@ -40,7 +40,7 @@ export class ConfigurationFileLoaderService implements ConfigurationLoaderServic
         
         var build = arg.getConfigArgument(args.with || "build");
         var deploy = arg.getConfigArgument(args.to || "deploy");
-        var watch = arg.getConfigArgument(args.watch || "watch");
+        var watch = arg.getConfigArgument(args.run || "run");
         var configFile = arg.getConfigArgument(args.as || "config");
         var varsFile = arg.getConfigArgument(args.vars || "vars", ".yml");
         var _modules = arg.getConfigArgument(args.modules || "modules");
@@ -108,13 +108,13 @@ export class ConfigurationFileLoaderService implements ConfigurationLoaderServic
     }
 }
 
-export class WatchConfigurationService implements ConfigurationLoaderService {
+export class RunConfigurationService implements ConfigurationLoaderService {
     public load(grunt : any) : any {
         
         var steps: any;
         var stepsFile: string;
         var build = ConfigurationFileLoaderService.loadFile('build.json');
-        var watch = ConfigurationFileLoaderService.loadFile('watch.json');
+        var watch = ConfigurationFileLoaderService.loadFile('run.json');
         var run = {
             watch: {
                 options: watch.options

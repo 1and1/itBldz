@@ -205,7 +205,6 @@
 
     this.Then(/^the step "([^"]*)" should have been executed$/, function (task, callback) {
       var expected = "Running \""+ task + "\" task";
-      // Write code here that turns the phrase above into concrete actions
       var _ = this;
       _.terminal.output.should.contain(expected);
       callback();
@@ -213,7 +212,6 @@
     
     this.Then(/^the step "([^"]*)" should not have been executed$/, function (task, callback) {
       var not_expected = "Running \""+ task + "\" task";
-      // Write code here that turns the phrase above into concrete actions
       var _ = this;
       _.terminal.output.should.not.contain(not_expected);
       callback();

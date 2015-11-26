@@ -51,9 +51,9 @@ export class Engine {
                 var engine = new InitializeEngine(new grunt.Grunt(g));
                 log.writeln("itbldz", "Initialzation engine loaded!");
                 return engine;
-            case environment.ActionType.Watch:
-                var engine = new WatchEngine(new grunt.Grunt(g));
-                log.writeln("itbldz", "Watch engine loaded!");
+            case environment.ActionType.Run:
+                var engine = new RunEngine(new grunt.Grunt(g));
+                log.writeln("itbldz", "Run engine loaded!");
                 return engine;
         }
 
@@ -89,12 +89,12 @@ export class InitializeEngine extends Engine {
     }
 }
 
-export class WatchEngine extends Engine {
+export class RunEngine extends Engine {
     public constructor(grunt: grunt.Grunt, 
         configuration = new config.GruntConfigurationService(), 
         taskService = new tasks.GruntWatchRegistrationService(grunt)) {
         super(grunt, configuration, taskService);
-        this.currentEngine = "WatchEngine";
+        this.currentEngine = "RunEngine";
     }
     
     public startUp(configuration, callback: (tasks: string[]) => void) {

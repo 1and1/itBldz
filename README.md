@@ -433,6 +433,54 @@ Types available for deserialization are:
 * RegExp
 * Modules
 
+## Experimental Features
+
+**The following features are experimental, unstable, and might change or be removed in future versions**
+
+### run-it
+
+In a typical development workflow, you don't want to compile typescript files or run your tests everytime you make a change, but rather have that done automatically for you. This can be done using the *run-it* workflow. 
+
+To make this work you will have to create a run configuration. The default filename is *run.json*, and it would look like the following: 
+
+````json
+{
+      "scripts": {
+            "files": ["<%= config.sources.TypeScript.files %>"],
+            "tasks": ["compile/typescript"],
+            "options": {
+                  "spawn" : false,
+                  "perFile": {
+                        "targets" : ["default"]
+                  }
+            }
+      }
+}
+````
+
+The "compile/typescript" task has to be defined in your build.json.
+The rest is the same as in a grunt file for the watch without the outer watch:
+
+````js
+watch: {
+  scripts: {
+    files: ['**/*.ts'],
+    tasks: ['ts'],
+    options: {
+      spawn: false,
+      perFile : { targets: ["default"] }
+    },
+  },
+}
+````
+
+By calling 
+````shell
+run-it
+````
+
+the watcher starts. Changing a typescriptfile will trigger the task and recompile your TypeScript files
+
 ## Contributing
 
 ### Getting started
