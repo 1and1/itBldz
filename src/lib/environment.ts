@@ -1,4 +1,5 @@
-﻿var fs = require('fs');
+﻿import path = require('path');
+import fs = require('fs');
 var _ = require('yargs').argv;
 
 export class Variables {
@@ -29,6 +30,10 @@ export class FileSystem {
             if (err.code == 'ENOENT') return false;
         }
         return true;
+    }
+    
+    public static directoryStartingFromLocation(baseDir : string, concat : string) {
+        return path.join(path.dirname(baseDir), concat);
     }
 }
 
