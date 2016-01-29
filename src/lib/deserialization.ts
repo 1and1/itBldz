@@ -133,11 +133,11 @@ export class ConfigurationTypeDeserializer {
             log.verbose.writeln("ConfigurationTypeDeserializer", "Serialized " + object["serialized:type"] + " to " + JSON.stringify(serialized, 
                 (key, val) => (typeof val === 'function') ? val + '' : val));
             return serialized;
-        } else if (object[":serialized"]) {
-            var serialized = this.serializeByDisriminator(object[":serialized"]["type"], 
-                object[":serialized"]["object"], 
-                object[":serialized"]["call"]);
-            log.verbose.writeln("ConfigurationTypeDeserializer", "Serialized " + object[":serialized"]["type"] + " to " + JSON.stringify(serialized, 
+        } else if (object[":type"]) {
+            var serialized = this.serializeByDisriminator(object[":type"]["type"], 
+                object[":type"]["object"], 
+                object[":type"]["call"]);
+            log.verbose.writeln("ConfigurationTypeDeserializer", "Serialized " + object[":type"]["type"] + " to " + JSON.stringify(serialized, 
                 (key, val) => (typeof val === 'function') ? val + '' : val));
         } 
         
