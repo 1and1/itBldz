@@ -10,6 +10,7 @@ Scenario: Call a function of an existing grunt task
 function rename(dest, src) {
     return dest + "/result.txt";
 }
+exports.rename = rename;
     """
     Given I have an empty build file
 		And the build has the build steps "deploy"
