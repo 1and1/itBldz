@@ -61,6 +61,12 @@ All your arguments will be passed to grunt. To trigger tasks, simply add them.
 
 Examples:
 
+Get the current version
+
+```shell
+build-it --version
+```
+
 Get all tasks with description
 
 ```shell
@@ -445,7 +451,7 @@ So given you need to use the replace function for the file syntax in a config th
         "files" : [{
             "expand":true,
             "flatten":true,
-            src":["src/*.js"],
+            "src":["src/*.js"],
             "dest":"target/",
             "rename": {
                 ":type" : {
@@ -474,7 +480,7 @@ If you call build-it now, during runtime the configuration will look like the fo
         "files" : [{
             "expand":true,
             "flatten":true,
-            src":["src/*.js"],
+            "src":["src/*.js"],
             "dest":"target/",
             "rename": function(dest, src) {
                 return dest + "/somestuff/" + new Date() + require('path').extname(src);

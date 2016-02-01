@@ -5,6 +5,7 @@ import config = require('./src/lib/configs');
 import logging = require('./src/lib/logging');
 var log = new logging.Log();
 var nopt = require('nopt');
+var pkg = require('./package.json');
 
 // CLI options we care about.
 var known = { help: Boolean, version: Boolean, completion: String };
@@ -39,10 +40,16 @@ export function itbldz(args) {
         args["gruntfile"] = gruntFile;
         try {
             engine.startUp(currentConfig, (tasks) => {
-                (<any>grunt).tasks(tasks, args, () => {
-                    log.writeln("itbldz", "Completed successfully");
+                if (_args.help) {
+                    log.writeln("itbldz", "==== All Tasks ====");
+                    tasks.forEach(task => log.writeln("task", "\t" + task));
                     process.exit(0);
-                });
+                } else {
+                    (<any>grunt).tasks(tasks, args, () => {
+                        log.writeln("itbldz", "Completed successfully");
+                        process.exit(0);
+                    });
+                }
             });
         } catch (error) {
             log.error("itbldz", _args.stack ? error.stack : error);
@@ -54,4 +61,11 @@ export function itbldz(args) {
     }
 }
 
-itbldz(process.argv);
+if (_args.version) {
+    log.writeln("itbldz", "\titbldz Version\t" + pkg.version);
+    log.writeln("itbldz", "\tGrunt Version\t" + grunt["version"]);
+    log.writeln("itbldz", "\tNode Version\t" + process.version);
+}
+else {
+    itbldz(process.argv);
+}
