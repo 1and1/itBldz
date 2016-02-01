@@ -105,7 +105,31 @@
         callback();
     });
 
-
+    this.Given(/^the task group "([^"]*)" in the build step "([^"]*)" has a task runner that copies the following src files to the target directories:$/, function (groupName, stepName, table, callback) {
+        console.log(JSON.stringify(table.raw(), undefined, 2));
+        config[stepName][groupName]["values"] = [];
+        table.raw().forEach(function(row) {
+            row.forEach(function(item) {
+                config[stepName][groupName]["values"].push(item);
+            });
+        });
+        config[stepName][groupName]["do"] = {};
+        config[stepName][groupName]["do"]["copy"] = {
+            "task": "copy",
+            "package": "grunt-contrib-copy",
+            "deployables": {
+                "files": [
+                    {
+                        "expand": true, "flatten": true,
+                        "cwd": this.fileSystem.baseDirectory,
+                        "src": ["src/@(this)"],
+                        "dest": "target/"
+                    }
+                ]
+            }
+        };
+        callback();
+    });
 
     this.Given(/^the task group "([^"]*)" in the build step "([^"]*)" has a task runner that copies the src directory to the target directory and calls the function "([^"]*)" from script "([^"]*)"$/, function (groupName, stepName, funct, script, callback) {
         config[stepName][groupName]["copy"] = {
@@ -146,7 +170,7 @@
             }
         };
         config[stepName][groupName]["copy"]["deployables"]["files"][0][field] = {
-            ":type" : {
+            ":type": {
                 "type": "IIFE",
                 "object": { "src": script },
                 "call": funct
