@@ -19,6 +19,21 @@ class DeserializationHelper {
 
 class ForEach implements IExecuteAFunction {
     type : RegExp = /^\:for-each$/gi;
+    private resolve(object, query) {
+        query = query.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+        query = query.replace(/^\./, '');           // strip a leading dot
+        var tree = query.split('.');
+        for (var index = 0, n = tree.length; index < n; ++index) {
+            var k = tree[index];
+            if (k in object) {
+                object = object[k];
+            } else {
+                return;
+            }
+        }
+        return object;
+    }
+    
     public handle(node : any) {       
         try {
             var result = {};
@@ -35,7 +50,7 @@ class ForEach implements IExecuteAFunction {
                             match = regex.exec(text);
                             if (match) {
                                 var matchedString = match[1];
-                                text = text.replace(match[0], (!matchedString || 0 === matchedString.length) ? value : value[matchedString]);
+                                text = text.replace(match[0], (!matchedString || 0 === matchedString.length) ? value : this.resolve(value, matchedString));
                             }
                         } while (match);
                     }
