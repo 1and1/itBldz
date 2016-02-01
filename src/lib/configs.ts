@@ -3,6 +3,7 @@ import models = require('./models');
 import logging = require('./logging');
 import environment = require('./environment');
 import deserializer = require('./deserialization');
+import functions = require('./functions');
 import modules = require('./modules');
 import tasks = require('./tasks');
 import arg from './arguments';
@@ -79,7 +80,14 @@ export class ConfigurationFileLoaderService implements ConfigurationLoaderServic
         grunt.initConfig();
         grunt.config.set("modules", _modules);
         
-        grunt.config.set("steps", new deserializer.ConfigurationTypeDeserializer(steps, _modules).deserialize());
+        [
+            new functions.ConfigurationTypeFunctionizer(),
+            new deserializer.ConfigurationTypeDeserializer(_modules)
+        ].forEach((item : any) => {
+            steps = item.transform(steps);
+        });
+        
+        grunt.config.set("steps", steps);
         var packageFile = path.join(global["basedir"], 'package.json');
         if (environment.FileSystem.fileExists(packageFile)) {
             grunt.config.set("pck", require(packageFile));
