@@ -1,6 +1,5 @@
 {
-    "prepare": {
-    },
+    "prepare": {},
     "compile": {
         "typescript": {
             "task": "ts",
@@ -31,7 +30,7 @@
                 }
             },
             "acceptance": {
-                "clean-test-results" : {
+                "clean-test-results": {
                     "task": "clean",
                     "package": "grunt-contrib-clean",
                     "options": {
@@ -41,77 +40,20 @@
                         "<%= config.directories.TypeScript.acceptance %>/testdata"
                     ]
                 },
-                "scenarios" : {
-                    "task": "cucumberjs",
-                    "package": "grunt-cucumber",
-                    "src": "<%= config.directories.TypeScript.acceptance %>/BuildScenarios.feature",
-                    "dependencies": [
-                        "cucumber", "chai"
-                    ],
-                    "options": "<%= config.test.acceptance.options %>"
-                },
-                "vars" : {
-                    "task": "cucumberjs",
-                    "package": "grunt-cucumber",
-                    "src": "<%= config.directories.TypeScript.acceptance %>/YamlVars.feature",
-                    "dependencies": [
-                        "cucumber", "chai"
-                    ],
-                    "options": "<%= config.test.acceptance.options %>"
-                },
-                "type-discriminators" : {
-                    "task": "cucumberjs",
-                    "package": "grunt-cucumber",
-                    "src": "<%= config.directories.TypeScript.acceptance %>/TypeDiscriminators.feature",
-                    "dependencies": [
-                        "cucumber"
-                    ],
-                    "options": "<%= config.test.acceptance.options %>"
-                }, 
-                "type-discriminators-functions" : {
-                    "task": "cucumberjs",
-                    "package": "grunt-cucumber",
-                    "src": "<%= config.directories.TypeScript.acceptance %>/TypeDiscriminatorsFunctions.feature",
-                    "dependencies": [
-                        "cucumber"
-                    ],
-                    "options": "<%= config.test.acceptance.options %>"
-                }, 
-                "type-discriminators-modules" : {
-                    "task": "cucumberjs",
-                    "package": "grunt-cucumber",
-                    "src": "<%= config.directories.TypeScript.acceptance %>/TypeDiscriminatorsModules.feature",
-                    "dependencies": [
-                        "cucumber"
-                    ],
-                    "options": "<%= config.test.acceptance.options %>"
-                }, 
-                "running-build" : {
-                    "task": "cucumberjs",
-                    "package": "grunt-cucumber",
-                    "src": "<%= config.directories.TypeScript.acceptance %>/RunningBuild.feature",
-                    "dependencies": [
-                        "cucumber"
-                    ],
-                    "options": "<%= config.test.acceptance.options %>"
-                },
-                "extending-modules" : {
-                    "task": "cucumberjs",
-                    "package": "grunt-cucumber",
-                    "src": "<%= config.directories.TypeScript.acceptance %>/ExtendingModules.feature",
-                    "dependencies": [
-                        "cucumber"
-                    ],
-                    "options": "<%= config.test.acceptance.options %>"
-                }, 
-                "different-configs" : {
-                    "task": "cucumberjs",
-                    "package": "grunt-cucumber",
-                    "src": "<%= config.directories.TypeScript.acceptance %>/UsingDifferentConfiguration.feature",
-                    "dependencies": [
-                        "cucumber"
-                    ],
-                    "options": "<%= config.test.acceptance.options %>"
+                ":for-each": {
+                    "values" : ["BuildScenarios", "YamlVars", "TypeDiscriminators", "TypeDiscriminatorsFunctions", "TypeDiscriminatorsModules", "RunningBuild", "ExtendingModules", "UsingDifferentConfiguration"],
+                    "do": {
+                        "scenarios": {
+                            "task": "cucumberjs",
+                            "package": "grunt-cucumber",
+                            "src": "<%= config.directories.TypeScript.acceptance %>/@(this).feature",
+                            "dependencies": [
+                                "cucumber",
+                                "chai"
+                            ],
+                            "options": "<%= config.test.acceptance.options %>"
+                        }
+                    }
                 }
             }
         }
