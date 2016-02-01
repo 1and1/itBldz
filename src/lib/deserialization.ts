@@ -111,11 +111,9 @@ class DeserializerFactory {
 }
 
 export class ConfigurationTypeDeserializer {
-    config : any;
     deserializerFactory : DeserializerFactory;
     
-    public constructor(config, modules) { 
-        this.config = config; 
+    public constructor(modules) { 
         this.deserializerFactory = new DeserializerFactory(modules);
     }
     
@@ -159,7 +157,7 @@ export class ConfigurationTypeDeserializer {
         return result;
     }
     
-    public deserialize() : any {
-        return this.forEachKeyIn(this.config);
+    public transform(config) : any {
+        return this.forEachKeyIn(config);
     }
 }
