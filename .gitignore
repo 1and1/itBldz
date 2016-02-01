@@ -1,0 +1,11 @@
+.tscach
+.tscache/**
+node_modules/**
+**/.tscache/**
+tscommand-*
+typings/**
+tests/**
+src/**
+.ntvs_analysis.dat
+itbldz.*
+obj/**

@@ -39,6 +39,12 @@
 <a href="https://nodei.co/npm/itbldz/"><img src="https://nodei.co/npm/itbldz.png?downloads=true&amp;downloadRank=true&amp;stars=true" alt="NPM"></a></p>
 <p><strong>The only build-tool you&#39;ll ever need</strong></p>
 <p>The goal is to provide an easy to setup framework which allow every development team a &quot;closed for modification, open for extension&quot;-plattform for their own needs.</p>
+<h2 id="principles">Principles</h2>
+<ol>
+<li>The build and deployment pipelines are to be explicit, repeatable, and tested.</li>
+<li>It must be easy to understand what happens when.</li>
+<li>A build/deployment-definition is configuration</li>
+</ol>
 <h2 id="usage">Usage</h2>
 <h3 id="setup">Setup</h3>
 <p>Install itBldz</p>
@@ -57,7 +63,7 @@
 <p>or ship it (build &amp; deploy)</p>
 <pre><code class="lang-shell">ship-it
 </code></pre>
-<p><em>Note:</em> If you don&#39;t install it globally, you can use </p>
+<p><em>Note:</em> If you don&#39;t install it globally, you can use</p>
 <pre><code class="lang-shell">[node] ./node_modules/itbldz/bin/build-it.js|deploy-it.js|ship-it.js|init-itbldz.js
 </code></pre>
 <h3 id="options">Options</h3>
@@ -71,7 +77,7 @@
 </code></pre>
 <p>Given this config:</p>
 <pre><code>{
-    &quot;compile&quot;: { 
+    &quot;compile&quot;: {
         &quot;typescript : { /* compile your sources */ }
     },
     &quot;build&quot;: {
@@ -90,6 +96,9 @@
 </code></pre>
 <p>Deploy using another config &quot;heroku.json&quot;</p>
 <pre><code class="lang-shell">deploy-it --to=heroku
+</code></pre>
+<p>Change the configuration to point to the production.json file</p>
+<pre><code class="lang-shell">deploy-it --to=heroku --as=production
 </code></pre>
 <p>Ship it with &quot;uglify.json&quot; and &quot;heroku.json&quot;</p>
 <pre><code class="lang-shell">ship-it --with=uglify --to=heroku
@@ -118,7 +127,7 @@ describe their use best.</p>
 <p>An example:</p>
 <pre><code class="lang-json">    {
         &quot;compile&quot; : {
-            &quot;code&quot; : { 
+            &quot;code&quot; : {
                 &quot;java using maven&quot; : {},
                 &quot;typescript to javascript&quot; : {}
             },
@@ -159,7 +168,7 @@ package.json.</p>
 <p>This runs mocha unit tests</p>
 <ul>
 <li><em>&quot;task&quot;</em>: the task name that should be executed</li>
-<li><em>&quot;package&quot;</em>: the npm package that contains the task</li>
+<li><em>&quot;package&quot;</em>: the npm package that contains the task. The reference a specific version, add &quot;@1.0.0&quot; to the package name (replace 1.0.0 with the version you want...)</li>
 <li><em>&quot;dependencies&quot;</em> (optional): The dependencies the Task Runner may need</li>
 </ul>
 <h4 id="config-json">config.json</h4>
@@ -185,6 +194,41 @@ You can use all variables in the config.json in your build.json by typing</p>
 talking about your environment.</p>
 <p>For different environments you might have different configurations. Split them
 and reference the correct config when starting the build.</p>
+<h4 id="watch-json">watch.json</h4>
+<p>The watch.json helps you in describing what tasks you want to run automatically. It consists of generic blocks (i.e. &quot;compile&quot;, &quot;test&quot;) that describe what you are doing  </p>
+<p>Given you have a build.json with a compile typescript task:</p>
+<pre><code class="lang-json">{
+    /* other stuff */
+    &quot;compile&quot;: {
+        &quot;typescript&quot;: {
+            &quot;task&quot;: &quot;ts&quot;,
+            &quot;package&quot;: &quot;grunt-ts&quot;,
+            &quot;default&quot;: {
+                &quot;options&quot;: {
+                    &quot;module&quot;: &quot;commonjs&quot;,
+                    &quot;compile&quot;: true
+                },
+                &quot;src&quot;: &quot;&lt;%= config.sources.TypeScript.files %&gt;&quot;
+            }
+        }
+    }    
+    /* other stuff */
+}
+</code></pre>
+<p>Now you don&#39;t want to trigger the full build everytime, but rather every time a file changes. Then you would have a watch.json that would look like the following:</p>
+<pre><code class="lang-json">{
+      &quot;compile&quot;: {
+            &quot;files&quot;: [&quot;**/*.ts&quot;],
+            &quot;tasks&quot;: [&quot;compile/typescript&quot;],
+            &quot;options&quot;: {
+                  &quot;perFile&quot;: {
+                        &quot;targets&quot; : [&quot;default&quot;]
+                  }
+            }
+      }
+}
+</code></pre>
+<p>In the &quot;tasks&quot; you can reference the build-tasks that should run, the &quot;options&quot; are the options that will be provided to the grunt-contrib-watch library.   </p>
 <h4 id="environment">Environment</h4>
 <p>In your configuration and build you can access the environment variables of your host system as well.</p>
 <p>Add the Statement</p>
@@ -192,16 +236,225 @@ and reference the correct config when starting the build.</p>
 <p>&lt;%= env.ENV_VARIABLE %&gt;</p>
 </blockquote>
 <p>and it will automatically be replaced.</p>
+<h4 id="variables">Variables</h4>
+<p>Apart of the config and the environment, you can add an additional yaml file. The default name for the files is &quot;vars.yml&quot;.</p>
+<p>Now you can add the Statement</p>
+<blockquote>
+<p>&lt;%= vars.your.variable %&gt;</p>
+</blockquote>
+<p>and it will automatically be replaced.</p>
+<h2 id="build-scenarios">Build Scenarios</h2>
+<p>As your build grows, different scenarios might be required for your build to run in. Typical scenarios are &quot;development&quot; and &quot;continuous integration build&quot;. While the latter might be your full build, for the first you might only a subset to be run every time you trigger the build.</p>
+<p>To enable this behavior you can create specific scenario files to target only a subset of the tasks in your build.json. These files are yaml files with the following syntax:</p>
+<pre><code class="lang-yml">steps:
+- &quot;test/typescript/acceptance/clean-test-results&quot;
+- &quot;test/typescript/acceptance/scenarios&quot;
+</code></pre>
+<p>This scenario executes only the two specified build steps, and only if they are defined in your build definition.
+Given this file is called &quot;test.yml&quot; you can now call it using:</p>
+<pre><code class="lang-shell">build-it --scenario=test
+</code></pre>
 <h2 id="i-need-a-function-in-my-configuration-">I need a function in my configuration!</h2>
-<p>Sorry, but that sounds like an oxymoron. 
+<p>Sorry, but that sounds like an oxymoron.
 itbldz is to <strong>configure build scenarios</strong> in an easy way, and adding logic to your configuration does not seem to help reducing complexity.</p>
 <p>If you want a grunt task to do more then what is configured, then create an npm package, test it and use this.</p>
-<p>If you need a task-runner where you can add functions to your configuration, then directly use grunt. </p>
+<p>However, now that you know that you shouldn&#39;t do it, here&#39;s the way on how to do it. In the template syntax you can execute functions as well:</p>
+<pre><code class="lang-json">    {
+        &quot;example-timestamp&quot;: &quot;&lt;%= Date.now() %&gt;&#39;&quot;
+    }
+</code></pre>
+<p>This can be extended - you can create simple Modules that look like the following (TypeScript):</p>
+<pre><code class="lang-ts">    export class HelloWorld {
+        public greet(name) {
+            return &quot;Hello &quot; + name;
+        }
+    }
+</code></pre>
+<p>Then in your configuration (i.e. build.json) you can include the module like this:</p>
+<pre><code class="lang-json">    {
+        &quot;test-module&quot;: {
+            &quot;hello world&quot; : {
+                &quot;task&quot;: &quot;exec&quot;,
+                &quot;package&quot;: &quot;grunt-exec&quot;,
+                &quot;echo-module&quot; : {
+                    &quot;cmd&quot; : &quot;echo &#39;&lt;%= modules.HelloWorld.greet(&#39;me&#39;) %&gt;&#39;&quot;
+                }
+            }
+        }
+    }
+</code></pre>
+<p>To control the modules that should be loaded, a module.js file is added that is automatically included if available or can be included with --modules=path/to/modules.js which looks like the following:</p>
+<pre><code class="lang-json">    [
+        &quot;modules/HelloWorld.js&quot;
+    ]
+</code></pre>
+<p>The name of the module is the name of the class in the file that should be loaded for this keyword, so that when you have multiple classes like so:</p>
+<pre><code class="lang-ts">    export class HelloWorld {
+        public greet(name) {
+            return &quot;Hello &quot; + name;
+        }
+    }
+    export class GoodbyeWorld {
+        public greet(name) {
+            return &quot;Goodbye &quot; + name;
+        }
+    }
+</code></pre>
+<p>you will have both available in the configuration.</p>
+<h2 id="little-helpers">Little Helpers</h2>
+<p>For simple stuff like iterators, itbldz comes with <code>:functions</code>. 
+The current context can be accessed with <code>@(...)</code>.</p>
+<h3 id="for-each">for-each</h3>
+<p>Allows looping through a set of values. </p>
+<p>Available: </p>
+<ul>
+<li><strong>this</strong> The current value</li>
+</ul>
+<p>Simple Example:</p>
+<pre><code class="lang-json">    &quot;:for-each&quot; : {
+        &quot;values&quot;: [&quot;set&quot;, &quot;of&quot;, &quot;values&quot;],
+        &quot;of&quot; : {
+            &quot;some&quot; : &quot;task&quot;,
+            &quot;referencing&quot;: &quot;@(this)&quot;
+        }
+    }
+</code></pre>
+<p>Object Looping:</p>
+<pre><code class="lang-json">    &quot;:for-each&quot; : {
+        &quot;values&quot;: [ { &quot;key&quot; : &quot;set&quot;}, { &quot;key&quot; : &quot;of&quot; }, { &quot;key&quot; : &quot;values&quot; }],
+        &quot;of&quot; : {
+            &quot;some&quot; : &quot;task&quot;,
+            &quot;referencing&quot;: &quot;@(this.key)&quot;
+        }
+    }
+</code></pre>
+<h2 id="type-discriminators">Type Discriminators</h2>
+<p>JSON-Files do not support objects, but JavaScript (and Grunt) does. For instance, some tasks require Regular Expressions. This can be implemented by using Type-Discriminators in your configuration. The Syntax is the following:</p>
+<h3 id="regex">Regex</h3>
+<pre><code class="lang-json">    {
+        &quot;myKey&quot; : {
+            &quot;:type&quot; : { 
+                &quot;type&quot;:&quot;RegExp&quot;,
+                &quot;object&quot;: { &quot;pattern&quot; : &quot;.*?&quot;, &quot;flags&quot; : &quot;gmi&quot; }
+            }
+        }
+    }
+</code></pre>
+<p>will become:</p>
+<pre><code class="lang-js">    {
+        &quot;myKey&quot; : /.*?/gmi
+    }
+</code></pre>
+<h3 id="functions">Functions</h3>
+<p>If you need a plain javascript function, you can add it by placing it in a .js file in your base dir. 
+So given you need to use the replace function for the file syntax in a config that looks like this:   </p>
+<pre><code class="lang-json">    {
+        &quot;files&quot; : [{
+            &quot;expand&quot;:true,
+            &quot;flatten&quot;:true,
+            src&quot;:[&quot;src/*.js&quot;],
+            &quot;dest&quot;:&quot;target/&quot;,
+            &quot;rename&quot;: {
+                &quot;:type&quot; : {
+                    &quot;type&quot;:&quot;Function&quot;,
+                    &quot;object&quot;:{&quot;src&quot;:&quot;function.js&quot;},
+                    &quot;call&quot;:&quot;rename&quot;
+                }
+            }
+        }]
+    }
+</code></pre>
+<p>Then you can create a file function.js, and place it in your basedir:</p>
+<pre><code class="lang-js">    function rename(dest, src) {
+        return dest + &quot;/somestuff/&quot; + new Date() + require(&#39;path&#39;).extname(src);
+    }
+    exports.rename = rename;
+</code></pre>
+<p>If you call build-it now, during runtime the configuration will look like the following: </p>
+<pre><code class="lang-json">    {
+        &quot;files&quot; : [{
+            &quot;expand&quot;:true,
+            &quot;flatten&quot;:true,
+            src&quot;:[&quot;src/*.js&quot;],
+            &quot;dest&quot;:&quot;target/&quot;,
+            &quot;rename&quot;: function(dest, src) {
+                return dest + &quot;/somestuff/&quot; + new Date() + require(&#39;path&#39;).extname(src);
+            }
+        }]
+    }
+</code></pre>
+<h3 id="modules">Modules</h3>
+<p>This can be used with Modules as well. Given you have a module</p>
+<pre><code class="lang-ts">    export class HelloWorld {
+        defaultPersonToGreet:string;
+        public greet(name) {
+            return &quot;Hello &quot; + (name || this.defaultPersonToGreet);
+        }
+    }
+</code></pre>
+<p>and a configuration</p>
+<pre><code class="lang-json">{
+    &quot;myKey&quot; : {
+        &quot;:type&quot;: {
+            &quot;type&quot; : &quot;modules.HelloWorld&quot;,
+            &quot;object&quot; : { &quot;defaultPersonToGreet&quot; : &quot;Bruce Lee&quot;  },
+            &quot;call&quot; : &quot;greet&quot;
+        }
+    }
+}
+</code></pre>
+<p>will then become:</p>
+<pre><code class="lang-js">{
+    &quot;myKey&quot; : function(){ return modules.HelloWorld.greet.apply(deserializedModule, arguments); }
+}
+</code></pre>
+<p>Types available for deserialization are:</p>
+<ul>
+<li>RegExp</li>
+<li>Modules</li>
+<li>Functions</li>
+</ul>
+<h2 id="experimental-features">Experimental Features</h2>
+<p><strong>The following features are experimental, unstable, and might change or be removed in future versions</strong></p>
+<h3 id="run-it">run-it</h3>
+<p>In a typical development workflow, you don&#39;t want to compile typescript files or run your tests everytime you make a change, but rather have that done automatically for you. This can be done using the <em>run-it</em> workflow. </p>
+<p>To make this work you will have to create a run configuration. The default filename is <em>run.json</em>, and it would look like the following: </p>
+<pre><code class="lang-json">{
+      &quot;scripts&quot;: {
+            &quot;files&quot;: [&quot;&lt;%= config.sources.TypeScript.files %&gt;&quot;],
+            &quot;tasks&quot;: [&quot;compile/typescript&quot;],
+            &quot;options&quot;: {
+                  &quot;spawn&quot; : false,
+                  &quot;perFile&quot;: {
+                        &quot;targets&quot; : [&quot;default&quot;]
+                  }
+            }
+      }
+}
+</code></pre>
+<p>The &quot;compile/typescript&quot; task has to be defined in your build.json.
+The rest is the same as in a grunt file for the watch without the outer watch:</p>
+<pre><code class="lang-js">watch: {
+  scripts: {
+    files: [&#39;**/*.ts&#39;],
+    tasks: [&#39;ts&#39;],
+    options: {
+      spawn: false,
+      perFile : { targets: [&quot;default&quot;] }
+    },
+  },
+}
+</code></pre>
+<p>By calling </p>
+<pre><code class="lang-shell">run-it
+</code></pre>
+<p>the watcher starts. Changing a typescriptfile will trigger the task and recompile your TypeScript files</p>
 <h2 id="contributing">Contributing</h2>
 <h3 id="getting-started">Getting started</h3>
 <p>Git clone this repository, run a</p>
 <pre><code>npm install -g itbldz
 npm install
+tsd reinstall
 </code></pre><p>and then</p>
 <pre><code>build-it
 </code></pre><p>to have it set up</p>
