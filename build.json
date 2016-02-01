@@ -68,6 +68,24 @@
                     ],
                     "options": "<%= config.test.acceptance.options %>"
                 }, 
+                "type-discriminators-functions" : {
+                    "task": "cucumberjs",
+                    "package": "grunt-cucumber",
+                    "src": "<%= config.directories.TypeScript.acceptance %>/TypeDiscriminatorsFunctions.feature",
+                    "dependencies": [
+                        "cucumber"
+                    ],
+                    "options": "<%= config.test.acceptance.options %>"
+                }, 
+                "type-discriminators-modules" : {
+                    "task": "cucumberjs",
+                    "package": "grunt-cucumber",
+                    "src": "<%= config.directories.TypeScript.acceptance %>/TypeDiscriminatorsModules.feature",
+                    "dependencies": [
+                        "cucumber"
+                    ],
+                    "options": "<%= config.test.acceptance.options %>"
+                }, 
                 "running-build" : {
                     "task": "cucumberjs",
                     "package": "grunt-cucumber",
