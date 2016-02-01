@@ -376,6 +376,40 @@ The name of the module is the name of the class in the file that should be loade
 ````
 you will have both available in the configuration.
 
+## Little Helpers
+
+For simple stuff like iterators, itbldz comes with ```:functions```. 
+The current context can be accessed with ```@(...)```.
+
+### for-each
+
+Allows looping through a set of values. 
+
+Available: 
+* **this** The current value
+
+Simple Example:
+````json
+    ":for-each" : {
+        "values": ["set", "of", "values"],
+        "of" : {
+            "some" : "task",
+            "referencing": "@(this)"
+        }
+    }
+````
+
+Object Looping:
+````json
+    ":for-each" : {
+        "values": [ { "key" : "set"}, { "key" : "of" }, { "key" : "values" }],
+        "of" : {
+            "some" : "task",
+            "referencing": "@(this.key)"
+        }
+    }
+````
+
 ## Type Discriminators
 
 JSON-Files do not support objects, but JavaScript (and Grunt) does. For instance, some tasks require Regular Expressions. This can be implemented by using Type-Discriminators in your configuration. The Syntax is the following:
