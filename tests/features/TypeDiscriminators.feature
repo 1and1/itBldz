@@ -17,8 +17,8 @@ exports.dest = dest;
 			And the build step "deploy" has a task group "files"
 				And the task group "files" in the build step "deploy" has a task runner that copies the src directory to the target directory and calls a IIFE function "dest" for "dest" from script "function.js"
     And the build file is in the root of my application
-	When I execute the build command
-	When I execute the build command
+    When I execute the build command
+    When I execute the build command
 	Then the file "test.js" should exist in folder "newtarget"
     
     
@@ -38,10 +38,11 @@ exports.rename = rename;
 			And the build step "deploy" has a task group "files"
 				And the task group "files" in the build step "deploy" has a task runner that copies the src directory to the target directory and calls the function "rename" from script "function.js"
     And the build file is in the root of my application
-	When I execute the build command    
-	When I execute the build command       
-	When I execute the build command 
-	Then the file "result.txt" should exist in folder "target"
+    When I execute the build command
+    When I execute the build command
+    When I execute the build command
+    When I execute the build command
+    Then the file "result.txt" should exist in folder "target"
     
     
 
