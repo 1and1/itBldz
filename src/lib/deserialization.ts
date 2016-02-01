@@ -33,6 +33,13 @@ class DeserializeFunction implements IDeserializeAType {
     }
 }
 
+class DeserializeIIFE extends DeserializeFunction {
+    type : RegExp = /^IIFE/gi;
+    public deserialize(type, value, call) {
+       return (super.deserialize(type, value, call))();
+    }
+}
+
 class DeserializeRegex implements IDeserializeAType {
     type : RegExp = /^RegExp$/gi;
     public deserialize(type, value, call) {
@@ -92,6 +99,7 @@ class DeserializerFactory {
         
     public constructor(modules) {
         this.deserializers.push(new DeserializeFunction());
+        this.deserializers.push(new DeserializeIIFE());
         this.deserializers.push(new DeserializeModule(modules));
     }
         
@@ -139,6 +147,7 @@ export class ConfigurationTypeDeserializer {
                 object[":type"]["call"]);
             log.verbose.writeln("ConfigurationTypeDeserializer", "Serialized " + object[":type"]["type"] + " to " + JSON.stringify(serialized, 
                 (key, val) => (typeof val === 'function') ? val + '' : val));
+            return serialized;
         } 
         
         var result = {};

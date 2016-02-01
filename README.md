@@ -470,7 +470,7 @@ and a configuration
         ":type": {
             "type" : "modules.HelloWorld",
             "object" : { "defaultPersonToGreet" : "Bruce Lee"  },
-            "call":"greet"
+            "call" : "greet"
         }
     }
 }
