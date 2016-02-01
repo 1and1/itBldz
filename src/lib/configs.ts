@@ -80,13 +80,6 @@ export class ConfigurationFileLoaderService implements ConfigurationLoaderServic
         grunt.initConfig();
         grunt.config.set("modules", _modules);
         
-        [
-            new functions.ConfigurationTypeFunctionizer(),
-            new deserializer.ConfigurationTypeDeserializer(_modules)
-        ].forEach((item : any) => {
-            steps = item.transform(steps);
-        });
-        
         grunt.config.set("steps", steps);
         var packageFile = path.join(global["basedir"], 'package.json');
         if (environment.FileSystem.fileExists(packageFile)) {
@@ -111,6 +104,13 @@ export class ConfigurationFileLoaderService implements ConfigurationLoaderServic
         grunt.config.set("env", new environment.Variables().get());
 
         var result = grunt.config.get("steps");
+        [
+            new functions.ConfigurationTypeFunctionizer(),
+            new deserializer.ConfigurationTypeDeserializer(_modules)
+        ].forEach((item : any) => {
+            result = item.transform(result);
+        });
+        grunt.config.set("steps", result);
         grunt.initConfig();
         return result;
     }
