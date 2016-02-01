@@ -1,4 +1,6 @@
 import logging = require('./logging');
+import fs = require('fs');
+import path = require('path');
 var log = new logging.Log();
 
 interface IDeserializeAType {
@@ -14,6 +16,27 @@ class DeserializationHelper {
         }
         
         return data;
+    }
+}
+
+class DeserializeFunction implements IDeserializeAType {
+    type : RegExp = /^Function$/gi;
+    public deserialize(type, value, call) {       
+        try {
+            var data = DeserializationHelper.toObject(value);
+            var script = require(path.join(global["basedir"], data.src));
+            return script[call];
+        }
+        catch(err) {
+            throw err;
+        }
+    }
+}
+
+class DeserializeIIFE extends DeserializeFunction {
+    type : RegExp = /^IIFE/gi;
+    public deserialize(type, value, call) {
+       return (super.deserialize(type, value, call))();
     }
 }
 
@@ -75,6 +98,8 @@ class DeserializerFactory {
     deserializers : IDeserializeAType[] = [new DeserializeRegex()];
         
     public constructor(modules) {
+        this.deserializers.push(new DeserializeFunction());
+        this.deserializers.push(new DeserializeIIFE());
         this.deserializers.push(new DeserializeModule(modules));
     }
         
@@ -110,10 +135,20 @@ export class ConfigurationTypeDeserializer {
         if (object !== Object(object)) return object;
         log.verbose.writeln("ConfigurationTypeDeserializer", "Current object: " + JSON.stringify(object));
         if (object["serialized:type"]) {
-            var serialized = this.serializeByDisriminator(object["serialized:type"], object["serialized:object"], object["serialized:call"]);
-            log.verbose.writeln("ConfigurationTypeDeserializer", "Serialized " + object["serialized:type"] + " to " + JSON.stringify(serialized));
+            var serialized = this.serializeByDisriminator(object["serialized:type"], 
+                object["serialized:object"], 
+                object["serialized:call"]);
+            log.verbose.writeln("ConfigurationTypeDeserializer", "Serialized " + object["serialized:type"] + " to " + JSON.stringify(serialized, 
+                (key, val) => (typeof val === 'function') ? val + '' : val));
             return serialized;
-        }
+        } else if (object[":type"]) {
+            var serialized = this.serializeByDisriminator(object[":type"]["type"], 
+                object[":type"]["object"], 
+                object[":type"]["call"]);
+            log.verbose.writeln("ConfigurationTypeDeserializer", "Serialized " + object[":type"]["type"] + " to " + JSON.stringify(serialized, 
+                (key, val) => (typeof val === 'function') ? val + '' : val));
+            return serialized;
+        } 
         
         var result = {};
         

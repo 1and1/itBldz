@@ -380,22 +380,76 @@ you will have both available in the configuration.
 
 JSON-Files do not support objects, but JavaScript (and Grunt) does. For instance, some tasks require Regular Expressions. This can be implemented by using Type-Discriminators in your configuration. The Syntax is the following:
 
+### Regex
+
 ````json
-{
-    "myKey" : {
-        "serialized:type":"RegExp",
-        "serialized:object": { "pattern" : ".*?", "flags" : "gmi" }
+    {
+        "myKey" : {
+            ":type" : { 
+                "type":"RegExp",
+                "object": { "pattern" : ".*?", "flags" : "gmi" }
+            }
+        }
     }
-}
 ````
 
 will become:
 
 ````js
-{
-    "myKey" : /.*?/gmi
-}
+    {
+        "myKey" : /.*?/gmi
+    }
 ````
+
+### Functions
+
+If you need a plain javascript function, you can add it by placing it in a .js file in your base dir. 
+So given you need to use the replace function for the file syntax in a config that looks like this:   
+
+````json
+    {
+        "files" : [{
+            "expand":true,
+            "flatten":true,
+            src":["src/*.js"],
+            "dest":"target/",
+            "rename": {
+                ":type" : {
+                    "type":"Function",
+                    "object":{"src":"function.js"},
+                    "call":"rename"
+                }
+            }
+        }]
+    }
+````
+
+Then you can create a file function.js, and place it in your basedir:
+
+````js
+    function rename(dest, src) {
+        return dest + "/somestuff/" + new Date() + require('path').extname(src);
+    }
+    exports.rename = rename;
+````
+
+If you call build-it now, during runtime the configuration will look like the following: 
+
+````json
+    {
+        "files" : [{
+            "expand":true,
+            "flatten":true,
+            src":["src/*.js"],
+            "dest":"target/",
+            "rename": function(dest, src) {
+                return dest + "/somestuff/" + new Date() + require('path').extname(src);
+            }
+        }]
+    }
+````
+
+### Modules
 
 This can be used with Modules as well. Given you have a module
 
@@ -413,9 +467,11 @@ and a configuration
 ````json
 {
     "myKey" : {
-        "serialized:type":"modules.HelloWorld",
-        "serialized:object":{ "defaultPersonToGreet" : "Bruce Lee"  },
-        "serialized:call":"greet"
+        ":type": {
+            "type" : "modules.HelloWorld",
+            "object" : { "defaultPersonToGreet" : "Bruce Lee"  },
+            "call" : "greet"
+        }
     }
 }
 ````
@@ -432,6 +488,7 @@ Types available for deserialization are:
 
 * RegExp
 * Modules
+* Functions
 
 ## Experimental Features
 

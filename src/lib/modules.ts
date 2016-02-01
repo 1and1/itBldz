@@ -15,7 +15,7 @@ export class ModuleService {
         var loadedModules = require(modulesDefinition);
         
         loadedModules.forEach((module) => {
-            var requiredModule = require(module);
+            var requiredModule = require(environment.FileSystem.directoryStartingFromLocation(modulesDefinition, module));
             log.verbose.writeln("ModuleService", "Loaded " + Object.keys(requiredModule) + " modules from file " + module);
             Object.keys(requiredModule).forEach((exportedClass) => {
                 modules[exportedClass] = new (requiredModule[exportedClass])();
