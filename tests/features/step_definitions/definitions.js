@@ -104,8 +104,8 @@
         };
         callback();
     });
-    
-    
+
+
 
     this.Given(/^the task group "([^"]*)" in the build step "([^"]*)" has a task runner that copies the src directory to the target directory and calls the function "([^"]*)" from script "([^"]*)"$/, function (groupName, stepName, funct, script, callback) {
         config[stepName][groupName]["copy"] = {
@@ -118,10 +118,10 @@
                         "cwd": this.fileSystem.baseDirectory,
                         "src": ["src/*.js"],
                         "dest": "target/",
-                        "rename" : { 
-                            "serialized:type" : "Function",
-                            "serialized:object" : { "src": script },
-                            "serialized:call" : funct
+                        "rename": {
+                            "serialized:type": "Function",
+                            "serialized:object": { "src": script },
+                            "serialized:call": funct
                         }
                     }
                 ]
@@ -129,6 +129,32 @@
         };
         callback();
     });
+
+    this.Given(/^the task group "([^"]*)" in the build step "([^"]*)" has a task runner that copies the src directory to the target directory and calls a IIFE function "([^"]*)" for "([^"]*)" from script "([^"]*)"$/, function (groupName, stepName, funct, field, script, callback) {
+        config[stepName][groupName]["copy"] = {
+            "task": "copy",
+            "package": "grunt-contrib-copy",
+            "deployables": {
+                "files": [
+                    {
+                        "expand": true, "flatten": true,
+                        "cwd": this.fileSystem.baseDirectory,
+                        "src": ["src/*.js"],
+                        "dest": "target/"
+                    }
+                ]
+            }
+        };
+        config[stepName][groupName]["copy"]["deployables"]["files"][0][field] = {
+            ":type" : {
+                "type": "IIFE",
+                "object": { "src": script },
+                "call": funct
+            }
+        };
+        callback();
+    });
+
 
     this.Given(/^the module HelloWorld is defined and exists$/, function (callback) {
         modules.push("HelloWorld.js");
