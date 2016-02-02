@@ -34,11 +34,15 @@ class ForEach implements IExecuteAFunction {
         return object;
     }
     
+    private insertAt(value, index, length, text) {
+        return value.substring(0, index) + text + value.substring(index + length);
+    }
+    
     public handle(node : any) {       
         try {
             var result = {};
             var values : any[] = node["values"];
-            values.forEach(function(value) {
+            values.forEach((value) => {
                 var key = Object.prototype.toString.call(value) === '[object String]' ? value : value.key;
                 
                 result[key] = JSON.parse(JSON.stringify(node), (key, text) => {
@@ -50,7 +54,10 @@ class ForEach implements IExecuteAFunction {
                             match = regex.exec(text);
                             if (match) {
                                 var matchedString = match[1];
-                                text = text.replace(match[0], (!matchedString || 0 === matchedString.length) ? value : this.resolve(value, matchedString));
+                                text = this.insertAt(text, 
+                                    match.index, 
+                                    match[0].length, 
+                                    (!matchedString || 0 === matchedString.length) ? value : this.resolve(value, matchedString));
                             }
                         } while (match);
                     }
