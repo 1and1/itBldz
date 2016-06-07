@@ -222,8 +222,8 @@ class FilterTasksByArgumentsSelectionService extends FilterBySelectedTasks imple
     argv;
     
     public constructor(argv = require('yargs').argv) {
-        this.argv = argv;
         super();
+        this.argv = argv;
     }    
     
     public filter(allSteps : models.BuildStep[]) : models.BuildStep[] {
@@ -250,8 +250,8 @@ class FilterTaskByScenarioContext extends FilterBySelectedTasks implements IFilt
     argv;
     
     public constructor(argv = require('yargs').argv) {
-        this.argv = argv;
         super();
+        this.argv = argv;
     }
     
     public filter(allSteps : models.BuildStep[]) : models.BuildStep[] {

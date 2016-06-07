@@ -1,6 +1,6 @@
 {
   "name": "itbldz",
-  "version": "2.0.52",
+  "version": "2.0.53",
   "description": "Gruntpowered CI loving awesomeness",
   "repository": {
     "type": "git",
@@ -23,7 +23,7 @@
     "grunt": "^0.4.5",
     "merge": "^1.2.0",
     "nopt": "^3.0.3",
-    "npm": "^2.13.3",
+    "npm": "^3.9.5",
     "resolve": "^1.1.6",
     "time-grunt": "^1.2.1",
     "yargs": "^3.17.1"
