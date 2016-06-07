@@ -3,4 +3,4 @@ node_js:
   - "0.10"
   - "4.2"
   - "iojs"
-before_install: npm install -g itbldz tsd && tsd reinstall
+before_install: if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi npm install -g itbldz tsd && tsd reinstall
