@@ -17,9 +17,9 @@ class DeserializationHelper {
     }
 }
 
-class ForEach implements IExecuteAFunction {
-    type : RegExp = /^\:for-each$/gi;
-    private resolve(object, query) {
+abstract class ReplacingFunction implements IExecuteAFunction {
+    type : RegExp;
+    resolve(object, query) {
         query = query.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
         query = query.replace(/^\./, '');           // strip a leading dot
         var tree = query.split('.');
@@ -34,9 +34,64 @@ class ForEach implements IExecuteAFunction {
         return object;
     }
     
-    private insertAt(value, index, length, text) {
+    insertAt(value, index, length, text) {
         return value.substring(0, index) + text + value.substring(index + length);
     }
+    
+    public abstract handle(node : any) : any;
+}
+
+class If implements IExecuteAFunction {
+    type : RegExp = /^\:if/gi;
+    public handle(node : any) : any {
+        var result = {};
+        var condition = node["condition"];
+        var then = node["then"];
+        var otherwise = node["else"];
+    }
+}
+
+class For extends ReplacingFunction {
+    type : RegExp = /^\:for/gi;
+    public handle(node : any) : any {
+        var result = {};
+        var index : number = node["start"];
+        var count : number = node["end"] || (node["length"] -1);
+        var data : any[] = node["data"];
+        var regexThis = /@\(this[\.]?(.*?)\)/gi;
+        var regexIndex = /@\(index())/gi;
+        
+        for(; index <= count; index++) {
+            result[`item_${index}`] = JSON.parse(JSON.stringify(node["do"]), (key, text) => {
+                if (Object.prototype.toString.call(text) === '[object String]')
+                {
+                    var match : RegExpExecArray;
+                    [regexIndex, regexThis].forEach(regex => {                
+                        do {
+                            match = regex.exec(text);
+                            if (match) {
+                                var matchedString = match[1];
+                                text = this.insertAt(text, 
+                                    match.index, 
+                                    match[0].length, 
+                                    (!matchedString || 0 === matchedString.length) 
+                                        ? data 
+                                        : this.resolve(data, matchedString));
+                            }
+                        } while (match);
+                    });
+                }
+                
+                return text;
+            });
+        }
+        
+        return result;
+    }
+}
+
+class ForEach extends ReplacingFunction {
+    type : RegExp = /^\:for-each$/gi;    
     
     public handle(node : any) {       
         try {

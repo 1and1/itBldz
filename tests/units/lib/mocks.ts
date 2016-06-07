@@ -15,14 +15,15 @@ export class GruntMock extends gruntbase.Grunt {
     mock: MockedGruntInstance;
 
     public constructor() {
-        this.mock = {
+        var mock = {
             registerTask: sinon.spy(),
             initConfig: sinon.spy(),
             task: {
                 run : sinon.spy()
             }
         };
-        super(this.mock);
+        super(mock);
+        this.mock = mock;
     }
 }
 
