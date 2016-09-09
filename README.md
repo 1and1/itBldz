@@ -12,11 +12,11 @@ The goal is to provide an easy to setup framework which allow every development 
 
 1. The build and deployment pipelines are to be explicit, repeatable, and tested.
 2. It must be easy to understand what happens when.
-3. A build/deployment-definition is configuration
+3. A build/deployment-definition is configuration that should be extendable by code. But it still is configuration. 
 
 ## Usage
 
-### Setup
+### Setup locally
 
 Install itBldz
 
@@ -54,6 +54,33 @@ _Note:_ If you don't install it globally, you can use
 ```shell
 [node] ./node_modules/itbldz/bin/build-it.js|deploy-it.js|ship-it.js|init-itbldz.js
 ```
+
+### Setup with docker
+
+To initially create your config do:
+
+```
+docker run --rm -v "$PWD":/app mkainer/itbldz:latest init-itbldz
+```
+
+To `build-it` your app with docker do:
+
+```
+docker run --rm -v "$PWD":/app mkainer/itbldz:latest
+```
+
+To `deploy-it` do 
+
+```
+docker run --rm -v "$PWD":/app mkainer/itbldz:latest deploy-it
+```
+
+To `ship-it` (build and deploy) do
+
+```
+docker run --rm -v "$PWD":/app mkainer/itbldz:latest ship-it
+```
+
 
 ### Options
 
